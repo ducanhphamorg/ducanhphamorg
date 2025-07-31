@@ -32,7 +32,6 @@
 # 📊GitHub Stats
 
 ![](https://github-readme-stats.vercel.app/api?username=ducanhphamorg&theme=radical&hide_border=false&include_all_commits=false&count_private=false)<br/>
-![](https://github-readme-streak-stats.herokuapp.com/?user=ducanhphamorg&theme=radical&hide_border=false)<br/>
 ![](https://github-readme-stats.vercel.app/api/top-langs/?username=ducanhphamorg&theme=radical&hide_border=false&include_all_commits=false&count_private=false&layout=compact)
 
 ---
@@ -95,12 +94,7 @@
 ![Adobe Photoshop](https://img.shields.io/badge/adobe%20photoshop-31A8FF?style=for-the-badge&logo=adobephotoshop&logoColor=white)
 
 </div>
-
-# 📊GitHub Stats
-
-![](https://github-readme-stats.vercel.app/api?username=ducanhphamorg&theme=radical&hide_border=true&include_all_commits=true&count_private=false)<br/>
-<br/>
-![](https://github-readme-stats.vercel.app/api/top-langs/?username=ducanhphamorg&theme=radical&hide_border=true&include_all_commits=true&count_private=false&layout=compact)
+---
 
 ## 🏆GitHub Trophies
 
@@ -128,6 +122,9 @@
       </td>
     </tr>
   </tbody>
+</table>
+
+<table>
   <tbody>
     <tr>
       <td>

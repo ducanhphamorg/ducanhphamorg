@@ -35,7 +35,7 @@
   </defs>
 
   <g font-family="Inter, Segoe UI, -apple-system, system-ui, Arial, sans-serif"
-     font-size="50" font-weight="800" letter-spacing="0.6">
+     font-size="70" font-weight="800" letter-spacing="0.6">
     <text x="24" y="92" fill="#65c6ff" mask="url(#typeMask)">Greetings everyone! 👋</text>
     <text x="24" y="92" fill="url(#grad)" mask="url(#revealMask)">I'm Pɦạლ Đứℭ Aղɦ</text>
   </g>
