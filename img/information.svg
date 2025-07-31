@@ -35,32 +35,8 @@
   </defs>
 
   <g font-family="Inter, Segoe UI, -apple-system, system-ui, Arial, sans-serif"
-     font-size="30" font-weight="800" letter-spacing="0.6">
+     font-size="50" font-weight="800" letter-spacing="0.6">
     <text x="24" y="92" fill="#65c6ff" mask="url(#typeMask)">Greetings everyone! 👋</text>
     <text x="24" y="92" fill="url(#grad)" mask="url(#revealMask)">I'm Pɦạლ Đứℭ Aղɦ</text>
-  </g>
-
-<!-- GitHub Stars Section -->
-  <g mask="url(#revealMask)">
-    <!-- GitHub icon + nền -->
-    <g transform="translate(340, 75)">
-      <circle cx="10" cy="10" r="12" fill="#ffffff" stroke="#e1e4e8" stroke-width="1"/>
-      <path d="M10 2C5.58 2 2 5.58 2 10c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0018 10c0-4.42-3.58-8-8-8z"
-            fill="#333333" transform="scale(0.8) translate(2.5, 2.5)"/>
-    </g>
-
-    <!-- Stars Count -->
-    <text x="370" y="92" font-family="Inter, Segoe UI, -apple-system, system-ui, Arial, sans-serif"
-          font-size="30" font-weight="600" fill="#ffd700">
-      <tspan id="starCount">Loading…</tspan>
-    </text>
-
-    <!-- Star icon -->
-    <path d="M 520 82 l 4 -8 l 4 8 l 8 2 l -6 6 l 2 8 l -8 -4 l -8 4 l 2 -8 l -6 -6 z"
-          fill="url(#starGrad)" stroke="#ffd700" stroke-width="0.5">
-      <animateTransform attributeName="transform" type="rotate"
-                        dur="2s" repeatCount="indefinite"
-                        values="0 524 86;360 524 86"/>
-    </path>
   </g>
 </svg>
