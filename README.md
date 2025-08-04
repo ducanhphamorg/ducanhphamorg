@@ -1,6 +1,6 @@
 ![header](img/information.svg)
 
-<a href="https://app.daily.dev/ducanhphamorg"><img src="https://api.daily.dev/devcards/v2/e3hZoPyud7rlajHf2Zc8b.png?type=wide&r=0ir" width="600" alt="Duc Anh Pham's Dev Card"/></a>
+<a href="https://app.daily.dev/ducanhphamorg"><img src="https://api.daily.dev/devcards/v2/e3hZoPyud7rlajHf2Zc8b.png?type=wide&r=7pr" width="600" alt="Duc Anh Pham's Dev Card"/></a>
 
 # 💫About Me ![GitHub Stars](https://img.shields.io/github/stars/ducanhphamorg/ducanhphamorg?style=social)
 
@@ -94,7 +94,6 @@
 ![Adobe Photoshop](https://img.shields.io/badge/adobe%20photoshop-31A8FF?style=for-the-badge&logo=adobephotoshop&logoColor=white)
 
 </div>
----
 
 ## 🏆GitHub Trophies
 
