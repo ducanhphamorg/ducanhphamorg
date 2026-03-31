@@ -2,20 +2,30 @@
 
 <a href="https://app.daily.dev/ducanhphamorg"><img src="https://api.daily.dev/devcards/v2/e3hZoPyud7rlajHf2Zc8b.png?type=wide&r=g80" width="600" alt="Duc Anh Pham's Dev Card"/></a>
 
-# 💫About Me ![GitHub Stars](https://img.shields.io/github/stars/ducanhphamorg/ducanhphamorg?style=social)
+## 👋 Hi, I'm Duc Anh
 
-- 🧑‍💻 : I'm a new programmer without much experience
-- 🔥 : I will try to motivate myself to improve my skills firmly! Try your best!
-- 👨‍🎓 : [Let's learn programming with me !](./CV_Latex/CV.pdf)
-- 📋 : Below is the exciting process of experiencing new technology and the opportunity to know these tools and programming languages.
-- 🏆 : My goal is to try to become a good programmer.
-- 📑 : [Job application resume](./img/My_CV.png)
-- 📧 : Thank you! Please contact me via email:
-  <a href="mailto:ducanh040202003@gmail.com">ducanh040202003@gmail.com</a>
+A motivated fresh graduate passionate about software development,
+actively building my skills and seeking an internship opportunity
+to grow in a real-world environment.
+
+## 🙋 About Me ![GitHub Stars](https://img.shields.io/github/stars/ducanhphamorg/ducanhphamorg?style=social)
+
+- 🎓 Fresh graduate, self-learning and transitioning into Software Development
+- 💻 Currently strengthening my foundations in **Web Development**
+- 🌱 Hands-on practice with: **HTML, CSS, JavaScript, PHP, Java**
+- 🛠️ Enjoy building small projects to apply what I learn every day
+- 🤝 A fast learner who values teamwork, feedback, and continuous improvement
+- 📬 Actively looking for **Internship / Fresher Developer** opportunities
+
+- 📋 My Resume
+  [![Resume](https://img.shields.io/badge/View%20Resume-Click%20Here-0A66C2?style=flat&logo=microsoftword&logoColor=white)](https://1drv.ms/b/c/6121894534724f37/IQCHp7AdRFSYR6DW0pTlY22kAaGO9vNiKwDWGBfWdQzNwrw?e=RgLnri)
+
+- 📫 Let's Connect
+  [![Email](https://img.shields.io/badge/-ducanh040202003@gmail.com-D14836?style=flat&logo=gmail&logoColor=white)](mailto:ducanh040202003@gmail.com)
 
 ---
 
-# 🌐Socials
+## 🌐 Socials
 
 [![Dev.to](https://img.shields.io/badge/Dev.to-0A0A0A?style=for-the-badge&logo=devdotto&logoColor=white)](https://dev.to/ducanhphamorg)
 [![Twitter](https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/ducanhphamorg)
@@ -29,14 +39,14 @@
 
 ---
 
-# 📊GitHub Stats
+## 📊GitHub Stats
 
 ![](https://github-readme-stats.vercel.app/api?username=ducanhphamorg&theme=radical&hide_border=false&include_all_commits=false&count_private=false)<br/>
 ![](https://github-readme-stats.vercel.app/api/top-langs/?username=ducanhphamorg&theme=radical&hide_border=false&include_all_commits=false&count_private=false&layout=compact)
 
 ---
 
-# 💻Tech Stack Basic [<span title="Practice small lab project">📝</span>](#)
+## 💻Tech Stack Basic [<span title="Practice small lab project">📝</span>](#)
 
 [![Jira](https://img.shields.io/badge/jira-0052CC?style=for-the-badge&logo=jira&logoColor=white "I usually use Jira as a project management and bug tracking tool for each of my projects. It was when I was exposed to it when studying and working on my first project: Enterprise Web Software Development")](#)
 [![CSS](https://img.shields.io/badge/css-1572B6?style=for-the-badge&logo=css3&logoColor=white "I learned and used basic CSS to design interfaces for my projects. That's when I was exposed to it when researching and implementing my first project: Website design and development.")](#)
@@ -46,7 +56,7 @@
 [![Notion](https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=notion&logoColor=white "I use Notion as a note-taking and project management tool to organize my tasks and ideas.")](#)
 [![LaTeX](https://img.shields.io/badge/latex-008080?style=for-the-badge&logo=latex&logoColor=white "I learned and used basic Latex to write my resume")](#)
 [![Markdown](https://img.shields.io/badge/markdown-000000?style=for-the-badge&logo=markdown&logoColor=white "I learned and used basic Markdown to write my README.md file")](#)
-
+<!--
 ![Python](https://img.shields.io/badge/python-3776AB?style=for-the-badge&logo=python&logoColor=FFD43B "Python is a pretty interesting language that I learned and experienced while doing a Business Intelligence assignment on House Price Prediction Based on Linear Regression, Modeling, Price Prediction and Map Visualization.")
 ![NumPy](https://img.shields.io/badge/numpy-013243?style=for-the-badge&logo=numpy&logoColor=white)
 ![Pandas](https://img.shields.io/badge/pandas-150458?style=for-the-badge&logo=pandas&logoColor=white)
@@ -93,7 +103,7 @@
 ![Figma](https://img.shields.io/badge/figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white)
 ![Adobe Photoshop](https://img.shields.io/badge/adobe%20photoshop-31A8FF?style=for-the-badge&logo=adobephotoshop&logoColor=white)
 
-</div>
+</div> -->
 
 ## 🏆GitHub Trophies
 

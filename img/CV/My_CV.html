@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Pham Duc Anh - CV</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet"/>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --teal: #009999;
+    --teal-dark: #007a7a;
+    --gold: #c8960c;
+    --gold-light: #e0aa14;
+    --white: #ffffff;
+    --text-dark: #1a1a1a;
+    --text-mid: #333;
+    --sidebar-width: 235px;
+  }
+
+  body {
+    font-family: 'Open Sans', sans-serif;
+    background: #e0e0e0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 30px 20px;
+  }
+
+  .cv-wrapper {
+    width: 760px;
+    background: white;
+    display: flex;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.18);
+    border-radius: 4px;
+    overflow: hidden;
+    height: auto;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: var(--sidebar-width);
+    background: var(--teal);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 16px;
+    flex-shrink: 0;
+  }
+
+  .photo-wrapper {
+    width: 100%;
+    background: var(--teal);
+    display: flex;
+    justify-content: center;
+    padding: 10px 14px 6px;
+  }
+
+  .photo-circle {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 5px solid var(--gold);
+    background: #b2d8d8;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 64px;
+    color: var(--white);
+    font-weight: 700;
+  }
+
+  /* sidebar sections */
+  .sb-section {
+    width: 100%;
+    padding: 0 14px 6px;
+  }
+
+  .sb-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1.2px;
+    color: var(--white);
+    border: 2px solid var(--white);
+    border-radius: 20px;
+    text-align: center;
+    padding: 3px 8px;
+    margin: 6px 0 6px;
+    text-transform: uppercase;
+  }
+
+  .sb-text {
+    font-size: 10px;
+    color: var(--white);
+    line-height: 1.4;
+  }
+
+  .sb-list {
+    list-style: disc;
+    padding-left: 12px;
+  }
+
+  .sb-list li {
+    font-size: 9.5px;
+    color: var(--white);
+    line-height: 1.4;
+    margin-bottom: 0px;
+  }
+
+  /* BASIC TECHNOLOGIES */
+  .tech-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 4px;
+  }
+
+  .tech-badge {
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.5);
+    border-radius: 4px;
+    padding: 1px 4px;
+    font-size: 8.5px;
+    font-weight: 600;
+    color: var(--white);
+    font-family: 'Montserrat', sans-serif;
+    letter-spacing: 0.1px;
+  }
+
+  .tech-badge.highlight {
+    background: rgba(200,150,12,0.35);
+    border-color: var(--gold-light);
+  }
+
+  /* achievement */
+  .achievement-box {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    margin-top: 4px;
+  }
+
+  .trophy {
+    font-size: 20px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .achievement-text strong {
+    font-size: 9.5px;
+    color: var(--white);
+    display: block;
+    line-height: 1.2;
+  }
+
+  .achievement-text span {
+    font-size: 8.5px;
+    color: rgba(255,255,255,0.8);
+    font-style: italic;
+  }
+
+  /* ── MAIN ── */
+  .main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* NAME HEADER */
+  .name-header {
+    background: white;
+    padding: 10px 20px 6px;
+    border-bottom: 1px solid #eee;
+  }
+
+  .name-header h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    color: var(--text-dark);
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  .name-header .title-line {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    color: #666;
+    text-align: center;
+    margin-top: 1px;
+    text-transform: uppercase;
+    font-style: italic;
+  }
+
+  /* GOLD SECTION HEADERS */
+  .section-header {
+    background: var(--gold);
+    color: white;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 5px 16px;
+    margin: 8px 0 6px;
+    position: relative;
+  }
+
+  .section-header::before,
+  .section-header::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 2px;
+    background: var(--gold);
+    width: 24px;
+  }
+  .section-header::before { left: -12px; }
+  .section-header::after { right: -12px; }
+
+  .main-content {
+    padding: 0 16px 8px;
+  }
+
+  /* CONTACT */
+  .contact-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-bottom: 2px;
+  }
+
+  .contact-row {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    color: var(--text-mid);
+  }
+
+  .contact-icon {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--teal);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: white;
+    flex-shrink: 0;
+  }
+
+  .contact-row a {
+    color: var(--teal-dark);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  /* RECRUITING */
+  .recruiting-row {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    color: var(--text-mid);
+    margin-bottom: 1px;
+  }
+
+  .rec-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--teal);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 11px;
+    flex-shrink: 0;
+  }
+
+  /* EXPERIENCE */
+  .exp-period {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.7px;
+    color: var(--text-dark);
+    text-transform: uppercase;
+    margin: 4px 0 3px;
+    border-bottom: 1.5px solid var(--gold);
+    padding-bottom: 1px;
+  }
+
+  .exp-item {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 5px;
+    align-items: flex-start;
+  }
+
+  .exp-date {
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--teal-dark);
+    white-space: nowrap;
+    padding-top: 0;
+    min-width: 45px;
+  }
+
+  .exp-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    margin-top: 5px;
+    flex-shrink: 0;
+  }
+
+  .exp-body {}
+
+  .exp-title {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text-dark);
+  }
+
+  .exp-desc {
+    font-size: 9px;
+    color: #555;
+    line-height: 1.35;
+    margin-top: 0px;
+  }
+
+  .exp-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+    margin-top: 2px;
+  }
+
+  .tag {
+    font-size: 8px;
+    background: #f0f8f8;
+    border: 1px solid var(--teal);
+    color: var(--teal-dark);
+    border-radius: 2px;
+    padding: 1px 3px;
+    font-weight: 600;
+  }
+
+  /* EDUCATION */
+  .edu-period {
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--text-mid);
+    margin-bottom: 1px;
+  }
+
+  .edu-degree {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    font-weight: 800;
+    color: var(--text-dark);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+
+  .edu-school {
+    font-size: 9px;
+    color: #666;
+    margin-top: 0px;
+  }
+
+  @media print {
+    body {
+      background: white;
+      padding: 0;
+      margin: 0;
+      display: block;
+    }
+    .cv-wrapper {
+      box-shadow: none;
+      width: 100%;
+      max-width: 210mm;
+      height: auto;
+      border-radius: 0;
+      page-break-after: avoid;
+    }
+    .sidebar { padding-bottom: 8px; }
+    .main-content { padding: 0 12px 6px; }
+    .photo-circle { width: 110px; height: 110px; }
+  }
+
+</style>
+</head>
+<body>
+<div class="cv-wrapper">
+
+  <!-- ════ SIDEBAR ════ -->
+  <div class="sidebar">
+
+    <!-- PHOTO -->
+    <div class="photo-wrapper">
+      <div class="photo-circle">
+        <img src="../CV/Ảnh Avatar 2.jpg" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover;">
+      </div>
+    </div>
+
+    <!-- ABOUT ME -->
+    <div class="sb-section">
+      <div class="sb-title">About Me</div>
+      <p class="sb-text">
+        I am a passionate Fresher Software Developer with hands-on project experience
+        in web application development. I possess problem-solving and teamwork skills,
+        with a proactive approach to work. Eager to apply knowledge and learn
+        continuously from industry experts.
+      </p>
+    </div>
+
+    <!-- SKILL -->
+    <div class="sb-section">
+      <div class="sb-title">Skill</div>
+      <ul class="sb-list">
+        <li>Attitude: Positive, proactive and responsible at work</li>
+        <li>Teamwork: Listening, coordinating, and communicating effectively</li>
+        <li>Quick learner, willing to accept feedback and improve continuously</li>
+        <li>Technical: HTML, CSS, JavaScript, PHP, Java, MySQL</li>
+      </ul>
+    </div>
+
+    <!-- LANGUAGE -->
+    <div class="sb-section">
+      <div class="sb-title">Language</div>
+      <p class="sb-text">English: Basic (Reading &amp; Writing)</p>
+    </div>
+
+    <!-- BASIC TECHNOLOGIES -->
+    <div class="sb-section">
+      <div class="sb-title">Basic Technologies</div>
+      <div class="tech-grid">
+        <!-- Languages & Frameworks -->
+        <span class="tech-badge highlight">HTML</span>
+        <span class="tech-badge highlight">CSS</span>
+        <span class="tech-badge highlight">JavaScript</span>
+        <span class="tech-badge highlight">PHP</span>
+        <span class="tech-badge highlight">Java</span>
+        <span class="tech-badge highlight">MySQL</span>
+        <span class="tech-badge highlight">Bootstrap</span>
+        <span class="tech-badge highlight">jQuery</span>
+        <!-- Tools -->
+        <span class="tech-badge">Notion</span>
+        <span class="tech-badge">Figma</span>
+        <span class="tech-badge">Jira</span>
+        <span class="tech-badge">ClickUp</span>
+        <span class="tech-badge">Docker</span>
+        <span class="tech-badge">GitHub</span>
+        <span class="tech-badge">Postman</span>
+      </div>
+    </div>
+
+    <!-- ACHIEVEMENT -->
+    <div class="sb-section">
+      <div class="sb-title">Achievement</div>
+      <div class="achievement-box">
+        <div class="trophy">🏆</div>
+        <div class="achievement-text">
+          <strong>Best Student of the Subject: Security (2023)</strong>
+          <span>Greenwich International Bachelor Program</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /sidebar -->
+
+  <!-- ════ MAIN ════ -->
+  <div class="main">
+
+    <!-- NAME -->
+    <div class="name-header">
+      <h1>Pham Duc Anh</h1>
+      <div class="title-line">Fresher Software Developer</div>
+    </div>
+
+    <div class="main-content">
+
+      <!-- CONTACT -->
+      <div class="section-header">Contact</div>
+      <div class="contact-grid">
+        <div class="contact-row">
+          <span class="contact-icon">📞</span>
+          (+84) 943 206 863
+        </div>
+        <div class="contact-row">
+          <span class="contact-icon">✉</span>
+          <a href="mailto:ducanh040202003@gmail.com">ducanh040202003@gmail.com</a>
+        </div>
+        <div class="contact-row">
+          <span class="contact-icon">📍</span>
+          210/16A Cach Mang Thang 8 St. Wd. 10, Dist. 3 HCMC
+        </div>
+      </div>
+
+      <!-- RECRUITING POSITION -->
+      <div class="section-header">Recruiting Position</div>
+      <div class="recruiting-row">
+        <span class="rec-icon">👤</span>
+        Software Development Intern
+      </div>
+
+      <!-- EXPERIENCE -->
+      <div class="section-header">Experience</div>
+
+      <!-- 2021-2022 -->
+      <div class="exp-period">2021 – 2022 · Networking Group Leader</div>
+      <div class="exp-item">
+        <span class="exp-date">Aug 2022</span>
+        <div class="exp-dot"></div>
+        <div class="exp-body">
+          <div class="exp-title">Network Infrastructure Simulation</div>
+          <div class="exp-desc">
+            Designed and built a simulation of a network infrastructure system
+            for a company preparing to go live, using Cisco Packet Tracer and Visio.
+          </div>
+          <div class="exp-tags">
+            <span class="tag">Cisco Packet Tracer</span>
+            <span class="tag">Visio</span>
+            <span class="tag">Networking</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2022-2023 -->
+      <div class="exp-period">2022 – 2023 · Project Design &amp; Construction</div>
+
+      <div class="exp-item">
+        <span class="exp-date">Sep 2022</span>
+        <div class="exp-dot"></div>
+        <div class="exp-body">
+          <div class="exp-title">SQL Server Design</div>
+          <div class="exp-desc">Designed and implemented an online library storage and management database.</div>
+          <div class="exp-tags">
+            <span class="tag">SQL Server</span>
+            <span class="tag">Database Design</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="exp-item">
+        <span class="exp-date">Nov 2022</span>
+        <div class="exp-dot"></div>
+        <div class="exp-body">
+          <div class="exp-title">First Web Project — Phone Case Store</div>
+          <div class="exp-desc">
+            Designed and built a website to sell phone cases, applying
+            fundamental front-end and back-end concepts.
+          </div>
+          <div class="exp-tags">
+            <span class="tag">HTML</span><span class="tag">CSS</span>
+            <span class="tag">JavaScript</span><span class="tag">jQuery</span>
+            <span class="tag">PHP</span><span class="tag">MySQL</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="exp-item">
+        <span class="exp-date">Mar 2023</span>
+        <div class="exp-dot"></div>
+        <div class="exp-body">
+          <div class="exp-title">First E-Commerce Project — Equipment &amp; Fresh Produce Store</div>
+          <div class="exp-desc">
+            Built a full e-commerce website for selling equipment, fruits, and vegetables.
+            Applied the MVC model and Waterfall Software Development Lifecycle.
+          </div>
+          <div class="exp-tags">
+            <span class="tag">HTML</span><span class="tag">CSS</span>
+            <span class="tag">JavaScript</span><span class="tag">jQuery</span>
+            <span class="tag">PHP Laravel</span><span class="tag">MySQL</span>
+            <span class="tag">Bootstrap</span><span class="tag">GitHub</span>
+            <span class="tag">ClickUp</span><span class="tag">MVC</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2024-2025 -->
+      <div class="exp-period">2024 – 2025 · Final Project (Graduation)</div>
+
+      <div class="exp-item">
+        <span class="exp-date">Jun 2025</span>
+        <div class="exp-dot"></div>
+        <div class="exp-body">
+          <div class="exp-title">Online Medical Appointment Scheduling Website</div>
+          <div class="exp-desc">
+            Designed and built a full-stack web application for scheduling
+            online medical exams. Applied RESTful API and Agile Software
+            Development Lifecycle.
+          </div>
+          <div class="exp-tags">
+            <span class="tag">Java</span><span class="tag">Thymeleaf</span>
+            <span class="tag">PostgreSQL</span><span class="tag">Bootstrap</span>
+            <span class="tag">jQuery</span><span class="tag">Docker</span>
+            <span class="tag">GitHub</span><span class="tag">Jira</span>
+            <span class="tag">Figma</span><span class="tag">RESTful API</span>
+            <span class="tag">Agile / Scrum</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- EDUCATION -->
+      <div class="section-header">Education</div>
+      <div class="edu-period">Summer 2021 – Summer 2025</div>
+      <div class="edu-degree">Bachelor of Information Technology</div>
+      <div class="edu-school">University of Greenwich (Greenwich International Bachelor Program)</div>
+
+    </div><!-- /main-content -->
+  </div><!-- /main -->
+</div><!-- /cv-wrapper -->
+</body>
+</html>
