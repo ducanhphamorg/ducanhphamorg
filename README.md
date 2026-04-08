@@ -18,7 +18,7 @@ to grow in a real-world environment.
 - 📬 Actively looking for **Internship / Fresher Developer** opportunities
 
 - 📋 My Resume
-  [![Resume](https://img.shields.io/badge/View%20Resume-Click%20Here-0A66C2?style=flat&logo=microsoftword&logoColor=white)](https://1drv.ms/b/c/6121894534724f37/IQCHp7AdRFSYR6DW0pTlY22kAaGO9vNiKwDWGBfWdQzNwrw?e=RgLnri)
+  [![Resume](https://img.shields.io/badge/View%20Resume-Click%20Here-0A66C2?style=flat&logo=html5&logoColor=white)](img/CV/My_CV.html)
 
 - 📫 Let's Connect
   [![Email](https://img.shields.io/badge/-ducanh040202003@gmail.com-D14836?style=flat&logo=gmail&logoColor=white)](mailto:ducanh040202003@gmail.com)
@@ -34,7 +34,8 @@ to grow in a real-world environment.
 [![LeetCode](https://img.shields.io/badge/LeetCode-FFA116?style=for-the-badge&logo=LeetCode&logoColor=black)](https://www.leetcode.com/ducanhphamorg)
 [![Discord](https://img.shields.io/badge/Discord-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.com/users/ducanhphamorg)
 <!-- [![Stack Overflow](https://img.shields.io/badge/Stack_Overflow-FE7A16?style=for-the-badge&logo=stack-overflow&logoColor=white)](https://stackoverflow.com/users/29083578/p%c9%a6%e1%ba%a1%e1%83%9a-%c4%90%e1%bb%a9%e2%84%ad-a%d5%b2%c9%a6) [![YouTube](https://img.shields.io/badge/YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/c/ducanhphamorg)
-[![HackerRank](https://img.shields.io/badge/HackerRank-2EC866?style=for-the-badge&logo=HackerRank&logoColor=white)](https://www.hackerrank.com/ducanhphamorg) -->
+[![HackerRank](https://img.shields.io/badge/HackerRank-2EC866?style=for-the-badge&logo=HackerRank&logoColor=white)](https://www.hackerrank.com/ducanhphamorg) --><!-- [![YouTube](https://img.shields.io/badge/YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/c/ducanhphamorg) -->
+<!-- [![HackerRank](https://img.shields.io/badge/HackerRank-2EC866?style=for-the-badge&logo=HackerRank&logoColor=white)](https://www.hackerrank.com/ducanhphamorg) -->
 ---
 
 ## 📊GitHub Stats
