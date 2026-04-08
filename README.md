@@ -18,7 +18,7 @@ to grow in a real-world environment.
 - 📬 Actively looking for **Internship / Fresher Developer** opportunities
 
 - 📋 My Resume
-  [![Resume](https://img.shields.io/badge/View%20Resume-Click%20Here-0A66C2?style=flat&logo=html5&logoColor=white)](img/CV/My_CV.html)
+  [![Resume](https://img.shields.io/badge/View%20Resume-Click%20Here-0A66C2?style=flat&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/ducanhphamorg/ducanhphamorg/blob/main/img/CV/My_CV.html)
 
 - 📫 Let's Connect
   [![Email](https://img.shields.io/badge/-ducanh040202003@gmail.com-D14836?style=flat&logo=gmail&logoColor=white)](mailto:ducanh040202003@gmail.com)
