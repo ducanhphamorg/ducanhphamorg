@@ -3,164 +3,65 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Pham Duc Anh — Software Development Intern</title>
+<title>Pham Duc Anh — Software Development</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&family=DM+Serif+Display&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 <style>
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
   :root {
-    --teal:       #007f7f;
-    --teal-dark:  #005f5f;
-    --teal-light: #e6f4f4;
-    --gold:       #b8860b;
-    --gold-lt:    #f0c040;
-    --gold-bg:    #fdf6e3;
-    --white:      #ffffff;
-    --off:        #fafaf8;
-    --ink:        #111827;
-    --ink-mid:    #374151;
-    --ink-soft:   #6b7280;
-    --div:        #e5e7eb;
-    --sw:         228px;
+    --teal:#007f7f; --teal-dark:#005f5f; --teal-light:#e6f4f4;
+    --gold:#b8860b; --gold-lt:#f0c040; --gold-bg:#fdf6e3;
+    --white:#ffffff; --off:#fafaf8; --ink:#111827;
+    --ink-mid:#374151; --ink-soft:#6b7280; --div:#e5e7eb; --sw:228px;
   }
+  body { font-family:'DM Sans',sans-serif; background:#d0d4d8; display:flex; justify-content:center; align-items:flex-start; min-height:100vh; padding:32px 16px; }
+  .cv { width:794px; background:var(--white); display:flex; box-shadow:0 20px 60px rgba(0,0,0,.22),0 4px 12px rgba(0,0,0,.08); border-radius:2px; overflow:hidden; }
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: #d0d4d8;
-    display: flex; justify-content: center; align-items: flex-start;
-    min-height: 100vh; padding: 32px 16px;
-  }
-
-  .cv {
-    width: 794px; background: var(--white); display: flex;
-    box-shadow: 0 20px 60px rgba(0,0,0,.22), 0 4px 12px rgba(0,0,0,.08);
-    border-radius: 2px; overflow: hidden;
-  }
-
-  /* ── SIDEBAR ── */
-  .sb {
-    width: var(--sw); flex-shrink: 0; background: var(--teal);
-    display: flex; flex-direction: column; padding-bottom: 20px; position: relative;
-  }
-  .sb::before {
-    content:''; position:absolute; inset:0; pointer-events:none; z-index:0;
-    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-  }
-  .sb > * { position: relative; z-index: 1; }
-
-  .photo-area { display:flex; justify-content:center; padding: 20px 0 12px; }
-  .photo-ring {
-    width:112px; height:112px; border-radius:50%; border: 4px solid var(--gold-lt);
-    background: rgba(255,255,255,.12); overflow:hidden;
-    display:flex; align-items:center; justify-content:center;
-    font-size:56px; color:rgba(255,255,255,.6); box-shadow: 0 4px 20px rgba(0,0,0,.25);
-  }
+  /* SIDEBAR */
+  .sb { width:var(--sw); flex-shrink:0; background:var(--teal); display:flex; flex-direction:column; padding-bottom:20px; position:relative; }
+  .sb::before { content:''; position:absolute; inset:0; pointer-events:none; z-index:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"); }
+  .sb > * { position:relative; z-index:1; }
+  .photo-area { display:flex; justify-content:center; padding:20px 0 12px; }
+  .photo-ring { width:112px; height:112px; border-radius:50%; border:4px solid var(--gold-lt); background:rgba(255,255,255,.12); overflow:hidden; display:flex; align-items:center; justify-content:center; font-size:56px; color:rgba(255,255,255,.6); box-shadow:0 4px 20px rgba(0,0,0,.25); }
   .photo-ring img { width:100%; height:100%; object-fit:cover; }
-
-  .sb-lbl {
-    font-family:'Space Mono',monospace; font-size:7.5px; font-weight:700;
-    letter-spacing:2px; text-transform:uppercase; color:var(--gold-lt);
-    display:flex; align-items:center; gap:6px; margin: 10px 14px 5px;
-  }
+  .sb-lbl { font-family:'Space Mono',monospace; font-size:7.5px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--gold-lt); display:flex; align-items:center; gap:6px; margin:10px 14px 5px; }
   .sb-lbl::after { content:''; flex:1; height:1px; background:rgba(255,255,255,.2); }
-
   .sb-para { font-size:9.5px; color:rgba(255,255,255,.88); line-height:1.6; padding:0 14px; }
-
-  /* Skill list — original style with categories */
-  .sk-list { list-style: disc; padding: 0 14px 0 26px; }
-  .sk-list li {
-    font-size:9.5px; color:rgba(255,255,255,.88); line-height:1.5; margin-bottom:2px;
-  }
+  .sk-list { list-style:disc; padding:0 14px 0 26px; }
+  .sk-list li { font-size:9.5px; color:rgba(255,255,255,.88); line-height:1.5; margin-bottom:2px; }
   .sk-list li strong { color:#ffe082; }
-
   .tech-cloud { display:flex; flex-wrap:wrap; gap:5px; padding:0 14px; margin-top:2px; }
   .pill { font-family:'Space Mono',monospace; font-size:7.5px; padding:2px 5px; border-radius:3px; font-weight:700; }
   .p-core { background:rgba(240,192,64,.22); border:1px solid rgba(240,192,64,.55); color:#ffe082; }
   .p-tool { background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.25); color:rgba(255,255,255,.82); }
-
   .sb-div { height:1px; background:rgba(255,255,255,.15); margin:8px 14px 0; }
-
-  .ach-box {
-    margin: 4px 14px 0; background:rgba(240,192,64,.14);
-    border-left:3px solid var(--gold-lt); border-radius:0 4px 4px 0;
-    padding:6px 8px; display:flex; gap:7px; align-items:flex-start;
-  }
+  .ach-box { margin:4px 14px 0; background:rgba(240,192,64,.14); border-left:3px solid var(--gold-lt); border-radius:0 4px 4px 0; padding:6px 8px; display:flex; gap:7px; align-items:flex-start; }
   .ach-icon { font-size:17px; flex-shrink:0; margin-top:1px; }
   .ach-txt strong { font-size:9px; font-weight:700; color:#ffe082; display:block; line-height:1.3; }
-  .ach-txt em     { font-size:8px; color:rgba(255,255,255,.65); font-style:italic; }
-
-  .lang-row {
-    display:flex; align-items:center; justify-content:space-between;
-    padding:0 14px; margin-top:2px;
-  }
+  .ach-txt em { font-size:8px; color:rgba(255,255,255,.65); font-style:italic; }
+  .lang-row { display:flex; align-items:center; justify-content:space-between; padding:0 14px; margin-top:2px; }
   .lang-name { font-size:9.5px; color:rgba(255,255,255,.9); font-weight:600; }
-  .lang-lvl {
-    font-size:7.5px; background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.25);
-    color:rgba(255,255,255,.82); padding:1px 6px; border-radius:10px;
-    font-family:'Space Mono',monospace;
-  }
+  .lang-lvl { font-size:7.5px; background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.25); color:rgba(255,255,255,.82); padding:1px 6px; border-radius:10px; font-family:'Space Mono',monospace; }
 
-  /* ── MAIN ── */
+  /* MAIN */
   .main { flex:1; display:flex; flex-direction:column; background:var(--off); }
-
-  .name-banner {
-    background:var(--white); padding:13px 20px 9px;
-    border-bottom:3px solid var(--teal); position:relative; overflow:hidden;
-  }
-  .name-banner::after {
-    content:''; position:absolute; bottom:0; left:0; width:55px; height:3px; background:var(--gold);
-  }
-  .name-banner h1 {
-    font-family:'DM Serif Display',serif; font-size:25px; font-weight:400;
-    letter-spacing:.4px; color:var(--ink); line-height:1;
-  }
-  .name-banner .role {
-    font-family:'Space Mono',monospace; font-size:8.5px; font-weight:700;
-    letter-spacing:1.8px; color:var(--teal); text-transform:uppercase; margin-top:4px;
-  }
-
+  .name-banner { background:var(--white); padding:13px 20px 9px; border-bottom:3px solid var(--teal); position:relative; overflow:hidden; }
+  .name-banner::after { content:''; position:absolute; bottom:0; left:0; width:55px; height:3px; background:var(--gold); }
+  .name-banner h1 { font-family:'DM Serif Display',serif; font-size:25px; font-weight:400; letter-spacing:.4px; color:var(--ink); line-height:1; }
+  .name-banner .role { font-family:'Space Mono',monospace; font-size:8.5px; font-weight:700; letter-spacing:1.8px; color:var(--teal); text-transform:uppercase; margin-top:4px; }
   .content { padding:0 17px 14px; }
-
-  /* Section header */
   .sh { display:flex; align-items:center; gap:8px; margin:10px 0 7px; }
-  .sh-bar {
-    background:var(--gold); color:white; font-family:'Space Mono',monospace;
-    font-size:7.5px; font-weight:700; letter-spacing:2.2px; text-transform:uppercase;
-    padding:3px 16px 3px 10px;
-    clip-path:polygon(0 0, calc(100% - 7px) 0, 100% 50%, calc(100% - 7px) 100%, 0 100%);
-  }
+  .sh-bar { background:var(--gold); color:white; font-family:'Space Mono',monospace; font-size:7.5px; font-weight:700; letter-spacing:2.2px; text-transform:uppercase; padding:3px 16px 3px 10px; clip-path:polygon(0 0,calc(100% - 7px) 0,100% 50%,calc(100% - 7px) 100%,0 100%); }
   .sh-line { flex:1; height:1px; background:var(--div); }
-
-  /* Contact */
   .c-flex { display:flex; flex-wrap:wrap; gap:5px 12px; }
   .c-item { display:flex; align-items:center; gap:5px; font-size:9.5px; color:var(--ink-mid); }
-  .c-ico {
-    width:16px; height:16px; border-radius:50%; background:var(--teal);
-    display:flex; align-items:center; justify-content:center;
-    font-size: 11px; /* Tăng từ 9px lên 11px */
-    color:white; flex-shrink:0;
-  }
+  .c-ico { width:16px; height:16px; border-radius:50%; background:var(--teal); display:flex; align-items:center; justify-content:center; font-size:11px; color:white; flex-shrink:0; }
   .c-item a { color:var(--teal-dark); font-weight:600; text-decoration:none; font-size:9.5px; }
-
-  /* Recruiting */
-  .rec-badge {
-    display:inline-flex; align-items:center; gap:6px;
-    background:var(--teal-light); border:1.5px solid var(--teal);
-    border-radius:4px; padding:4px 10px;
-    font-size:10px; font-weight:700; color:var(--teal-dark);
-  }
-
-  /* Period bar */
+  .rec-badge { display:inline-flex; align-items:center; gap:6px; background:var(--teal-light); border:1.5px solid var(--teal); border-radius:4px; padding:4px 10px; font-size:10px; font-weight:700; color:var(--teal-dark); }
   .period { display:flex; align-items:center; gap:5px; margin:7px 0 4px; }
-  .period-lbl {
-    font-family:'Space Mono',monospace; font-size:8px; font-weight:700;
-    letter-spacing:.7px; text-transform:uppercase; color:var(--ink); white-space:nowrap;
-  }
+  .period-lbl { font-family:'Space Mono',monospace; font-size:8px; font-weight:700; letter-spacing:.7px; text-transform:uppercase; color:var(--ink); white-space:nowrap; }
   .period-role { font-size:8px; color:var(--teal); font-weight:600; text-transform:uppercase; }
   .period::after { content:''; flex:1; height:1px; background:var(--gold); opacity:.45; }
-
-  /* Project item */
   .proj { display:grid; grid-template-columns:46px 7px 1fr; gap:0 5px; margin-bottom:6px; align-items:start; }
   .p-date { font-family:'Space Mono',monospace; font-size:7.8px; color:var(--teal); font-weight:700; text-align:right; padding-top:2px; line-height:1.2; }
   .p-col { display:flex; flex-direction:column; align-items:center; padding-top:5px; }
@@ -170,64 +71,32 @@
   .p-desc { font-size:8.8px; color:var(--ink-soft); line-height:1.45; margin-top:1px; }
   .p-desc strong { color:var(--ink-mid); font-weight:600; }
   .p-link { font-size:8px; color:var(--teal); font-style:italic; text-decoration:none; margin-left:4px; }
-
   .tags { display:flex; flex-wrap:wrap; gap:3px; margin-top:3px; }
   .t { font-family:'Space Mono',monospace; font-size:7.5px; font-weight:700; border-radius:2px; padding:1px 4px; }
   .t-teal { background:var(--teal-light); border:1px solid rgba(0,127,127,.25); color:var(--teal-dark); }
   .t-gold { background:var(--gold-bg); border:1px solid rgba(184,134,11,.3); color:var(--gold); }
-
-  /* Education */
   .edu { display:flex; align-items:flex-start; gap:9px; margin-top:3px; }
   .edu-ico { width:28px; height:28px; background:var(--teal); border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; margin-top:1px; }
   .edu-deg { font-family:'DM Serif Display',serif; font-size:11px; color:var(--ink); line-height:1.3; }
   .edu-sch { font-size:8.5px; color:var(--ink-soft); margin-top:1px; }
   .edu-per { font-family:'Space Mono',monospace; font-size:8px; color:var(--teal); font-weight:700; margin-top:1px; }
-
-  @media print {
-    body { background:white; padding:0; display:block; }
-    .cv { box-shadow:none; width:210mm; border-radius:0; }
-  }
+  @media print { body { background:white; padding:0; display:block; } .cv { box-shadow:none; width:210mm; border-radius:0; } }
 </style>
 </head>
-<!-- ===== RESUME ACTION BAR ===== -->
-<div id="resume-bar" style="
-  position: fixed; top: 0; left: 0; right: 0; z-index: 9999;
-  background: #0A66C2; color: white;
-  display: flex; align-items: center; justify-content: center; gap: 16px;
-  padding: 12px 24px; font-family: sans-serif; font-size: 15px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-">
-  <span>📄 You are viewing CV's <strong>Duc Anh Pham</strong></span>
 
-  <button onclick="window.print()" style="
-    background: white; color: #0A66C2; border: none;
-    padding: 8px 18px; border-radius: 6px; font-weight: bold;
-    cursor: pointer; font-size: 14px;
-  ">⬇️ Download PDF</button>
-
-  <button onclick="document.getElementById('resume-bar').style.display='none'" style="
-    background: transparent; color: white; border: 2px solid white;
-    padding: 8px 18px; border-radius: 6px; font-weight: bold;
-    cursor: pointer; font-size: 14px;
-  ">✖ Ignore</button>
+<div id="resume-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;background:#0A66C2;color:white;display:flex;align-items:center;justify-content:center;gap:16px;padding:12px 24px;font-family:sans-serif;font-size:15px;box-shadow:0 2px 8px rgba(0,0,0,0.3);">
+  <span>📄 CV of <strong>Duc Anh Pham</strong></span>
+  <button onclick="window.print()" style="background:white;color:#0A66C2;border:none;padding:8px 18px;border-radius:6px;font-weight:bold;cursor:pointer;font-size:14px;">⬇️ Download PDF</button>
+  <button onclick="document.getElementById('resume-bar').style.display='none'" style="background:transparent;color:white;border:2px solid white;padding:8px 18px;border-radius:6px;font-weight:bold;cursor:pointer;font-size:14px;">✖ Ignore</button>
 </div>
+<div style="height:56px;"></div>
+<style>@media print{#resume-bar,#resume-bar+div{display:none!important;}}</style>
 
-<!-- Đẩy nội dung CV xuống để không bị che -->
-<div style="height: 56px;"></div>
-
-<!-- CSS ẩn thanh bar khi in PDF -->
-<style>
-  @media print {
-    #resume-bar, #resume-bar + div { display: none !important; }
-  }
-</style>
-<!-- ===== END RESUME ACTION BAR ===== -->
 <body>
 <div class="cv">
 
-  <!-- ════════ SIDEBAR ════════ -->
+  <!-- SIDEBAR -->
   <div class="sb">
-
     <div class="photo-area">
       <div class="photo-ring">
         <img src="../CV/Ảnh Avatar 2.jpg" alt="Pham Duc Anh"
@@ -235,51 +104,50 @@
       </div>
     </div>
 
-    <!-- ABOUT ME — honest, close to original -->
+    <!-- ABOUT ME — unchanged -->
     <div class="sb-lbl">About Me</div>
     <p class="sb-para">
       Fresh IT graduate looking for my first internship in software development. Throughout university, I completed several academic projects covering web and mobile development — learning by doing and figuring things out step by step. I know I am still at the beginning and have a lot to grow. I am eager to bring a proactive attitude and a genuine willingness to learn into a real working environment — and to grow alongside experienced developers.
     </p>
 
-    <!-- SKILL — original structure preserved -->
     <div class="sb-lbl">Skill</div>
     <ul class="sk-list">
       <li>Attitude: Positive, proactive and responsible at work</li>
       <li>Teamwork: Listening, coordinating, and communicating effectively</li>
-      <li>Quick learner, willing to accept feedback and improve continuously</li>
-      <li><strong>Technical:</strong> HTML, CSS, JavaScript, PHP, Java, MySQL</li>
+      <li>Quick learner, open to feedback; used AI tools to support learning and coding</li>
+      <li><strong>Technical:</strong> HTML, CSS, JavaScript, PHP, Java, C#, Python, MySQL</li>
     </ul>
 
-    <!-- LANGUAGE -->
     <div class="sb-lbl">Language</div>
     <div class="lang-row">
       <span class="lang-name">English</span>
       <span class="lang-lvl">Basic Reading &amp; Writing</span>
     </div>
 
-    <!-- TECHNOLOGIES -->
     <div class="sb-lbl">Basic Technologies</div>
     <div class="tech-cloud">
-      <span class="pill p-core">HTML</span>
-      <span class="pill p-core">CSS</span>
+      <span class="pill p-core">HTML/CSS</span>
       <span class="pill p-core">JavaScript</span>
       <span class="pill p-core">PHP</span>
       <span class="pill p-core">Java</span>
+      <span class="pill p-core">C# / .NET</span>
+      <span class="pill p-core">Python</span>
       <span class="pill p-core">MySQL</span>
       <span class="pill p-core">Bootstrap</span>
       <span class="pill p-core">jQuery</span>
-      <span class="pill p-tool">Notion</span>
+      <span class="pill p-tool">GitHub</span>
       <span class="pill p-tool">Figma</span>
       <span class="pill p-tool">Jira</span>
-      <span class="pill p-tool">ClickUp</span>
-      <span class="pill p-tool">Docker</span>
-      <span class="pill p-tool">GitHub</span>
       <span class="pill p-tool">Postman</span>
+      <span class="pill p-tool">Docker</span>
+      <span class="pill p-tool">Firebase</span>
+      <span class="pill p-tool">Tableau</span>
+      <span class="pill p-tool">Notion</span>
+      <span class="pill p-tool">ClickUp</span>
     </div>
 
     <div class="sb-div"></div>
 
-    <!-- ACHIEVEMENT -->
     <div class="sb-lbl">Achievement</div>
     <div class="ach-box">
       <div class="ach-icon">🏆</div>
@@ -288,15 +156,13 @@
         <em>Greenwich International Bachelor Program</em>
       </div>
     </div>
-
   </div>
 
-  <!-- ════════ MAIN ════════ -->
+  <!-- MAIN -->
   <div class="main">
-
     <div class="name-banner">
       <h1>Pham Duc Anh</h1>
-      <div class="role">Software Development Intern</div>
+      <div class="role">Software Development</div>
     </div>
 
     <div class="content">
@@ -306,121 +172,186 @@
       <div class="c-flex">
         <div class="c-item"><div class="c-ico"><i class="fas fa-phone"></i></div>(+84) 903 796 863</div>
         <div class="c-item"><div class="c-ico"><i class="fas fa-envelope"></i></div>
-          <a href="/cdn-cgi/l/email-protection#85e1f0e6e4ebedb5b1b5b7b5b7b5b5b6c5e2e8e4ece9abe6eae8"><span class="__cf_email__" data-cfemail="6f0b1a0c0e01075f5b5f5d5f5d5f5f5c2f08020e0603410c0002">ducanh040202003@gmail.com</span></a></div>
+          <a href="mailto:ducanh040202003@gmail.com">ducanh040202003@gmail.com</a></div>
         <div class="c-item"><div class="c-ico"><i class="fas fa-envelope-open"></i></div>
-          <a href="/cdn-cgi/l/email-protection#03477660426d6b536b626e4336373774656e2d6c6d6e6a60716c706c65772d606c6e"><span class="__cf_email__" data-cfemail="f0b48593b19e98a098919db0c5c4c487969dde9f9e9d9993829f839f9684de939f9d">
-DucAnhPham@544wfm.onmicrosoft.com</span></a></div>
+          <a href="mailto:DucAnhPham@544wfm.onmicrosoft.com">DucAnhPham@544wfm.onmicrosoft.com</a></div>
         <div class="c-item"><div class="c-ico"><i class="fab fa-github"></i></div>
           <a href="https://github.com/ducanhphamorg" target="_blank">github.com/ducanhphamorg</a></div>
         <div class="c-item"><div class="c-ico"><i class="fas fa-map-marker-alt"></i></div>
-          210/16A Cach Mang Thang 8 Streets, Nhiêu Loc Ward, Dist. 3, Ho Chi Minh City, Vietnam</div>
+          210/16A Cach Mang Thang 8, Nhiêu Loc Ward, Dist. 3, Ho Chi Minh City</div>
       </div>
 
       <!-- RECRUITING -->
       <div class="sh"><div class="sh-bar">Recruiting Position</div><div class="sh-line"></div></div>
       <div class="rec-badge">👤&nbsp; Software Development Intern</div>
 
-      <!-- EXPERIENCE -->
+      <!-- PROJECTS -->
       <div class="sh"><div class="sh-bar">Academic Projects</div><div class="sh-line"></div></div>
 
-      <!-- 2024–2025 Final -->
+      <!-- 2024–2025 -->
       <div class="period">
         <span class="period-lbl">2024 – 2025</span>
-        <span class="period-role">&nbsp;·&nbsp; Final Project (Graduation)</span>
+        <span class="period-role">&nbsp;·&nbsp; Final Year (Graduation)</span>
       </div>
 
+      <!-- MediCare — solo -->
       <div class="proj">
         <div class="p-date">Jun<br>2025</div>
-        <div class="p-col"><div class="p-dot"></div></div>
+        <div class="p-col"><div class="p-dot"></div><div class="p-line"></div></div>
         <div>
-          <div class="p-name">🏥 Online Medical Appointment Scheduling Website</div>
+          <div class="p-name">🏥 MediCare — Clinic Appointment System
+            <a class="p-link" href="https://github.com/ducanhphamorg" target="_blank">↗ GitHub</a>
+          </div>
           <div class="p-desc">
-            Graduation project: full-stack medical appointment system.
-            Responsible for <strong>backend REST API design (Spring Boot)</strong>,
-            <strong>PostgreSQL database schema</strong>, and containerization with
-            <strong>Docker</strong>. Followed Agile/Scrum workflow with Jira and designed
-            UI mockups in Figma before implementation.
+            <strong>Individual graduation project.</strong> Built a full-stack clinic management system.
+            Designed the <strong>PostgreSQL database schema</strong> and implemented
+            <strong>REST API endpoints (Spring Boot 3)</strong> for appointments, medical records,
+            payments, and notifications. Integrated JWT-based authentication and set up
+            <strong>Docker</strong> for local containerization. Used AI tools (ChatGPT) to understand
+            Spring Boot concepts and debug issues throughout development. Managed workflow with
+            Jira (Agile/Scrum) and prototyped screens in Figma.
           </div>
           <div class="tags">
-            <span class="t t-gold">Java</span><span class="t t-gold">Spring Boot</span>
-            <span class="t t-gold">RESTful API</span><span class="t t-gold">PostgreSQL</span>
-            <span class="t t-gold">Docker</span>
+            <span class="t t-gold">Java 21</span><span class="t t-gold">Spring Boot 3</span>
+            <span class="t t-gold">REST API</span><span class="t t-gold">PostgreSQL</span>
+            <span class="t t-gold">JWT Auth</span><span class="t t-gold">Docker</span>
             <span class="t t-teal">Thymeleaf</span><span class="t t-teal">Bootstrap</span>
-            <span class="t t-teal">jQuery</span><span class="t t-teal">GitHub</span>
             <span class="t t-teal">Jira</span><span class="t t-teal">Figma</span>
-            <span class="t t-teal">Agile / Scrum</span>
+            <span class="t t-teal">Agile / Scrum</span><span class="t t-teal">GitHub</span>
           </div>
         </div>
       </div>
 
-      <!-- 2022–2024 Web & Mobile -->
+      <!-- Bina — team of 5, main dev -->
+      <div class="proj">
+        <div class="p-date">2024–<br>2025</div>
+        <div class="p-col"><div class="p-dot"></div></div>
+        <div>
+          <div class="p-name">📰 Bina — University Magazine Portal
+            <a class="p-link" href="https://github.com/ducanhphamorg" target="_blank">↗ GitHub</a>
+          </div>
+          <div class="p-desc">
+            <strong>Team of 5.</strong> Handled the majority of backend coding
+            while teammates assisted with UI and testing. Built a multi-role web portal
+            (Admin, Coordinator, Manager, Student, Guest) using <strong>ASP.NET Core MVC (.NET 8)</strong>.
+            Implemented role-based routing, article submission flow, coordinator review, and
+            <strong>Firebase Storage</strong> for file uploads. Integrated
+            <strong>Google &amp; Microsoft OAuth</strong>. Used AI tools to learn C# and
+            Entity Framework Core patterns during development.
+          </div>
+          <div class="tags">
+            <span class="t t-gold">C# / .NET 8</span><span class="t t-gold">ASP.NET Core MVC</span>
+            <span class="t t-gold">Entity Framework Core</span><span class="t t-gold">SQL Server</span>
+            <span class="t t-gold">Firebase Storage</span>
+            <span class="t t-teal">Google OAuth</span><span class="t t-teal">Razor Views</span>
+            <span class="t t-teal">Bootstrap</span><span class="t t-teal">GitHub</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2023–2024 -->
       <div class="period">
-        <span class="period-lbl">2022 – 2024</span>
+        <span class="period-lbl">2023 – 2024</span>
         <span class="period-role">&nbsp;·&nbsp; Project Design &amp; Construction</span>
       </div>
 
-      <!-- Flip-Mart -->
+      <!-- Flip-Mart — team of 2 -->
       <div class="proj">
         <div class="p-date">2023–<br>2024</div>
         <div class="p-col"><div class="p-dot"></div><div class="p-line"></div></div>
         <div>
-          <div class="p-name">🛒 Flip-Mart — E-Commerce Website (Team Project)
+          <div class="p-name">🛒 Flip-Mart — E-Commerce Website
             <a class="p-link" href="https://github.com/ducanhphamorg/Shopping_Store" target="_blank">↗ GitHub</a>
           </div>
           <div class="p-desc">
-            Team of 2. Built e-commerce features including product listing,
-            shopping cart, and order management. Personally handled
-            <strong>backend routes and controllers (Laravel 9)</strong>,
-            <strong>MySQL database design</strong>, and integrated a basic payment flow.
+            <strong>Team of 2.</strong> Collaborated with one teammate on a full e-commerce site.
+            Personally responsible for <strong>Laravel 9 backend routes and controllers</strong>,
+            <strong>MySQL schema design</strong>, and integrating the Stripe payment flow.
+            Used AI tools to understand Laravel MVC conventions and debug Blade template issues.
           </div>
           <div class="tags">
             <span class="t t-gold">PHP Laravel 9</span><span class="t t-gold">MySQL</span>
-            <span class="t t-gold">MVC</span>
-            <span class="t t-teal">Tailwind CSS</span><span class="t t-teal">JavaScript</span>
-            <span class="t t-teal">Blade</span><span class="t t-teal">GitHub</span>
+            <span class="t t-gold">Stripe</span><span class="t t-gold">MVC</span>
+            <span class="t t-teal">Tailwind CSS</span><span class="t t-teal">Blade</span>
+            <span class="t t-teal">JavaScript</span><span class="t t-teal">GitHub</span>
           </div>
         </div>
       </div>
 
-      <!-- Yoga App -->
+      <!-- COMP1786 — individual -->
       <div class="proj">
         <div class="p-date">2023–<br>2024</div>
         <div class="p-col"><div class="p-dot"></div><div class="p-line"></div></div>
         <div>
-          <div class="p-name">🧘 Yoga Class Management App (Android + Mobile)
+          <div class="p-name">🧘 Yoga Class Management App (Android)
             <a class="p-link" href="https://github.com/ducanhphamorg/COMP1786" target="_blank">↗ GitHub</a>
           </div>
           <div class="p-desc">
-            Built the <strong>Android admin app (Java + Firebase)</strong> for
-            managing class schedules and bookings. Also contributed to the
-            customer-facing <strong>React Native + Expo</strong> booking app, and
-            completed 3 Kotlin logbook apps as individual coursework.
+            <strong>Individual coursework.</strong> Built an Android admin app (Java) to manage
+            yoga courses, class instances, and bookings with role-based access. Used
+            <strong>Firebase Auth + Firestore</strong> for authentication/data sync and
+            <strong>local SQLite</strong> for offline storage. Also completed 3 smaller Kotlin
+            apps (unit converter, to-do list with/without SQLite) as learning exercises.
+            Used AI to understand Android lifecycle and Firebase SDK integration.
           </div>
           <div class="tags">
             <span class="t t-gold">Java (Android)</span><span class="t t-gold">Kotlin</span>
-            <span class="t t-gold">React Native</span>
-            <span class="t t-teal">Firebase</span><span class="t t-teal">Expo</span>
-            <span class="t t-teal">SQLite</span><span class="t t-teal">GitHub</span>
+            <span class="t t-gold">Firebase Auth</span><span class="t t-gold">Firestore</span>
+            <span class="t t-teal">SQLite</span><span class="t t-teal">Android SDK</span>
+            <span class="t t-teal">GitHub</span>
           </div>
         </div>
       </div>
 
-      <!-- Equipment Store -->
+      <!-- House Price Prediction — individual -->
+      <div class="proj">
+        <div class="p-date">2023–<br>2024</div>
+        <div class="p-col"><div class="p-dot"></div></div>
+        <div>
+          <div class="p-name">📊 House Price Prediction — Data Analysis (King County)
+            <a class="p-link" href="https://github.com/ducanhphamorg" target="_blank">↗ GitHub</a>
+          </div>
+          <div class="p-desc">
+            <strong>Individual project.</strong> Followed an end-to-end data pipeline:
+            EDA with pandas/seaborn, OLS regression with statsmodels, price prediction using
+            <strong>XGBoost + scikit-learn</strong>, and geographic maps with
+            <strong>folium</strong>. Created a <strong>Tableau dashboard</strong> for
+            non-technical stakeholders. Used AI tools to understand Python data science
+            libraries and interpret model outputs.
+          </div>
+          <div class="tags">
+            <span class="t t-gold">Python</span><span class="t t-gold">scikit-learn</span>
+            <span class="t t-gold">XGBoost</span><span class="t t-gold">pandas / numpy</span>
+            <span class="t t-teal">Seaborn / Matplotlib</span><span class="t t-teal">folium</span>
+            <span class="t t-teal">Tableau</span><span class="t t-teal">Jupyter Notebook</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2022–2023 -->
+      <div class="period">
+        <span class="period-lbl">2022 – 2023</span>
+        <span class="period-role">&nbsp;·&nbsp; Foundational Projects</span>
+      </div>
+
+      <!-- Tune Source -->
       <div class="proj">
         <div class="p-date">Mar<br>2023</div>
         <div class="p-col"><div class="p-dot"></div><div class="p-line"></div></div>
         <div>
-          <div class="p-name">🏪 First E-Commerce Project — Equipment &amp; Fresh Produce Store</div>
+          <div class="p-name">🎵 Tune Source System — Music CD Store
+            <a class="p-link" href="https://github.com/ducanhphamorg" target="_blank">↗ GitHub</a>
+          </div>
           <div class="p-desc">
-            Built a full e-commerce website for selling equipment, fruits and vegetables.
-            Applied the <strong>MVC model</strong> and Waterfall Software Development Lifecycle.
+            <strong>Individual project.</strong> Built a music CD e-commerce site with customer
+            storefront and admin CRUD dashboard using plain <strong>PHP (PDO)</strong> and MySQL.
+            Implemented session-based login for both customer and admin roles.
+            Used AI assistance to understand PDO connections and debug SQL queries.
           </div>
           <div class="tags">
-            <span class="t t-teal">HTML</span><span class="t t-teal">CSS</span>
-            <span class="t t-teal">JavaScript</span><span class="t t-teal">jQuery</span>
-            <span class="t t-teal">PHP Laravel</span><span class="t t-teal">MySQL</span>
-            <span class="t t-teal">Bootstrap</span><span class="t t-teal">GitHub</span>
-            <span class="t t-teal">ClickUp</span><span class="t t-teal">MVC</span>
+            <span class="t t-teal">PHP (PDO)</span><span class="t t-teal">MySQL</span>
+            <span class="t t-teal">Bootstrap</span><span class="t t-teal">JavaScript</span>
+            <span class="t t-teal">MVC</span><span class="t t-teal">Apache / XAMPP</span>
           </div>
         </div>
       </div>
@@ -432,8 +363,8 @@ DucAnhPham@544wfm.onmicrosoft.com</span></a></div>
         <div>
           <div class="p-name">📱 First Web Project — Phone Case Store</div>
           <div class="p-desc">
-            Designed and built a website to sell phone cases, applying fundamental
-            front-end and back-end concepts.
+            <strong>Individual — first hands-on project.</strong> Applied fundamental HTML/CSS/JS
+            front-end skills alongside basic PHP + MySQL back-end to build a simple product store.
           </div>
           <div class="tags">
             <span class="t t-teal">HTML</span><span class="t t-teal">CSS</span>
@@ -448,13 +379,10 @@ DucAnhPham@544wfm.onmicrosoft.com</span></a></div>
         <div class="p-date">Sep<br>2022</div>
         <div class="p-col"><div class="p-dot"></div></div>
         <div>
-          <div class="p-name">🗄 SQL Server Design — Library Management Database</div>
-          <div class="p-desc">
-            Designed and implemented an online library storage and management database.
-          </div>
+          <div class="p-name">🗄 Database Design — Library Management System</div>
+          <div class="p-desc">Designed and implemented a relational database schema for library storage and management as a course assignment.</div>
           <div class="tags">
-            <span class="t t-teal">SQL Server</span>
-            <span class="t t-teal">Database Design</span>
+            <span class="t t-teal">SQL Server</span><span class="t t-teal">Database Design</span>
           </div>
         </div>
       </div>
@@ -471,12 +399,11 @@ DucAnhPham@544wfm.onmicrosoft.com</span></a></div>
         <div>
           <div class="p-name">🌐 Network Infrastructure Simulation</div>
           <div class="p-desc">
-            Designed and built a simulation of a network infrastructure system for a company
-            preparing to go live, using Cisco Packet Tracer and Visio.
+            <strong>Group leader - Team of 4.</strong> Led team to design and simulate a company network
+            infrastructure using Cisco Packet Tracer and Visio before a simulated go-live.
           </div>
           <div class="tags">
-            <span class="t t-teal">Cisco Packet Tracer</span>
-            <span class="t t-teal">Visio</span>
+            <span class="t t-teal">Cisco Packet Tracer</span><span class="t t-teal">Visio</span>
             <span class="t t-teal">Networking</span>
           </div>
         </div>
@@ -493,8 +420,8 @@ DucAnhPham@544wfm.onmicrosoft.com</span></a></div>
         </div>
       </div>
 
-    </div><!-- end .content -->
-  </div><!-- end .main -->
-</div><!-- end .cv -->
+    </div>
+  </div>
+</div>
 </body>
 </html>

@@ -8,7 +8,7 @@ A motivated fresh graduate passionate about software development,
 actively building my skills and seeking an internship opportunity
 to grow in a real-world environment.
 
-## 🙋 About Me ![GitHub Stars](https://img.shields.io/github/stars/ducanhphamorg/ducanhphamorg?style=social)
+## 🙋 About Me <img src="https://visitor-badge.laobi.icu/badge?page_id=ducanhphamorg.ducanhphamorg&"  />
 
 - 🎓 Fresh graduate, self-learning and transitioning into Software Development
 - 💻 Currently strengthening my foundations in **Web Development**
@@ -173,6 +173,14 @@ to grow in a real-world environment.
   </tbody>
 </table>
 
-## 🐍 GitHub Snake
+<!-- ## 🐍 GitHub Snake
+<img src="https://raw.githubusercontent.com/ducanhphamorg/ducanhphamorg/output/snake.svg" alt="Snake animation" /> -->
 
-<img src="https://raw.githubusercontent.com/ducanhphamorg/ducanhphamorg/output/snake.svg" alt="Snake animation" />
+## 🎮 Pacman Contribution Graph
+<br clear="both">
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/ducanhphamorg/ducanhphamorg/output/pacman-contribution-graph-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/ducanhphamorg/ducanhphamorg/output/pacman-contribution-graph.svg">
+  <img alt="pacman contribution graph" src="https://raw.githubusercontent.com/ducanhphamorg/ducanhphamorg/output/pacman-contribution-graph.svg">
+</picture>
