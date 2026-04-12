@@ -1,0 +1,46 @@
+name: Track GitHub Traffic
+
+on:
+  schedule:
+    # Chạy mỗi ngày một lần vào lúc 00:00 UTC
+    - cron: "0 0 * * *"
+  workflow_dispatch: # Cho phép chạy thủ công
+
+jobs:
+  track-traffic:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Cấp quyền ghi để action có thể commit data mới
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Create traffic directory
+        run: mkdir -p traffic
+
+      - name: Fetch repository views
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          curl -H "Authorization: Bearer $GITHUB_TOKEN" \
+               -H "Accept: application/vnd.github.v3+json" \
+               https://api.github.com/repos/${{ github.repository }}/traffic/views \
+               > traffic/views.json
+
+      - name: Fetch repository clones
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          curl -H "Authorization: Bearer $GITHUB_TOKEN" \
+               -H "Accept: application/vnd.github.v3+json" \
+               https://api.github.com/repos/${{ github.repository }}/traffic/clones \
+               > traffic/clones.json
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add traffic/
+          git commit -m "📊 Tự động cập nhật dữ liệu traffic hàng ngày" || echo "Bỏ qua: Không có dữ liệu mới"
+          git push

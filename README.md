@@ -8,7 +8,9 @@ A motivated fresh graduate passionate about software development,
 actively building my skills and seeking an internship opportunity
 to grow in a real-world environment.
 
-## 🙋 About Me <img src="https://visitor-badge.laobi.icu/badge?page_id=ducanhphamorg.ducanhphamorg&"  />
+---
+
+## 🙋 About Me ![Profile Views](https://komarev.com/ghpvc/?username=ducanhphamorg&color=blue&style=flat-square&label=PROFILE+VIEWS)
 
 - 🎓 Fresh graduate, self-learning and transitioning into Software Development
 - 💻 Currently strengthening my foundations in **Web Development**
@@ -36,12 +38,6 @@ to grow in a real-world environment.
 <!-- [![Stack Overflow](https://img.shields.io/badge/Stack_Overflow-FE7A16?style=for-the-badge&logo=stack-overflow&logoColor=white)](https://stackoverflow.com/users/29083578/p%c9%a6%e1%ba%a1%e1%83%9a-%c4%90%e1%bb%a9%e2%84%ad-a%d5%b2%c9%a6) [![YouTube](https://img.shields.io/badge/YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/c/ducanhphamorg)
 [![HackerRank](https://img.shields.io/badge/HackerRank-2EC866?style=for-the-badge&logo=HackerRank&logoColor=white)](https://www.hackerrank.com/ducanhphamorg) --><!-- [![YouTube](https://img.shields.io/badge/YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/c/ducanhphamorg) -->
 <!-- [![HackerRank](https://img.shields.io/badge/HackerRank-2EC866?style=for-the-badge&logo=HackerRank&logoColor=white)](https://www.hackerrank.com/ducanhphamorg) -->
----
-
-## 📊GitHub Stats
-
-![](https://github-readme-stats.vercel.app/api?username=ducanhphamorg&theme=radical&hide_border=false&include_all_commits=false&count_private=false)<br/>
-![](https://github-readme-stats.vercel.app/api/top-langs/?username=ducanhphamorg&theme=radical&hide_border=false&include_all_commits=false&count_private=false&layout=compact)
 
 ---
 
@@ -101,19 +97,31 @@ to grow in a real-world environment.
 ![Canva](https://img.shields.io/badge/Canva-00C4CC?style=for-the-badge&logo=Canva&logoColor=white) -->
 ![Figma](https://img.shields.io/badge/figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white)
 <!-- ![Adobe Photoshop](https://img.shields.io/badge/adobe%20photoshop-31A8FF?style=for-the-badge&logo=adobephotoshop&logoColor=white) -->
+---
 
 ## 🏆GitHub Trophies
 
 ![](https://github-trophies.vercel.app/?username=ducanhphamorg&theme=radical&no-frame=false&no-bg=true&margin-w=4)
 
+---
+## 📊GitHub Stats
+
+![](https://github-readme-stats.vercel.app/api?username=ducanhphamorg&theme=radical&hide_border=false&include_all_commits=false&count_private=false)<br/>
+![](https://github-readme-stats.vercel.app/api/top-langs/?username=ducanhphamorg&theme=radical&hide_border=false&include_all_commits=false&count_private=false&layout=compact)
+
+---
+
 ## 🔝 Top Contributed Repo
 
-![](https://github-contributor-stats.vercel.app/api?username=ducanhphamorg&limit=5&theme=dark&combine_all_yearly_contributions=true)
+![](https://github-contributor-stats.vercel.app/api?username=ducanhphamorg&limit=6&theme=dark&combine_all_yearly_contributions=true)
+
+---
 
 ## ✍️Random Dev Quote
 
 ![](https://quotes-github-readme.vercel.app/api?type=horizontal&theme=radical)
 
+---
 ## 📈 User Statistics
 
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif">
@@ -173,14 +181,5 @@ to grow in a real-world environment.
   </tbody>
 </table>
 
-<!-- ## 🐍 GitHub Snake
-<img src="https://raw.githubusercontent.com/ducanhphamorg/ducanhphamorg/output/snake.svg" alt="Snake animation" /> -->
-
-## 🎮 Pacman Contribution Graph
-<br clear="both">
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/ducanhphamorg/ducanhphamorg/output/pacman-contribution-graph-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/ducanhphamorg/ducanhphamorg/output/pacman-contribution-graph.svg">
-  <img alt="pacman contribution graph" src="https://raw.githubusercontent.com/ducanhphamorg/ducanhphamorg/output/pacman-contribution-graph.svg">
-</picture>
+## 🐍 GitHub Snake
+<img src="https://raw.githubusercontent.com/ducanhphamorg/ducanhphamorg/output/snake.svg" alt="Snake animation" />
