@@ -1,0 +1,201 @@
+name: 📊 Multi-Repo Traffic Tracker
+
+on:
+  schedule:
+    - cron: "0 * * * *"   # Mỗi giờ
+  workflow_dispatch:
+
+jobs:
+  track-all-repos:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Fetch & accumulate traffic for ALL repos
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_OWNER: ${{ github.repository_owner }}
+        run: |
+          python3 << 'PYEOF'
+          import json, os, urllib.request, urllib.error
+          from datetime import datetime, timezone
+
+          TOKEN = os.environ["GITHUB_TOKEN"]
+          OWNER = os.environ["GITHUB_OWNER"]
+          OUTDIR = "traffic"
+          os.makedirs(f"{OUTDIR}/repos", exist_ok=True)
+          os.makedirs(f"{OUTDIR}/history", exist_ok=True)
+
+          HEADERS = {
+              "Authorization": f"Bearer {TOKEN}",
+              "Accept": "application/vnd.github.v3+json",
+              "X-GitHub-Api-Version": "2022-11-28",
+          }
+
+          def gh_get(url):
+              req = urllib.request.Request(url, headers=HEADERS)
+              try:
+                  with urllib.request.urlopen(req, timeout=15) as r:
+                      return json.loads(r.read())
+              except urllib.error.HTTPError as e:
+                  print(f"  ⚠ HTTP {e.code} → {url}")
+                  return None
+              except Exception as e:
+                  print(f"  ⚠ Error → {url}: {e}")
+                  return None
+
+          def load_json(path, fallback):
+              try:
+                  with open(path) as f: return json.load(f)
+              except: return fallback
+
+          def save_json(path, data):
+              with open(path, "w") as f:
+                  json.dump(data, f, indent=2, ensure_ascii=False)
+
+          def merge_days(history_dict, new_items, count_key="count"):
+              for item in (new_items or []):
+                  ts = item.get("timestamp", "")
+                  if not ts: continue
+                  ex = history_dict.get(ts, {})
+                  history_dict[ts] = {
+                      "timestamp": ts,
+                      "count":   max(item.get("count",0),   ex.get("count",0)),
+                      "uniques": max(item.get("uniques",0), ex.get("uniques",0)),
+                  }
+              return history_dict
+
+          # ── 1. List all public repos ──────────────────────────────────────────
+          print(f"\n🔍 Fetching repos for @{OWNER}...")
+          repos, page = [], 1
+          while True:
+              page_data = gh_get(
+                  f"https://api.github.com/users/{OWNER}/repos"
+                  f"?per_page=100&page={page}&type=owner&sort=updated"
+              )
+              if not page_data: break
+              repos.extend(page_data)
+              if len(page_data) < 100: break
+              page += 1
+
+          print(f"   Found {len(repos)} repos")
+
+          # ── 2. Load global accumulated history ───────────────────────────────
+          global_path = f"{OUTDIR}/history/global.json"
+          global_hist = load_json(global_path, {
+              "repos": {},
+              "summary": [],
+              "last_updated": None
+          })
+
+          now_utc = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+          snapshot_row = {"timestamp": now_utc, "repos": {}}
+
+          # ── 3. Fetch per-repo traffic ─────────────────────────────────────────
+          for repo in repos:
+              name      = repo["name"]
+              full_name = repo["full_name"]
+              is_fork   = repo.get("fork", False)
+              stars     = repo.get("stargazers_count", 0)
+              watchers  = repo.get("watchers_count", 0)
+              forks     = repo.get("forks_count", 0)
+              desc      = repo.get("description", "") or ""
+
+              print(f"\n  📦 {full_name} {'[fork]' if is_fork else ''}")
+
+              base = f"https://api.github.com/repos/{full_name}/traffic"
+
+              views    = gh_get(f"{base}/views")
+              clones   = gh_get(f"{base}/clones")
+              referrers= gh_get(f"{base}/popular/referrers")
+              paths    = gh_get(f"{base}/popular/paths")
+
+              # Load per-repo history
+              repo_path = f"{OUTDIR}/repos/{name}.json"
+              repo_hist = load_json(repo_path, {
+                  "name": name,
+                  "full_name": full_name,
+                  "description": desc,
+                  "is_fork": is_fork,
+                  "stars": stars,
+                  "watchers": watchers,
+                  "forks": forks,
+                  "views_by_day": {},
+                  "clones_by_day": {},
+                  "all_time": {"views":0,"unique_views":0,"clones":0,"unique_clones":0},
+                  "referrers": [],
+                  "paths": [],
+                  "last_updated": None
+              })
+
+              # Update metadata
+              repo_hist.update({
+                  "description": desc,
+                  "stars": stars, "watchers": watchers, "forks": forks,
+                  "last_updated": now_utc
+              })
+
+              # Merge daily data
+              repo_hist["views_by_day"]  = merge_days(repo_hist["views_by_day"],  (views  or {}).get("views",[]))
+              repo_hist["clones_by_day"] = merge_days(repo_hist["clones_by_day"], (clones or {}).get("clones",[]))
+
+              # Running totals
+              at = repo_hist["all_time"]
+              at["views"]         = max(at["views"],        sum(d["count"]   for d in repo_hist["views_by_day"].values()))
+              at["unique_views"]  = max(at["unique_views"], sum(d["uniques"] for d in repo_hist["views_by_day"].values()))
+              at["clones"]        = max(at["clones"],       sum(d["count"]   for d in repo_hist["clones_by_day"].values()))
+              at["unique_clones"] = max(at["unique_clones"],sum(d["uniques"] for d in repo_hist["clones_by_day"].values()))
+
+              repo_hist["referrers"] = referrers or []
+              repo_hist["paths"]     = paths or []
+
+              save_json(repo_path, repo_hist)
+
+              v14 = (views  or {}).get("count",  0)
+              c14 = (clones or {}).get("count",  0)
+              print(f"     👁 {v14} views | 📦 {c14} clones | ⭐ {stars} stars (14d window)")
+
+              # Update global repo summary
+              global_hist["repos"][name] = {
+                  "name": name, "full_name": full_name,
+                  "description": desc, "is_fork": is_fork,
+                  "stars": stars, "watchers": watchers, "forks": forks,
+                  "all_time": at,
+                  "views_14d":  v14,
+                  "clones_14d": c14,
+                  "top_referrer": (referrers[0]["referrer"] if referrers else "—"),
+                  "top_path":     (paths[0]["path"]         if paths     else "—"),
+              }
+              snapshot_row["repos"][name] = {"views": v14, "clones": c14}
+
+          # ── 4. Global summary snapshot ────────────────────────────────────────
+          global_hist["summary"].append(snapshot_row)
+          global_hist["summary"] = global_hist["summary"][-720:]  # 30d
+          global_hist["last_updated"] = now_utc
+
+          save_json(global_path, global_hist)
+
+          # ── 5. Print totals ───────────────────────────────────────────────────
+          total_views  = sum(r["all_time"]["views"]  for r in global_hist["repos"].values())
+          total_clones = sum(r["all_time"]["clones"] for r in global_hist["repos"].values())
+          print(f"\n✅ Done — {len(repos)} repos | {total_views} total views | {total_clones} total clones")
+          print(f"   Data saved to {global_path}")
+          PYEOF
+
+      - name: Commit
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name  "github-actions[bot]"
+          git add traffic/
+          git diff --staged --quiet && echo "⏭ No new data" || \
+            git commit -m "📊 Multi-repo traffic $(date -u '+%Y-%m-%d %H:%M UTC')"
+          git push

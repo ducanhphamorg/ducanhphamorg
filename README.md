@@ -2,7 +2,7 @@
 
 <a href="https://app.daily.dev/ducanhphamorg"><img src="https://api.daily.dev/devcards/v2/e3hZoPyud7rlajHf2Zc8b.png?type=wide&r=g80" width="600" alt="Duc Anh Pham's Dev Card"/></a>
 
-## 👋 Hi, I'm Duc Anh
+## 👋 Hi, I'm Duc Anh ![GitHub stars](https://img.shields.io/github/stars/ducanhphamorg?style=flat&color=0e75b6)
 
 A motivated fresh graduate passionate about software development,
 actively building my skills and seeking an internship opportunity
@@ -10,7 +10,8 @@ to grow in a real-world environment.
 
 ---
 
-## 🙋 About Me ![Profile Views](https://komarev.com/ghpvc/?username=ducanhphamorg&color=blue&style=flat-square&label=PROFILE+VIEWS)
+## 🙋 About Me [![Profile Views](https://komarev.com/ghpvc/?username=ducanhphamorg&color=0e75b6&style=flat&label=Profile+Views)](https://ducanhphamorg.github.io/ducanhphamorg/traffic-dashboard.html)
+
 
 - 🎓 Fresh graduate, self-learning and transitioning into Software Development
 - 💻 Currently strengthening my foundations in **Web Development**
