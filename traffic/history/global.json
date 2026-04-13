@@ -1,0 +1,173 @@
+{
+  "repos": {
+    "ducanhphamorg": {
+      "name": "ducanhphamorg",
+      "full_name": "ducanhphamorg/ducanhphamorg",
+      "description": "",
+      "is_fork": false,
+      "stars": 2,
+      "watchers": 2,
+      "forks": 0,
+      "all_time": {
+        "views": 0,
+        "unique_views": 0,
+        "clones": 0,
+        "unique_clones": 0
+      },
+      "views_14d": 0,
+      "clones_14d": 0,
+      "top_referrer": "—",
+      "top_path": "—"
+    },
+    "Shopping_Store": {
+      "name": "Shopping_Store",
+      "full_name": "ducanhphamorg/Shopping_Store",
+      "description": "The source code talks about an e-commerce site that can buy all kinds of items with a very efficient management interface",
+      "is_fork": false,
+      "stars": 2,
+      "watchers": 2,
+      "forks": 0,
+      "all_time": {
+        "views": 0,
+        "unique_views": 0,
+        "clones": 0,
+        "unique_clones": 0
+      },
+      "views_14d": 0,
+      "clones_14d": 0,
+      "top_referrer": "—",
+      "top_path": "—"
+    },
+    "Bina": {
+      "name": "Bina",
+      "full_name": "ducanhphamorg/Bina",
+      "description": "",
+      "is_fork": false,
+      "stars": 4,
+      "watchers": 4,
+      "forks": 0,
+      "all_time": {
+        "views": 0,
+        "unique_views": 0,
+        "clones": 0,
+        "unique_clones": 0
+      },
+      "views_14d": 0,
+      "clones_14d": 0,
+      "top_referrer": "—",
+      "top_path": "—"
+    },
+    "Final_Project": {
+      "name": "Final_Project",
+      "full_name": "ducanhphamorg/Final_Project",
+      "description": "",
+      "is_fork": false,
+      "stars": 2,
+      "watchers": 2,
+      "forks": 0,
+      "all_time": {
+        "views": 0,
+        "unique_views": 0,
+        "clones": 0,
+        "unique_clones": 0
+      },
+      "views_14d": 0,
+      "clones_14d": 0,
+      "top_referrer": "—",
+      "top_path": "—"
+    },
+    "COMP1786": {
+      "name": "COMP1786",
+      "full_name": "ducanhphamorg/COMP1786",
+      "description": "",
+      "is_fork": false,
+      "stars": 2,
+      "watchers": 2,
+      "forks": 0,
+      "all_time": {
+        "views": 0,
+        "unique_views": 0,
+        "clones": 0,
+        "unique_clones": 0
+      },
+      "views_14d": 0,
+      "clones_14d": 0,
+      "top_referrer": "—",
+      "top_path": "—"
+    },
+    "House_Price_Prediction": {
+      "name": "House_Price_Prediction",
+      "full_name": "ducanhphamorg/House_Price_Prediction",
+      "description": "Talking about a survey predicting house prices in King County in Washington DC of the US",
+      "is_fork": false,
+      "stars": 2,
+      "watchers": 2,
+      "forks": 0,
+      "all_time": {
+        "views": 0,
+        "unique_views": 0,
+        "clones": 0,
+        "unique_clones": 0
+      },
+      "views_14d": 0,
+      "clones_14d": 0,
+      "top_referrer": "—",
+      "top_path": "—"
+    },
+    "Tune-Source-System": {
+      "name": "Tune-Source-System",
+      "full_name": "ducanhphamorg/Tune-Source-System",
+      "description": "Tune Source is the brainchild of three entrepreneurs with ties to the music industry: John Margolis, Megan Taylor and Phil Cooper.",
+      "is_fork": false,
+      "stars": 2,
+      "watchers": 2,
+      "forks": 0,
+      "all_time": {
+        "views": 0,
+        "unique_views": 0,
+        "clones": 0,
+        "unique_clones": 0
+      },
+      "views_14d": 0,
+      "clones_14d": 0,
+      "top_referrer": "—",
+      "top_path": "—"
+    }
+  },
+  "summary": [
+    {
+      "timestamp": "2026-04-13T06:17:37Z",
+      "repos": {
+        "ducanhphamorg": {
+          "views": 0,
+          "clones": 0
+        },
+        "Shopping_Store": {
+          "views": 0,
+          "clones": 0
+        },
+        "Bina": {
+          "views": 0,
+          "clones": 0
+        },
+        "Final_Project": {
+          "views": 0,
+          "clones": 0
+        },
+        "COMP1786": {
+          "views": 0,
+          "clones": 0
+        },
+        "House_Price_Prediction": {
+          "views": 0,
+          "clones": 0
+        },
+        "Tune-Source-System": {
+          "views": 0,
+          "clones": 0
+        }
+      }
+    }
+  ],
+  "last_updated": "2026-04-13T06:17:37Z"
+}
