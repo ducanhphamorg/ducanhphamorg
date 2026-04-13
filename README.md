@@ -2,7 +2,9 @@
 
 <a href="https://app.daily.dev/ducanhphamorg"><img src="https://api.daily.dev/devcards/v2/e3hZoPyud7rlajHf2Zc8b.png?type=wide&r=g80" width="600" alt="Duc Anh Pham's Dev Card"/></a>
 
-## 👋 Hi, I'm Duc Anh ![GitHub stars](https://img.shields.io/github/stars/ducanhphamorg/ducanhphamorg?style=flat&color=0e75b6)
+![GitHub stars](https://img.shields.io/github/stars/ducanhphamorg?style=flat&color=0e75b6) [![Total Views](https://img.shields.io/badge/dynamic/json?url=https://raw.githubusercontent.com/ducanhphamorg/ducanhphamorg/main/traffic/repos/ducanhphamorg.json&query=%24.all_time.views&label=Total%20Views&color=brightgreen&style=flat)](https://htmlpreview.github.io/?https://github.com/ducanhphamorg/ducanhphamorg/blob/main/traffic-dashboard.html) [![Unique Visitors](https://img.shields.io/badge/dynamic/json?url=https://raw.githubusercontent.com/ducanhphamorg/ducanhphamorg/main/traffic/repos/ducanhphamorg.json&query=%24.all_time.unique_views&label=Unique%20Visitors&color=0e75b6&style=flat)](https://htmlpreview.github.io/?https://github.com/ducanhphamorg/ducanhphamorg/blob/main/traffic-dashboard.html)
+
+## 👋 Hi, I'm Duc Anh
 
 A motivated fresh graduate passionate about software development,
 actively building my skills and seeking an internship opportunity
@@ -10,7 +12,7 @@ to grow in a real-world environment.
 
 ---
 
-## 🙋 About Me [![Profile Views](https://komarev.com/ghpvc/?username=ducanhphamorg&color=0e75b6&style=flat&label=Profile+Views)](https://htmlpreview.github.io/?https://github.com/ducanhphamorg/ducanhphamorg/blob/main/traffic-dashboard.html)
+## 🙋 About Me
 
 
 - 🎓 Fresh graduate, self-learning and transitioning into Software Development
@@ -104,17 +106,6 @@ to grow in a real-world environment.
 
 ![](https://github-trophies.vercel.app/?username=ducanhphamorg&theme=radical&no-frame=false&no-bg=true&margin-w=4)
 
----
-## 📊GitHub Stats
-
-![](https://github-readme-stats.vercel.app/api?username=ducanhphamorg&theme=radical&hide_border=false&include_all_commits=false&count_private=false)<br/>
-![](https://github-readme-stats.vercel.app/api/top-langs/?username=ducanhphamorg&theme=radical&hide_border=false&include_all_commits=false&count_private=false&layout=compact)
-
----
-
-## 🔝 Top Contributed Repo
-
-![](https://github-contributor-stats.vercel.app/api?username=ducanhphamorg&limit=6&theme=dark&combine_all_yearly_contributions=true)
 
 ---
 
