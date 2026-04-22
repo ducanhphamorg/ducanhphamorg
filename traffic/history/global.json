@@ -17,7 +17,8 @@
       "views_14d": 0,
       "clones_14d": 0,
       "top_referrer": "—",
-      "top_path": "—"
+      "top_path": "—",
+      "traffic_accessible": false
     },
     "Shopping_Store": {
       "name": "Shopping_Store",
@@ -36,7 +37,8 @@
       "views_14d": 0,
       "clones_14d": 0,
       "top_referrer": "—",
-      "top_path": "—"
+      "top_path": "—",
+      "traffic_accessible": false
     },
     "Bina": {
       "name": "Bina",
@@ -55,7 +57,8 @@
       "views_14d": 0,
       "clones_14d": 0,
       "top_referrer": "—",
-      "top_path": "—"
+      "top_path": "—",
+      "traffic_accessible": false
     },
     "Final_Project": {
       "name": "Final_Project",
@@ -74,7 +77,8 @@
       "views_14d": 0,
       "clones_14d": 0,
       "top_referrer": "—",
-      "top_path": "—"
+      "top_path": "—",
+      "traffic_accessible": false
     },
     "COMP1786": {
       "name": "COMP1786",
@@ -93,7 +97,8 @@
       "views_14d": 0,
       "clones_14d": 0,
       "top_referrer": "—",
-      "top_path": "—"
+      "top_path": "—",
+      "traffic_accessible": false
     },
     "House_Price_Prediction": {
       "name": "House_Price_Prediction",
@@ -112,7 +117,8 @@
       "views_14d": 0,
       "clones_14d": 0,
       "top_referrer": "—",
-      "top_path": "—"
+      "top_path": "—",
+      "traffic_accessible": false
     },
     "Tune-Source-System": {
       "name": "Tune-Source-System",
@@ -131,7 +137,8 @@
       "views_14d": 0,
       "clones_14d": 0,
       "top_referrer": "—",
-      "top_path": "—"
+      "top_path": "—",
+      "traffic_accessible": false
     },
     "Yii2_Project": {
       "name": "Yii2_Project",
@@ -4698,7 +4705,66 @@
           "clones": 0
         }
       }
+    },
+    {
+      "timestamp": "2026-04-22T09:24:44Z",
+      "repos": {
+        "ducanhphamorg": {
+          "views": 0,
+          "clones": 0
+        },
+        "Shopping_Store": {
+          "views": 0,
+          "clones": 0
+        },
+        "Bina": {
+          "views": 0,
+          "clones": 0
+        },
+        "Final_Project": {
+          "views": 0,
+          "clones": 0
+        },
+        "COMP1786": {
+          "views": 0,
+          "clones": 0
+        },
+        "House_Price_Prediction": {
+          "views": 0,
+          "clones": 0
+        },
+        "Tune-Source-System": {
+          "views": 0,
+          "clones": 0
+        }
+      }
     }
   ],
-  "last_updated": "2026-04-22T07:54:22Z"
+  "last_updated": "2026-04-22T09:24:44Z",
+  "views_by_day": {},
+  "clones_by_day": {},
+  "referrers": [],
+  "paths": [],
+  "all_time": {
+    "views": 0,
+    "unique_views": 0,
+    "clones": 0,
+    "unique_clones": 0
+  },
+  "totals": {
+    "views": 0,
+    "unique_views": 0,
+    "clones": 0,
+    "unique_clones": 0,
+    "stars": 16,
+    "watchers": 16,
+    "forks": 0,
+    "repos": 11,
+    "repos_with_traffic": 0
+  },
+  "traffic_api": {
+    "enabled": false,
+    "repos_with_traffic": 0,
+    "token_source": "GITHUB_TOKEN"
+  }
 }
