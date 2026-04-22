@@ -464,7 +464,7 @@ function buildRepoChart(repos) {
     const sH = Math.round(((r.stars || 0) / maxCount) * 100);
     const fH = Math.round(((r.forks || 0) / maxCount) * 100);
     const label = r.name.length > MAX_REPO_LABEL_LENGTH
-      ? `${r.name.slice(0, MAX_REPO_LABEL_LENGTH - 1)}…`
+      ? `${r.name.slice(0, MAX_REPO_LABEL_LENGTH)}…`
       : r.name;
     const tipHtml = `<b>${r.full_name || r.name}</b><br>⭐ ${r.stars || 0} stars<br>🍴 ${r.forks || 0} forks`;
 
@@ -613,7 +613,7 @@ document.getElementById('chart-tabs').addEventListener('click', e => {
   if (!btn) return;
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
-  chartRange = btn.dataset.range === 'all' ? 'all' : parseInt(btn.dataset.range);
+  chartRange = btn.dataset.range === 'all' ? 999 : parseInt(btn.dataset.range);
   buildChart(allViewDays, allCloneDays, chartRange);
 });
 

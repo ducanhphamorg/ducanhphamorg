@@ -112,8 +112,8 @@ jobs:
                   ts = item.get("timestamp", "")
                   if not ts: continue
                   ex = dst.get(ts, {"timestamp": ts, "count": 0, "uniques": 0})
-                  ex["count"] += int(item.get("count", 0) or 0)
-                  ex["uniques"] += int(item.get("uniques", 0) or 0)
+                  ex["count"] += int(item.get("count", 0))
+                  ex["uniques"] += int(item.get("uniques", 0))
                   dst[ts] = ex
 
           def aggregate_rank(dst, items, key):
@@ -121,8 +121,8 @@ jobs:
                   name = item.get(key)
                   if not name: continue
                   ex = dst.get(name, {key: name, "count": 0, "uniques": 0})
-                  ex["count"] += int(item.get("count", 0) or 0)
-                  ex["uniques"] += int(item.get("uniques", 0) or 0)
+                  ex["count"] += int(item.get("count", 0))
+                  ex["uniques"] += int(item.get("uniques", 0))
                   dst[name] = ex
 
           # ── 3. Fetch per-repo traffic ─────────────────────────────────────────
