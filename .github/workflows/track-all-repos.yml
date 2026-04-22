@@ -23,6 +23,7 @@ jobs:
       - name: Fetch & accumulate traffic for ALL repos
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TRAFFIC_TOKEN: ${{ secrets.TRAFFIC_TOKEN }}
           GITHUB_OWNER: ${{ github.repository_owner }}
         run: |
           python3 << 'PYEOF'
@@ -30,13 +31,14 @@ jobs:
           from datetime import datetime, timezone
 
           TOKEN = os.environ["GITHUB_TOKEN"]
+          TRAFFIC_TOKEN = os.environ.get("GH_TRAFFIC_TOKEN") or TOKEN
           OWNER = os.environ["GITHUB_OWNER"]
           OUTDIR = "traffic"
           os.makedirs(f"{OUTDIR}/repos", exist_ok=True)
           os.makedirs(f"{OUTDIR}/history", exist_ok=True)
 
           HEADERS = {
-              "Authorization": f"Bearer {TOKEN}",
+              "Authorization": f"Bearer {TRAFFIC_TOKEN}",
               "Accept": "application/vnd.github.v3+json",
               "X-GitHub-Api-Version": "2022-11-28",
           }
@@ -99,6 +101,29 @@ jobs:
 
           now_utc = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
           snapshot_row = {"timestamp": now_utc, "repos": {}}
+          agg_views_by_day = {}
+          agg_clones_by_day = {}
+          agg_referrers = {}
+          agg_paths = {}
+          repos_with_traffic = 0
+
+          def aggregate_days(dst, src):
+              for item in (src or {}).values():
+                  ts = item.get("timestamp", "")
+                  if not ts: continue
+                  ex = dst.get(ts, {"timestamp": ts, "count": 0, "uniques": 0})
+                  ex["count"] += int(item.get("count", 0) or 0)
+                  ex["uniques"] += int(item.get("uniques", 0) or 0)
+                  dst[ts] = ex
+
+          def aggregate_rank(dst, items, key):
+              for item in (items or []):
+                  name = item.get(key)
+                  if not name: continue
+                  ex = dst.get(name, {key: name, "count": 0, "uniques": 0})
+                  ex["count"] += int(item.get("count", 0) or 0)
+                  ex["uniques"] += int(item.get("uniques", 0) or 0)
+                  dst[name] = ex
 
           # ── 3. Fetch per-repo traffic ─────────────────────────────────────────
           for repo in repos:
@@ -155,8 +180,14 @@ jobs:
               at["clones"]        = max(at["clones"],       sum(d["count"]   for d in repo_hist["clones_by_day"].values()))
               at["unique_clones"] = max(at["unique_clones"],sum(d["uniques"] for d in repo_hist["clones_by_day"].values()))
 
-              repo_hist["referrers"] = referrers or []
-              repo_hist["paths"]     = paths or []
+              if isinstance(referrers, list):
+                  repo_hist["referrers"] = referrers
+              if isinstance(paths, list):
+                  repo_hist["paths"] = paths
+
+              traffic_accessible = isinstance(views, dict) and isinstance(clones, dict)
+              if traffic_accessible:
+                  repos_with_traffic += 1
 
               save_json(repo_path, repo_hist)
 
@@ -174,20 +205,60 @@ jobs:
                   "clones_14d": c14,
                   "top_referrer": (referrers[0]["referrer"] if referrers else "—"),
                   "top_path":     (paths[0]["path"]         if paths     else "—"),
+                  "traffic_accessible": traffic_accessible,
               }
               snapshot_row["repos"][name] = {"views": v14, "clones": c14}
+
+              aggregate_days(agg_views_by_day, repo_hist["views_by_day"])
+              aggregate_days(agg_clones_by_day, repo_hist["clones_by_day"])
+              aggregate_rank(agg_referrers, repo_hist.get("referrers", []), "referrer")
+              aggregate_rank(agg_paths, repo_hist.get("paths", []), "path")
 
           # ── 4. Global summary snapshot ────────────────────────────────────────
           global_hist["summary"].append(snapshot_row)
           global_hist["summary"] = global_hist["summary"][-720:]  # 30d
           global_hist["last_updated"] = now_utc
+          total_views = sum(r["all_time"]["views"]  for r in global_hist["repos"].values())
+          total_unique_views = sum(r["all_time"]["unique_views"] for r in global_hist["repos"].values())
+          total_clones = sum(r["all_time"]["clones"] for r in global_hist["repos"].values())
+          total_unique_clones = sum(r["all_time"]["unique_clones"] for r in global_hist["repos"].values())
+          total_stars = sum((r.get("stars") or 0) for r in global_hist["repos"].values())
+          total_watchers = sum((r.get("watchers") or 0) for r in global_hist["repos"].values())
+          total_forks = sum((r.get("forks") or 0) for r in global_hist["repos"].values())
+
+          global_hist["views_by_day"] = dict(sorted(agg_views_by_day.items()))
+          global_hist["clones_by_day"] = dict(sorted(agg_clones_by_day.items()))
+          global_hist["referrers"] = sorted(agg_referrers.values(), key=lambda x: x["count"], reverse=True)[:20]
+          global_hist["paths"] = sorted(agg_paths.values(), key=lambda x: x["count"], reverse=True)[:20]
+          global_hist["all_time"] = {
+              "views": total_views,
+              "unique_views": total_unique_views,
+              "clones": total_clones,
+              "unique_clones": total_unique_clones
+          }
+          global_hist["totals"] = {
+              "views": total_views,
+              "unique_views": total_unique_views,
+              "clones": total_clones,
+              "unique_clones": total_unique_clones,
+              "stars": total_stars,
+              "watchers": total_watchers,
+              "forks": total_forks,
+              "repos": len(global_hist["repos"]),
+              "repos_with_traffic": repos_with_traffic
+          }
+          global_hist["traffic_api"] = {
+              "enabled": repos_with_traffic > 0,
+              "repos_with_traffic": repos_with_traffic,
+              "token_source": ("TRAFFIC_TOKEN" if os.environ.get("GH_TRAFFIC_TOKEN") else "GITHUB_TOKEN")
+          }
 
           save_json(global_path, global_hist)
 
           # ── 5. Print totals ───────────────────────────────────────────────────
-          total_views  = sum(r["all_time"]["views"]  for r in global_hist["repos"].values())
-          total_clones = sum(r["all_time"]["clones"] for r in global_hist["repos"].values())
           print(f"\n✅ Done — {len(repos)} repos | {total_views} total views | {total_clones} total clones")
+          if repos_with_traffic == 0:
+              print("⚠ Traffic API inaccessible. Add secret TRAFFIC_TOKEN (classic PAT with repo scope) to get real traffic data.")
           print(f"   Data saved to {global_path}")
           PYEOF
 
