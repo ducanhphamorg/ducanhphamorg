@@ -369,6 +369,7 @@
 
 <script>
 const RAW_URL = 'https://raw.githubusercontent.com/ducanhphamorg/ducanhphamorg/main/traffic/history/global.json';
+const MAX_REPO_LABEL_LENGTH = 10;
 
 const tip = document.getElementById('tooltip');
 function showTip(e, html) {
@@ -453,13 +454,18 @@ function buildRepoChart(repos) {
     return;
   }
 
-  const maxCount = Math.max(1, ...repos.map(r => Math.max(r.stars || 0, r.forks || 0)));
+  const maxCount = Math.max(
+    1,
+    repos.reduce((max, r) => Math.max(max, r.stars || 0, r.forks || 0), 0)
+  );
   repos.forEach(r => {
     const col = document.createElement('div');
     col.className = 'bar-col';
     const sH = Math.round(((r.stars || 0) / maxCount) * 100);
     const fH = Math.round(((r.forks || 0) / maxCount) * 100);
-    const label = r.name.length > 10 ? `${r.name.slice(0, 9)}…` : r.name;
+    const label = r.name.length > MAX_REPO_LABEL_LENGTH
+      ? `${r.name.slice(0, MAX_REPO_LABEL_LENGTH - 1)}…`
+      : r.name;
     const tipHtml = `<b>${r.full_name || r.name}</b><br>⭐ ${r.stars || 0} stars<br>🍴 ${r.forks || 0} forks`;
 
     const sBar = document.createElement('div');
