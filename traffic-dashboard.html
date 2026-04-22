@@ -449,7 +449,7 @@ function buildRepoChart(repos) {
   const wrap = document.getElementById('bar-chart');
   wrap.innerHTML = '';
   if (!repos.length) {
-    wrap.innerHTML = '<div class="empty">Không có repo để hiển thị</div>';
+    wrap.innerHTML = '<div class="empty">No repositories to display</div>';
     return;
   }
 
@@ -572,7 +572,7 @@ async function loadData() {
       document.getElementById('paths-col-4').textContent = 'Forks';
 
       document.getElementById('kpi-views').textContent = formatter(totals.stars);
-      document.getElementById('kpi-views-sub').textContent = `${formatter(totals.repos_with_traffic)} repos có traffic API`;
+      document.getElementById('kpi-views-sub').textContent = `${formatter(totals.repos_with_traffic)} repos with traffic API`;
       document.getElementById('kpi-clones').textContent = formatter(totals.forks);
       document.getElementById('kpi-clones-sub').textContent = `${formatter(totals.watchers)} watchers`;
       document.getElementById('kpi-days').textContent = formatter(totals.repos);
@@ -598,7 +598,7 @@ async function loadData() {
     document.getElementById('live-label').textContent = 'error — check console';
     console.error('Traffic load error:', err);
     document.getElementById('bar-chart').innerHTML =
-      `<div class="empty">⚠️ Chưa có data.<br>Chạy workflow <code>track-all-repos.yml</code> để tạo <code>traffic/history/global.json</code></div>`;
+      `<div class="empty">⚠️ No data available yet.<br>Run workflow <code>track-all-repos.yml</code> to generate <code>traffic/history/global.json</code></div>`;
   }
 }
 
