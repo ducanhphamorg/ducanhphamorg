@@ -463,7 +463,7 @@ function buildRepoChart(repos) {
     col.className = 'bar-col';
     const sH = Math.round(((r.stars || 0) / maxCount) * 100);
     const fH = Math.round(((r.forks || 0) / maxCount) * 100);
-    const label = r.name.length > MAX_REPO_LABEL_LENGTH
+    const displayName = r.name.length > MAX_REPO_LABEL_LENGTH
       ? `${r.name.slice(0, MAX_REPO_LABEL_LENGTH)}…`
       : r.name;
     const tipHtml = `<b>${r.full_name || r.name}</b><br>⭐ ${r.stars || 0} stars<br>🍴 ${r.forks || 0} forks`;
@@ -482,7 +482,7 @@ function buildRepoChart(repos) {
 
     const lbl = document.createElement('div');
     lbl.className = 'bar-label';
-    lbl.textContent = label;
+    lbl.textContent = displayName;
 
     col.append(sBar, fBar, lbl);
     wrap.appendChild(col);
@@ -563,7 +563,7 @@ async function loadData() {
       document.getElementById('kpi-clones-label').textContent = '🍴 Total Forks';
       document.getElementById('kpi-days-label').textContent = '📦 Public Repos';
       document.getElementById('kpi-days-sub').textContent = 'repos tracked';
-      document.getElementById('kpi-snapshots-label').textContent = '👀 Watchers';
+      document.getElementById('kpi-snapshots-label').textContent = '📶 Traffic API Repos';
       document.getElementById('kpi-snapshots-sub').textContent = `token: ${data.traffic_api?.token_source || 'unknown'}`;
       document.getElementById('chart-title').textContent = '📈 Repo Stars & Forks (Fallback)';
       document.getElementById('legend-1').textContent = 'Stars';
@@ -578,11 +578,11 @@ async function loadData() {
       document.getElementById('paths-col-4').textContent = 'Forks';
 
       document.getElementById('kpi-views').textContent = formatter(totals.stars);
-      document.getElementById('kpi-views-sub').textContent = `${formatter(totals.repos_with_traffic)} repos with traffic API`;
+      document.getElementById('kpi-views-sub').textContent = `${formatter(totals.repos)} repos tracked`;
       document.getElementById('kpi-clones').textContent = formatter(totals.forks);
       document.getElementById('kpi-clones-sub').textContent = `${formatter(totals.watchers)} watchers`;
       document.getElementById('kpi-days').textContent = formatter(totals.repos);
-      document.getElementById('kpi-snapshots').textContent = formatter(totals.watchers);
+      document.getElementById('kpi-snapshots').textContent = formatter(totals.repos_with_traffic);
 
       const topRepos = repos
         .sort((a,b) => (b.stars || 0) - (a.stars || 0))

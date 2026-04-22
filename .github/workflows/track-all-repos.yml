@@ -180,10 +180,14 @@ jobs:
               at["clones"]        = max(at["clones"],       sum(d["count"]   for d in repo_hist["clones_by_day"].values()))
               at["unique_clones"] = max(at["unique_clones"],sum(d["uniques"] for d in repo_hist["clones_by_day"].values()))
 
-              if isinstance(referrers, list):
-                  repo_hist["referrers"] = referrers
-              if isinstance(paths, list):
-                  repo_hist["paths"] = paths
+              repo_hist["referrers"] = (
+                  referrers if isinstance(referrers, list)
+                  else (repo_hist.get("referrers") if isinstance(repo_hist.get("referrers"), list) else [])
+              )
+              repo_hist["paths"] = (
+                  paths if isinstance(paths, list)
+                  else (repo_hist.get("paths") if isinstance(repo_hist.get("paths"), list) else [])
+              )
 
               traffic_accessible = isinstance(views, dict) and isinstance(clones, dict)
               if traffic_accessible:
