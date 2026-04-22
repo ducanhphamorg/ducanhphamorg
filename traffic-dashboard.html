@@ -289,33 +289,33 @@
 <!-- KPI Cards -->
 <div class="kpi-grid" id="kpi-grid">
   <div class="kpi blue">
-    <div class="kpi-label">👁 Total Views</div>
+    <div class="kpi-label" id="kpi-views-label">👁 Total Views</div>
     <div class="kpi-value" id="kpi-views">—</div>
     <div class="kpi-sub" id="kpi-views-sub">— unique</div>
   </div>
   <div class="kpi green">
-    <div class="kpi-label">🔗 Clones</div>
+    <div class="kpi-label" id="kpi-clones-label">🔗 Clones</div>
     <div class="kpi-value" id="kpi-clones">—</div>
     <div class="kpi-sub" id="kpi-clones-sub">— unique</div>
   </div>
   <div class="kpi orange">
-    <div class="kpi-label">📅 Tracked Days</div>
+    <div class="kpi-label" id="kpi-days-label">📅 Tracked Days</div>
     <div class="kpi-value" id="kpi-days">—</div>
-    <div class="kpi-sub">days of history</div>
+    <div class="kpi-sub" id="kpi-days-sub">days of history</div>
   </div>
   <div class="kpi purple">
-    <div class="kpi-label">📸 Snapshots</div>
+    <div class="kpi-label" id="kpi-snapshots-label">📸 Snapshots</div>
     <div class="kpi-value" id="kpi-snapshots">—</div>
-    <div class="kpi-sub">hourly records</div>
+    <div class="kpi-sub" id="kpi-snapshots-sub">hourly records</div>
   </div>
 </div>
 
 <!-- Chart -->
 <section>
-  <h2>📈 Daily Views & Clones</h2>
+  <h2 id="chart-title">📈 Daily Views & Clones</h2>
   <div class="legend">
-    <div class="legend-item"><span class="legend-dot" style="background:var(--accent)"></span> Views</div>
-    <div class="legend-item"><span class="legend-dot" style="background:var(--orange)"></span> Clones</div>
+    <div class="legend-item"><span class="legend-dot" style="background:var(--accent)"></span> <span id="legend-1">Views</span></div>
+    <div class="legend-item"><span class="legend-dot" style="background:var(--orange)"></span> <span id="legend-2">Clones</span></div>
   </div>
   <div class="tabs" id="chart-tabs">
     <button class="tab active" data-range="14">14 days</button>
@@ -331,14 +331,14 @@
 
 <!-- Referrers -->
 <section>
-  <h2>🔍 Top Referrers</h2>
+  <h2 id="ref-title">🔍 Top Referrers</h2>
   <table id="ref-table">
     <thead>
       <tr>
-        <th>Source</th>
+        <th id="ref-col-1">Source</th>
         <th>Bar</th>
-        <th style="text-align:right">Views</th>
-        <th style="text-align:right">Unique</th>
+        <th id="ref-col-3" style="text-align:right">Views</th>
+        <th id="ref-col-4" style="text-align:right">Unique</th>
       </tr>
     </thead>
     <tbody id="ref-body">
@@ -349,14 +349,14 @@
 
 <!-- Popular paths -->
 <section>
-  <h2>📄 Popular Paths</h2>
+  <h2 id="paths-title">📄 Popular Paths</h2>
   <table>
     <thead>
       <tr>
-        <th>Path</th>
+        <th id="paths-col-1">Path</th>
         <th>Bar</th>
-        <th style="text-align:right">Views</th>
-        <th style="text-align:right">Unique</th>
+        <th id="paths-col-3" style="text-align:right">Views</th>
+        <th id="paths-col-4" style="text-align:right">Unique</th>
       </tr>
     </thead>
     <tbody id="paths-body">
@@ -368,12 +368,9 @@
 <div class="updated" id="updated-label"></div>
 
 <script>
-// ── CONFIG ────────────────────────────────────────────────────────────────────
-// Thay RAW_URL bằng URL raw của file traffic/history/global.json trên repo của bạn
-// VD: https://raw.githubusercontent.com/ducanhphamorg/ducanhphamorg/main/traffic/history/global.json
 const RAW_URL = 'https://raw.githubusercontent.com/ducanhphamorg/ducanhphamorg/main/traffic/history/global.json';
+const MAX_REPO_LABEL_LENGTH = 10;
 
-// ── TOOLTIP ───────────────────────────────────────────────────────────────────
 const tip = document.getElementById('tooltip');
 function showTip(e, html) {
   tip.innerHTML = html;
@@ -387,7 +384,6 @@ function moveTip(e) {
 function hideTip() { tip.classList.remove('show'); }
 document.addEventListener('mousemove', e => { if(tip.classList.contains('show')) moveTip(e); });
 
-// ── CHART ─────────────────────────────────────────────────────────────────────
 let chartRange = 14;
 let allViewDays = [], allCloneDays = [];
 
@@ -450,7 +446,49 @@ function buildChart(viewDays, cloneDays, range) {
   });
 }
 
-// ── TABLE ─────────────────────────────────────────────────────────────────────
+function buildRepoChart(repos) {
+  const wrap = document.getElementById('bar-chart');
+  wrap.innerHTML = '';
+  if (!repos.length) {
+    wrap.innerHTML = '<div class="empty">No repositories to display</div>';
+    return;
+  }
+
+  const maxCount = Math.max(
+    1,
+    repos.reduce((max, r) => Math.max(max, r.stars || 0, r.forks || 0), 0)
+  );
+  repos.forEach(r => {
+    const col = document.createElement('div');
+    col.className = 'bar-col';
+    const sH = Math.round(((r.stars || 0) / maxCount) * 100);
+    const fH = Math.round(((r.forks || 0) / maxCount) * 100);
+    const displayName = r.name.length > MAX_REPO_LABEL_LENGTH
+      ? `${r.name.slice(0, MAX_REPO_LABEL_LENGTH)}…`
+      : r.name;
+    const tipHtml = `<b>${r.full_name || r.name}</b><br>⭐ ${r.stars || 0} stars<br>🍴 ${r.forks || 0} forks`;
+
+    const sBar = document.createElement('div');
+    sBar.className = 'bar bar-views';
+    sBar.style.height = Math.max(sH, 1) + '%';
+    sBar.addEventListener('mouseenter', e => showTip(e, tipHtml));
+    sBar.addEventListener('mouseleave', hideTip);
+
+    const fBar = document.createElement('div');
+    fBar.className = 'bar bar-clones';
+    fBar.style.height = Math.max(fH, 1) + '%';
+    fBar.addEventListener('mouseenter', e => showTip(e, tipHtml));
+    fBar.addEventListener('mouseleave', hideTip);
+
+    const lbl = document.createElement('div');
+    lbl.className = 'bar-label';
+    lbl.textContent = displayName;
+
+    col.append(sBar, fBar, lbl);
+    wrap.appendChild(col);
+  });
+}
+
 function buildTable(items, tbodyId, colorVar) {
   const tbody = document.getElementById(tbodyId);
   if (!items || !items.length) {
@@ -471,52 +509,105 @@ function buildTable(items, tbodyId, colorVar) {
   }).join('');
 }
 
-// ── MAIN FETCH ────────────────────────────────────────────────────────────────
 async function loadData() {
   try {
     const res = await fetch(RAW_URL + '?t=' + Date.now());
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
+    const totals = data.totals || {};
+    const repos = Object.values(data.repos || {});
+    const trafficAvailable = Boolean(data.traffic_api?.enabled);
+    const formatter = n => (Number(n || 0)).toLocaleString();
 
-    const at = data.all_time || {};
+    document.getElementById('kpi-days').textContent = formatter(data.summary?.length || 0);
+    document.getElementById('kpi-snapshots').textContent = formatter(data.summary?.length || 0);
 
-    // KPIs
-    document.getElementById('kpi-views').textContent     = (at.views         || 0).toLocaleString();
-    document.getElementById('kpi-views-sub').textContent = `${(at.unique_views  || 0).toLocaleString()} unique`;
-    document.getElementById('kpi-clones').textContent    = (at.clones        || 0).toLocaleString();
-    document.getElementById('kpi-clones-sub').textContent= `${(at.unique_clones || 0).toLocaleString()} unique`;
+    if (trafficAvailable) {
+      document.getElementById('kpi-views-label').textContent = '👁 Total Views';
+      document.getElementById('kpi-clones-label').textContent = '🔗 Clones';
+      document.getElementById('kpi-days-label').textContent = '📅 Tracked Days';
+      document.getElementById('kpi-days-sub').textContent = 'days of history';
+      document.getElementById('kpi-snapshots-label').textContent = '📸 Snapshots';
+      document.getElementById('kpi-snapshots-sub').textContent = 'hourly records';
+      document.getElementById('chart-title').textContent = '📈 Daily Views & Clones';
+      document.getElementById('legend-1').textContent = 'Views';
+      document.getElementById('legend-2').textContent = 'Clones';
+      document.getElementById('ref-title').textContent = '🔍 Top Referrers';
+      document.getElementById('paths-title').textContent = '📄 Popular Paths';
+      document.getElementById('ref-col-1').textContent = 'Source';
+      document.getElementById('ref-col-3').textContent = 'Views';
+      document.getElementById('ref-col-4').textContent = 'Unique';
+      document.getElementById('paths-col-1').textContent = 'Path';
+      document.getElementById('paths-col-3').textContent = 'Views';
+      document.getElementById('paths-col-4').textContent = 'Unique';
 
-    const vDays = Object.values(data.views_by_day  || {}).sort((a,b) => a.timestamp > b.timestamp ? 1:-1);
-    const cDays = Object.values(data.clones_by_day || {}).sort((a,b) => a.timestamp > b.timestamp ? 1:-1);
+      document.getElementById('kpi-views').textContent = formatter(totals.views);
+      document.getElementById('kpi-views-sub').textContent = `${formatter(totals.unique_views)} unique`;
+      document.getElementById('kpi-clones').textContent = formatter(totals.clones);
+      document.getElementById('kpi-clones-sub').textContent = `${formatter(totals.unique_clones)} unique`;
 
-    document.getElementById('kpi-days').textContent      = Math.max(vDays.length, cDays.length);
-    document.getElementById('kpi-snapshots').textContent = (data.snapshots || []).length;
+      const vDays = Object.values(data.views_by_day || {}).sort((a,b) => a.timestamp > b.timestamp ? 1 : -1);
+      const cDays = Object.values(data.clones_by_day || {}).sort((a,b) => a.timestamp > b.timestamp ? 1 : -1);
+      document.getElementById('kpi-days').textContent = formatter(Math.max(vDays.length, cDays.length));
+      document.getElementById('kpi-snapshots').textContent = formatter((data.summary || []).length);
 
-    allViewDays  = vDays.map(d => ({ts: d.timestamp, count: d.count, uniques: d.uniques}));
-    allCloneDays = cDays.map(d => ({ts: d.timestamp, count: d.count, uniques: d.uniques}));
-    buildChart(allViewDays, allCloneDays, chartRange);
+      allViewDays = vDays.map(d => ({ts: d.timestamp, count: d.count, uniques: d.uniques}));
+      allCloneDays = cDays.map(d => ({ts: d.timestamp, count: d.count, uniques: d.uniques}));
+      buildChart(allViewDays, allCloneDays, chartRange);
 
-    // Tables
-    buildTable(data.referrers || [], 'ref-body',   'var(--accent)');
-    buildTable(data.paths     || [], 'paths-body', 'var(--purple)');
+      buildTable(data.referrers || [], 'ref-body', 'var(--accent)');
+      buildTable(data.paths || [], 'paths-body', 'var(--purple)');
+      document.getElementById('live-label').textContent = 'live traffic data';
+    } else {
+      document.getElementById('kpi-views-label').textContent = '⭐ Total Stars';
+      document.getElementById('kpi-clones-label').textContent = '🍴 Total Forks';
+      document.getElementById('kpi-days-label').textContent = '📦 Public Repos';
+      document.getElementById('kpi-days-sub').textContent = 'repos tracked';
+      document.getElementById('kpi-snapshots-label').textContent = '📶 Traffic API Repos';
+      document.getElementById('kpi-snapshots-sub').textContent = `token: ${data.traffic_api?.token_source || 'unknown'}`;
+      document.getElementById('chart-title').textContent = '📈 Repo Stars & Forks (Fallback)';
+      document.getElementById('legend-1').textContent = 'Stars';
+      document.getElementById('legend-2').textContent = 'Forks';
+      document.getElementById('ref-title').textContent = '🔝 Top Repos by Stars';
+      document.getElementById('paths-title').textContent = '📄 Repo Watchers';
+      document.getElementById('ref-col-1').textContent = 'Repository';
+      document.getElementById('ref-col-3').textContent = 'Stars';
+      document.getElementById('ref-col-4').textContent = 'Forks';
+      document.getElementById('paths-col-1').textContent = 'Repository';
+      document.getElementById('paths-col-3').textContent = 'Watchers';
+      document.getElementById('paths-col-4').textContent = 'Forks';
 
-    // Last updated
+      document.getElementById('kpi-views').textContent = formatter(totals.stars);
+      document.getElementById('kpi-views-sub').textContent = `${formatter(totals.repos)} repos tracked`;
+      document.getElementById('kpi-clones').textContent = formatter(totals.forks);
+      document.getElementById('kpi-clones-sub').textContent = `${formatter(totals.watchers)} watchers`;
+      document.getElementById('kpi-days').textContent = formatter(totals.repos);
+      document.getElementById('kpi-snapshots').textContent = formatter(totals.repos_with_traffic);
+
+      const topRepos = repos
+        .sort((a,b) => (b.stars || 0) - (a.stars || 0))
+        .slice(0, 20)
+        .map(r => ({name: r.name, full_name: r.full_name, stars: r.stars || 0, forks: r.forks || 0, watchers: r.watchers || 0}));
+
+      buildRepoChart(topRepos.slice(0, 14));
+      buildTable(topRepos.map(r => ({referrer: r.name, count: r.stars, uniques: r.forks})), 'ref-body', 'var(--accent)');
+      buildTable(topRepos.map(r => ({path: r.name, count: r.watchers, uniques: r.forks})), 'paths-body', 'var(--purple)');
+      document.getElementById('live-label').textContent = 'fallback real GitHub data';
+    }
+
     if (data.last_updated) {
       const d = new Date(data.last_updated);
       document.getElementById('updated-label').textContent =
         `Last updated: ${d.toLocaleString('vi-VN', {timeZone:'Asia/Ho_Chi_Minh'})} (GMT+7)`;
-      document.getElementById('live-label').textContent = 'live data';
     }
   } catch (err) {
     document.getElementById('live-label').textContent = 'error — check console';
     console.error('Traffic load error:', err);
-    // Show instructions if data not yet available
     document.getElementById('bar-chart').innerHTML =
-      `<div class="empty">⚠️ Chưa có data.<br>Chạy workflow <code>track-traffic.yml</code> ít nhất 1 lần để tạo file <code>traffic/history/accumulated.json</code></div>`;
+      `<div class="empty">⚠️ No data available yet.<br>Run workflow <code>track-all-repos.yml</code> to generate <code>traffic/history/global.json</code></div>`;
   }
 }
 
-// ── TABS ──────────────────────────────────────────────────────────────────────
 document.getElementById('chart-tabs').addEventListener('click', e => {
   const btn = e.target.closest('[data-range]');
   if (!btn) return;
@@ -526,9 +617,7 @@ document.getElementById('chart-tabs').addEventListener('click', e => {
   buildChart(allViewDays, allCloneDays, chartRange);
 });
 
-// ── INIT ──────────────────────────────────────────────────────────────────────
 loadData();
-// Auto-refresh mỗi 5 phút
 setInterval(loadData, 5 * 60 * 1000);
 </script>
 </body>
