@@ -218,6 +218,16 @@ jobs:
               aggregate_rank(agg_referrers, repo_hist.get("referrers", []), "referrer")
               aggregate_rank(agg_paths, repo_hist.get("paths", []), "path")
 
+          # ── 4a. Prune deleted repos from global history ───────────────────────
+          current_repo_names = {r["name"] for r in repos}
+          deleted_names = [n for n in list(global_hist["repos"].keys()) if n not in current_repo_names]
+          for n in deleted_names:
+              del global_hist["repos"][n]
+              stale_path = f"{OUTDIR}/repos/{n}.json"
+              if os.path.exists(stale_path):
+                  os.remove(stale_path)
+                  print(f"  🗑 Removed stale data for deleted repo: {n}")
+
           # ── 4. Global summary snapshot ────────────────────────────────────────
           global_hist["summary"].append(snapshot_row)
           global_hist["summary"] = global_hist["summary"][-720:]  # 30d
@@ -258,6 +268,19 @@ jobs:
           }
 
           save_json(global_path, global_hist)
+
+          # ── 5b. Write small badges.json for shields.io ───────────────────────
+          badges_path = f"{OUTDIR}/history/badges.json"
+          save_json(badges_path, {
+              "views":          total_views,
+              "unique_views":   total_unique_views,
+              "clones":         total_clones,
+              "unique_clones":  total_unique_clones,
+              "stars":          total_stars,
+              "watchers":       total_watchers,
+              "forks":          total_forks,
+              "repos":          len(global_hist["repos"]),
+          })
 
           # ── 5. Print totals ───────────────────────────────────────────────────
           print(f"\n✅ Done — {len(repos)} repos | {total_views} total views | {total_clones} total clones")

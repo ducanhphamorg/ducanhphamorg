@@ -139,82 +139,6 @@
       "top_referrer": "—",
       "top_path": "—",
       "traffic_accessible": false
-    },
-    "Yii2_Project": {
-      "name": "Yii2_Project",
-      "full_name": "ducanhphamorg/Yii2_Project",
-      "description": "Practical learning with Yii version 2",
-      "is_fork": false,
-      "stars": 0,
-      "watchers": 0,
-      "forks": 0,
-      "all_time": {
-        "views": 0,
-        "unique_views": 0,
-        "clones": 0,
-        "unique_clones": 0
-      },
-      "views_14d": 0,
-      "clones_14d": 0,
-      "top_referrer": "—",
-      "top_path": "—"
-    },
-    "Yii-": {
-      "name": "Yii-",
-      "full_name": "ducanhphamorg/Yii-",
-      "description": "Yii2 Framework, Docker, PostgreSQL và JWT Authentication.",
-      "is_fork": false,
-      "stars": 0,
-      "watchers": 0,
-      "forks": 0,
-      "all_time": {
-        "views": 0,
-        "unique_views": 0,
-        "clones": 0,
-        "unique_clones": 0
-      },
-      "views_14d": 0,
-      "clones_14d": 0,
-      "top_referrer": "—",
-      "top_path": "—"
-    },
-    "Yii-Project": {
-      "name": "Yii-Project",
-      "full_name": "ducanhphamorg/Yii-Project",
-      "description": "",
-      "is_fork": false,
-      "stars": 0,
-      "watchers": 0,
-      "forks": 0,
-      "all_time": {
-        "views": 0,
-        "unique_views": 0,
-        "clones": 0,
-        "unique_clones": 0
-      },
-      "views_14d": 0,
-      "clones_14d": 0,
-      "top_referrer": "—",
-      "top_path": "—"
-    },
-    "Yii2-Jwt-PostgreSQL-Docker": {
-      "name": "Yii2-Jwt-PostgreSQL-Docker",
-      "full_name": "ducanhphamorg/Yii2-Jwt-PostgreSQL-Docker",
-      "description": "",
-      "is_fork": false,
-      "stars": 0,
-      "watchers": 0,
-      "forks": 0,
-      "all_time": {
-        "views": 0,
-        "unique_views": 0,
-        "clones": 0,
-        "unique_clones": 0
-      },
-      "views_14d": 0,
-      "clones_14d": 0,
-      "top_referrer": "—",
-      "top_path": "—"
     }
   },
   "summary": [
@@ -8455,7 +8379,7 @@
     "stars": 16,
     "watchers": 16,
     "forks": 1,
-    "repos": 11,
+    "repos": 7,
     "repos_with_traffic": 0
   },
   "traffic_api": {
