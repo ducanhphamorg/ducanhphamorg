@@ -386,6 +386,8 @@ document.addEventListener('mousemove', e => { if(tip.classList.contains('show'))
 
 let chartRange = 14;
 let allViewDays = [], allCloneDays = [];
+let isFallbackMode = false;
+let cachedTopRepos = [];
 
 function buildChart(viewDays, cloneDays, range) {
   const wrap = document.getElementById('bar-chart');
@@ -523,6 +525,8 @@ async function loadData() {
     document.getElementById('kpi-snapshots').textContent = formatter(data.summary?.length || 0);
 
     if (trafficAvailable) {
+      isFallbackMode = false;
+      document.getElementById('chart-tabs').style.display = '';
       document.getElementById('kpi-views-label').textContent = '👁 Total Views';
       document.getElementById('kpi-clones-label').textContent = '🔗 Clones';
       document.getElementById('kpi-days-label').textContent = '📅 Tracked Days';
@@ -559,12 +563,14 @@ async function loadData() {
       buildTable(data.paths || [], 'paths-body', 'var(--purple)');
       document.getElementById('live-label').textContent = 'live traffic data';
     } else {
+      isFallbackMode = true;
+      document.getElementById('chart-tabs').style.display = 'none';
       document.getElementById('kpi-views-label').textContent = '⭐ Total Stars';
       document.getElementById('kpi-clones-label').textContent = '🍴 Total Forks';
       document.getElementById('kpi-days-label').textContent = '📦 Public Repos';
       document.getElementById('kpi-days-sub').textContent = 'repos tracked';
-      document.getElementById('kpi-snapshots-label').textContent = '📶 Traffic API Repos';
-      document.getElementById('kpi-snapshots-sub').textContent = `token: ${data.traffic_api?.token_source || 'unknown'}`;
+      document.getElementById('kpi-snapshots-label').textContent = '📊 Snapshots';
+      document.getElementById('kpi-snapshots-sub').textContent = 'hourly records';
       document.getElementById('chart-title').textContent = '📈 Repo Stars & Forks (Fallback)';
       document.getElementById('legend-1').textContent = 'Stars';
       document.getElementById('legend-2').textContent = 'Forks';
@@ -582,14 +588,15 @@ async function loadData() {
       document.getElementById('kpi-clones').textContent = formatter(totals.forks);
       document.getElementById('kpi-clones-sub').textContent = `${formatter(totals.watchers)} watchers`;
       document.getElementById('kpi-days').textContent = formatter(totals.repos);
-      document.getElementById('kpi-snapshots').textContent = formatter(totals.repos_with_traffic);
+      document.getElementById('kpi-snapshots').textContent = formatter((data.summary || []).length);
 
       const topRepos = repos
         .sort((a,b) => (b.stars || 0) - (a.stars || 0))
         .slice(0, 20)
         .map(r => ({name: r.name, full_name: r.full_name, stars: r.stars || 0, forks: r.forks || 0, watchers: r.watchers || 0}));
 
-      buildRepoChart(topRepos.slice(0, 14));
+      cachedTopRepos = topRepos.slice(0, 14);
+      buildRepoChart(cachedTopRepos);
       buildTable(topRepos.map(r => ({referrer: r.name, count: r.stars, uniques: r.forks})), 'ref-body', 'var(--accent)');
       buildTable(topRepos.map(r => ({path: r.name, count: r.watchers, uniques: r.forks})), 'paths-body', 'var(--purple)');
       document.getElementById('live-label').textContent = 'fallback real GitHub data';
@@ -614,7 +621,11 @@ document.getElementById('chart-tabs').addEventListener('click', e => {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
   chartRange = btn.dataset.range === 'all' ? 999 : parseInt(btn.dataset.range);
-  buildChart(allViewDays, allCloneDays, chartRange);
+  if (isFallbackMode) {
+    buildRepoChart(cachedTopRepos);
+  } else {
+    buildChart(allViewDays, allCloneDays, chartRange);
+  }
 });
 
 loadData();
