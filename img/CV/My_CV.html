@@ -947,9 +947,8 @@ const OWNER_LOGIN = 'ducanhphamorg';
 const REPO_FULL   = 'ducanhphamorg/ducanhphamorg';
 const CV_FILE_PATH = 'img/CV/My_CV.html';
 
-// Chuỗi mã hóa băm một chiều SHA-256 an toàn của Mật khẩu Chủ sở hữu (Không thể dịch ngược / One-way cryptographic hash)
-// Mật khẩu thiết lập: DucAnh422003#!
-const OWNER_PASSWORD_HASH = '51425b31c7df5dcc02de10a0a283e132f468edbde44da8e98f28db52df889d05';
+// Chuỗi mã hóa băm một chiều chuẩn SHA-512 (512-bit / 128 ký tự hex) bảo mật của Mật khẩu Chủ sở hữu (One-way cryptographic hash / Không thể dịch ngược)
+const OWNER_PASSWORD_HASH = '82fb7344185aaa59e4c3e0c9a944cdd2241f7f44b935e06a1a07cd554c85e7f1cc502df874f8a451c615723cb872fdbbf5e4955b02ebdb2274e40cbaf28ecf6c';
 
 let ownerToken = sessionStorage.getItem('cv_owner_token') || '';
 let isOwnerVerified = false;
@@ -1083,55 +1082,21 @@ function isOwnerAuthenticated() {
   }
 }
 
-function sha256Pure(ascii) {
-  function r(v, a) { return (v >>> a) | (v << (32 - a)); }
-  const pow = Math.pow, maxW = pow(2, 32);
-  let res = '', w = [], len = ascii.length * 8, hash = [], k = [], pc = 0, comp = {};
-  for (let c = 2; pc < 64; c++) {
-    if (!comp[c]) {
-      for (let i = 0; i < 313; i += c) comp[i] = c;
-      hash[pc] = (pow(c, .5) * maxW) | 0;
-      k[pc++] = (pow(c, 1 / 3) * maxW) | 0;
-    }
-  }
-  hash = hash.slice(0, 8);
-  ascii += '\x80';
-  while ((ascii.length % 64) - 56) ascii += '\x00';
-  for (let i = 0; i < ascii.length; i++) w[i >> 2] |= ascii.charCodeAt(i) << ((3 - i) % 4) * 8;
-  w[w.length] = (len / maxW) | 0;
-  w[w.length] = len;
-  for (let j = 0; j < w.length;) {
-    const subW = w.slice(j, j += 16), oldH = hash;
-    hash = hash.slice(0, 8);
-    for (let i = 0; i < 64; i++) {
-      const w15 = subW[i - 15], w2 = subW[i - 2];
-      const a = hash[0], e = hash[4];
-      const t1 = hash[7] + (r(e, 6) ^ r(e, 11) ^ r(e, 25)) + ((e & hash[5]) ^ ((~e) & hash[6])) + k[i]
-        + (subW[i] = (i < 16) ? subW[i] : (subW[i - 16] + (r(w15, 7) ^ r(w15, 18) ^ (w15 >>> 3)) + subW[i - 7] + (r(w2, 17) ^ r(w2, 19) ^ (w2 >>> 10))) | 0);
-      const t2 = (r(a, 2) ^ r(a, 13) ^ r(a, 22)) + ((a & hash[1]) ^ (a & hash[2]) ^ (hash[1] & hash[2]));
-      hash = [(t1 + t2) | 0].concat(hash);
-      hash[4] = (hash[4] + t1) | 0;
-    }
-    for (let i = 0; i < 8; i++) hash[i] = (hash[i] + oldH[i]) | 0;
-  }
-  for (let i = 0; i < 8; i++) {
-    for (let j = 3; j >= 0; j--) {
-      const b = (hash[i] >> (j * 8)) & 255;
-      res += (b < 16 ? '0' : '') + b.toString(16);
-    }
-  }
-  return res;
-}
-
-async function computeSha256(str) {
+async function computeSha512(str) {
   try {
     if (typeof crypto !== 'undefined' && crypto.subtle && crypto.subtle.digest) {
       const buffer = new TextEncoder().encode(str);
-      const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
+      const hashBuffer = await crypto.subtle.digest('SHA-512', buffer);
       return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
     }
   } catch (_) {}
-  return sha256Pure(str);
+  if (typeof require !== 'undefined') {
+    try {
+      const crypto = require('crypto');
+      return crypto.createHash('sha512').update(str).digest('hex');
+    } catch (_) {}
+  }
+  throw new Error('Web Crypto API (SHA-512) is not available in this environment.');
 }
 
 function setStatus(id, type, msg) {
@@ -1170,7 +1135,7 @@ async function verifyOwnerPassword() {
   }
 
   setStatus('auth-status', 'info', 'Đang xác thực mật khẩu...');
-  const hash = await computeSha256(val);
+  const hash = await computeSha512(val);
   const isValid = (hash === OWNER_PASSWORD_HASH);
 
   if (!isValid) {
