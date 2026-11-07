@@ -253,37 +253,37 @@
   <!-- DOWNLOAD / PRINT DROPDOWN -->
   <div class="bar-dropdown" id="cv-download-dropdown">
     <button class="bar-btn bar-btn-primary" id="btn-download-dropdown" onclick="toggleDownloadDropdown(event)" aria-haspopup="true" aria-expanded="false">
-      <span>📥 Tải CV / In ấn</span> <i class="fas fa-chevron-down" style="font-size:10px;"></i>
+      <span>📥 Download CV / Print</span> <i class="fas fa-chevron-down" style="font-size:10px;"></i>
     </button>
     <div class="dropdown-menu" id="download-menu">
       <a class="dropdown-item" id="opt-download-pdf" href="https://raw.githubusercontent.com/ducanhphamorg/ducanhphamorg/main/CV_Latex/CV.pdf" target="_blank" rel="noopener" download="Pham_Duc_Anh_CV.pdf" onclick="closeDownloadDropdown();">
         <div class="item-icon">📄</div>
         <div class="item-text">
-          <div class="item-title">Tải PDF Bản Gốc (LaTeX A4)</div>
-          <div class="item-desc">Mở / tải file PDF A4 trực tiếp trong tab mới</div>
+          <div class="item-title">Download Original PDF (LaTeX A4)</div>
+          <div class="item-desc">Open / download original vector A4 PDF in a new tab</div>
         </div>
       </a>
       <button type="button" class="dropdown-item" onclick="triggerPrintCv();">
         <div class="item-icon">🖨️</div>
         <div class="item-text">
-          <div class="item-title">In ấn / Xuất PDF Web (Trình duyệt)</div>
-          <div class="item-desc">Mở hộp thoại in (Chọn "Save as PDF" để xuất PDF vector)</div>
+          <div class="item-title">Print / Export Web PDF (Browser)</div>
+          <div class="item-desc">Open browser print dialog (Select "Save as PDF" to export)</div>
         </div>
       </button>
       <button type="button" class="dropdown-item" onclick="copyShareCvLink();">
         <div class="item-icon">🔗</div>
         <div class="item-text">
-          <div class="item-title">Sao chép Link chia sẻ Online</div>
-          <div class="item-desc">Copy liên kết để gửi cho nhà tuyển dụng qua Zalo, Email</div>
+          <div class="item-title">Copy Shareable Online Link</div>
+          <div class="item-desc">Copy link to share with recruiters via Email, LinkedIn</div>
         </div>
       </button>
     </div>
   </div>
 
-  <span id="owner-badge" class="owner-pill" style="display:none;">🛠️ Chủ sở hữu</span>
-  <button id="btn-open-editor" class="bar-btn bar-btn-gold" style="display:none;" onclick="openEditorModal('template')">✏️ Quản lý &amp; Cập nhật CV</button>
-  <button id="btn-owner-logout" class="bar-btn bar-btn-ghost" style="display:none;" onclick="logoutOwner()">🔒 Thoát</button>
-  <button class="bar-btn bar-btn-ghost" onclick="document.getElementById('resume-bar').style.display='none';document.body.style.paddingTop='24px';">✖ Ẩn thanh công cụ</button>
+  <span id="owner-badge" class="owner-pill" style="display:none;">🛠️ Owner</span>
+  <button id="btn-open-editor" class="bar-btn bar-btn-gold" style="display:none;" onclick="openEditorModal('template')">✏️ Manage &amp; Update CV</button>
+  <button id="btn-owner-logout" class="bar-btn bar-btn-ghost" style="display:none;" onclick="logoutOwner()">🔒 Logout</button>
+  <button class="bar-btn bar-btn-ghost" onclick="document.getElementById('resume-bar').style.display='none';document.body.style.paddingTop='24px';">✖ Hide Toolbar</button>
 </div>
 
 <!-- TOAST NOTIFICATION -->
@@ -305,7 +305,7 @@
       Fresh IT graduate looking for my first internship in software development. Throughout university, I completed several academic projects covering web and mobile development — learning by doing and figuring things out step by step. I know I am still at the beginning and have a lot to grow. I am eager to bring a proactive attitude and a genuine willingness to learn into a real working environment — and to grow alongside experienced developers.
     </p>
 
-    <div class="sb-lbl">Skill</div>
+    <div class="sb-lbl">Skills</div>
     <ul class="sk-list" id="cv-skills">
       <li>Attitude: Positive, proactive and responsible at work</li>
       <li>Teamwork: Listening, coordinating, and communicating effectively</li>
@@ -313,7 +313,7 @@
       <li><strong>Technical:</strong> HTML, CSS, JavaScript, PHP, Java, C#, Python, MySQL</li>
     </ul>
 
-    <div class="sb-lbl">Language</div>
+    <div class="sb-lbl">Languages</div>
     <div id="cv-languages">
       <div class="lang-row">
         <span class="lang-name">English</span>
@@ -321,7 +321,7 @@
       </div>
     </div>
 
-    <div class="sb-lbl">Basic Technologies</div>
+    <div class="sb-lbl">Technologies</div>
     <div class="tech-cloud" id="cv-tech-cloud">
       <span class="pill p-core">HTML/CSS</span>
       <span class="pill p-core">JavaScript</span>
@@ -345,7 +345,7 @@
 
     <div class="sb-div"></div>
 
-    <div class="sb-lbl">Achievement</div>
+    <div class="sb-lbl">Achievements</div>
     <div class="ach-box">
       <div class="ach-icon">🏆</div>
       <div class="ach-txt">
@@ -617,23 +617,23 @@
 <div class="modal-backdrop" id="auth-modal">
   <div class="modal-card" style="max-width:440px;">
     <div class="modal-header">
-      <h2>🔐 Xác thực Chủ sở hữu (@ducanhphamorg)</h2>
+      <h2>🔐 Owner Authentication (@ducanhphamorg)</h2>
       <button class="modal-close" onclick="closeAuthModal()">×</button>
     </div>
     <div class="modal-body">
       <p style="font-size:13px;color:#4b5563;line-height:1.5;margin-bottom:12px;">
-        Chế độ dành riêng cho chủ nhân CV <strong>@ducanhphamorg</strong>.<br>
-        Vui lòng nhập <strong>Mật khẩu quản trị</strong> để mở khóa quyền chỉnh sửa và upload CV mới:
+        Owner Mode for <strong>@ducanhphamorg</strong>.<br>
+        Please enter your <strong>Admin Password</strong> to unlock editing and management:
       </p>
       <div class="form-field">
-        <label for="owner-password-input">Mật khẩu Chủ sở hữu (Admin Password)</label>
-        <input type="password" id="owner-password-input" placeholder="Nhập mật khẩu của bạn..." autocomplete="current-password" onkeydown="if(event.key==='Enter')verifyOwnerPassword()"/>
+        <label for="owner-password-input">Owner Password (Admin Password)</label>
+        <input type="password" id="owner-password-input" placeholder="Enter password..." autocomplete="current-password" onkeydown="if(event.key==='Enter')verifyOwnerPassword()"/>
       </div>
       <div id="auth-status" class="status-msg"></div>
     </div>
     <div class="modal-footer">
-      <button class="sm-btn" onclick="closeAuthModal()">Hủy</button>
-      <button class="bar-btn bar-btn-gold" onclick="verifyOwnerPassword()">🔑 Xác thực &amp; Mở khóa</button>
+      <button class="sm-btn" onclick="closeAuthModal()">Cancel</button>
+      <button class="bar-btn bar-btn-gold" onclick="verifyOwnerPassword()">🔑 Authenticate &amp; Unlock</button>
     </div>
   </div>
 </div>
@@ -642,12 +642,12 @@
 <div class="modal-backdrop" id="editor-modal">
   <div class="modal-card">
     <div class="modal-header">
-      <h2>🛠️ Quản lý &amp; Cập nhật CV (@ducanhphamorg)</h2>
+      <h2>🛠️ Manage &amp; Update CV (@ducanhphamorg)</h2>
       <button class="modal-close" onclick="closeEditorModal()">×</button>
     </div>
     <div class="modal-tabs">
-      <button class="modal-tab active" id="tab-btn-template" onclick="switchEditorTab('template')">✏️ Chỉnh sửa Template CV</button>
-      <button class="modal-tab" id="tab-btn-upload" onclick="switchEditorTab('upload')">📤 Upload File CV mới</button>
+      <button class="modal-tab active" id="tab-btn-template" onclick="switchEditorTab('template')">✏️ Edit CV Template</button>
+      <button class="modal-tab" id="tab-btn-upload" onclick="switchEditorTab('upload')">📤 Upload CV Files</button>
     </div>
 
     <!-- TAB 1: STRUCTURED TEMPLATE EDITOR -->
@@ -810,10 +810,10 @@
     <div class="modal-footer">
       <div id="editor-status" class="status-msg" style="flex:1;"></div>
       <div id="editor-footer-actions" style="display:flex;gap:8px;margin-left:auto;flex-wrap:wrap;">
-        <button type="button" class="sm-btn" onclick="applyFormToPreview()">👁️ Xem trước (Live Preview)</button>
-        <button type="button" class="sm-btn" onclick="downloadUpdatedHtml()">💾 Lưu file My_CV.html về máy</button>
-        <button type="button" class="bar-btn bar-btn-gold" onclick="saveViaGitHubWebSession()">🐙 Copy HTML &amp; Mở GitHub.com Commit</button>
-        <button type="button" id="btn-api-save" class="sm-btn sm-btn-teal" onclick="saveTemplateToGitHub()">⚡ Commit nhanh (Local API)</button>
+        <button type="button" class="sm-btn" onclick="applyFormToPreview()">👁️ Live Preview</button>
+        <button type="button" class="sm-btn" onclick="downloadUpdatedHtml()">💾 Download My_CV.html</button>
+        <button type="button" class="bar-btn bar-btn-gold" onclick="saveViaGitHubWebSession()">🐙 Copy HTML &amp; Open GitHub Commit</button>
+        <button type="button" id="btn-api-save" class="sm-btn sm-btn-teal" onclick="saveTemplateToGitHub()">⚡ Quick Commit (Local API)</button>
       </div>
     </div>
   </div>
@@ -1201,13 +1201,13 @@ async function verifyOwnerPassword() {
     return;
   }
 
-  setStatus('auth-status', 'info', 'Đang xác thực mật khẩu...');
+  setStatus('auth-status', 'info', 'Verifying password...');
   try {
     const hash = await computeSha512(val);
     const isValid = (hash === OWNER_PASSWORD_HASH);
 
     if (!isValid) {
-      setStatus('auth-status', 'err', '❌ Mật khẩu không chính xác! Vui lòng thử lại.');
+      setStatus('auth-status', 'err', '❌ Incorrect password / Mật khẩu không chính xác! Please try again.');
       inputEl.value = '';
       if (inputEl.focus) inputEl.focus();
       return;
@@ -1215,17 +1215,17 @@ async function verifyOwnerPassword() {
 
     safeSessionSet('cv_owner_auth', 'true');
     isOwnerVerified = true;
-    setStatus('auth-status', 'ok', '✅ Mật khẩu chính xác! Đang mở khóa...');
+    setStatus('auth-status', 'ok', '✅ Password verified / Mật khẩu chính xác! Unlocking...');
 
     setTimeout(() => {
       closeAuthModal();
       updateOwnerUI(true);
       openEditorModal('template');
-      showToast('🎉 Đã mở khóa Chế độ Chủ sở hữu (@ducanhphamorg)!');
+      showToast('🎉 Owner Mode unlocked (@ducanhphamorg)!');
     }, 300);
   } catch (err) {
-    console.error('Lỗi tính toán mã băm SHA-512:', err);
-    setStatus('auth-status', 'err', '⚠️ Lỗi môi trường xác thực: ' + (err.message || err));
+    console.error('SHA-512 calculation error:', err);
+    setStatus('auth-status', 'err', '⚠️ Authentication error: ' + (err.message || err));
   }
 }
 
@@ -1350,20 +1350,20 @@ function copyShareCvLink() {
   } catch (_) {}
 
   if (ok) {
-    showToast('📋 Đã copy link chia sẻ CV vào Clipboard!');
+    showToast('📋 Shareable CV link copied to clipboard!');
     return;
   }
 
   if (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(shareUrl).then(() => {
-      showToast('📋 Đã copy link chia sẻ CV vào Clipboard!');
+      showToast('📋 Shareable CV link copied to clipboard!');
     }).catch(() => {
-      prompt('Copy link chia sẻ CV bên dưới:', shareUrl);
+      prompt('Copy CV share link below:', shareUrl);
     });
     return;
   }
 
-  prompt('Copy link chia sẻ CV bên dưới:', shareUrl);
+  prompt('Copy CV share link below:', shareUrl);
 }
 
 async function verifyOwnerToken(silent = false) {
@@ -1421,7 +1421,7 @@ function logoutOwner() {
   isOwnerVerified = false;
   updateOwnerUI(false);
   closeEditorModal();
-  showToast('🔒 Đã đăng xuất khỏi Chế độ Chủ sở hữu.');
+  showToast('🔒 Logged out of Owner Mode.');
 }
 
 // ── EDITOR MODAL & FORM POPULATION ─────────────────────────────────────────
@@ -1607,7 +1607,7 @@ function applyFormToPreview() {
   cvData = collectFormData();
   renderCV(cvData);
   setTemplateJsonText(safeJsonForScript(cvData));
-  setStatus('editor-status', 'ok', 'Đã cập nhật bản xem trước trên trang CV! Bấm "Lưu & Commit lên GitHub" để lưu vĩnh viễn.');
+  setStatus('editor-status', 'ok', '✅ Live preview updated on CV sheet! Click "Copy HTML & Open GitHub Commit" to save permanently.');
 }
 
 function injectDataIntoHtmlSource(baseHtml) {
@@ -1665,7 +1665,7 @@ function downloadUpdatedHtml() {
   a.download = 'My_CV.html';
   a.click();
   URL.revokeObjectURL(a.href);
-  setStatus('editor-status', 'ok', '✅ Đã tải file My_CV.html mới về máy tính!');
+  setStatus('editor-status', 'ok', '✅ My_CV.html downloaded successfully!');
 }
 
 function saveViaGitHubWebSession() {
@@ -1682,8 +1682,8 @@ function saveViaGitHubWebSession() {
       'editor-status',
       'ok',
       copied
-        ? '✅ Đã copy toàn bộ code CV mới vào Clipboard và mở trang GitHub Editor! Bạn chỉ cần nhấn Ctrl+A → Ctrl+V → Commit changes.'
-        : '✅ Đã mở trang GitHub Editor! Hãy bấm nút "Lưu file My_CV.html về máy" để lấy nội dung dán vào GitHub.'
+        ? '✅ All updated HTML code copied to Clipboard and GitHub Editor opened! Simply press Ctrl+A → Ctrl+V → Commit changes.'
+        : '✅ GitHub Editor opened! Click "Download My_CV.html" to copy the updated content into GitHub.'
     );
   };
 
