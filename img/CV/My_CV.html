@@ -44,6 +44,18 @@
   .bar-btn-primary { background:white; color:#0A66C2; }
   .bar-btn-gold { background:#f0c040; color:#111827; }
   .bar-btn-ghost { background:transparent; color:white; border:1.5px solid rgba(255,255,255,.85); }
+  .bar-title-btn {
+    background:rgba(255,255,255,0.08); color:white;
+    border:1px solid rgba(255,255,255,0.28); padding:6px 12px; border-radius:6px;
+    font-size:14px; font-family:'DM Sans',sans-serif; cursor:pointer;
+    display:inline-flex; align-items:center; gap:6px;
+    transition:background .15s, border-color .15s, transform .1s;
+  }
+  .bar-title-btn:hover {
+    background:rgba(255,255,255,0.2); border-color:rgba(255,255,255,0.6);
+    transform:translateY(-1px);
+  }
+  .bar-title-btn:active { transform:translateY(0); }
   .owner-pill {
     background:rgba(255,255,255,.18); padding:4px 10px; border-radius:999px;
     font-size:12px; font-family:'Space Mono',monospace;
@@ -238,9 +250,9 @@
 
 <!-- TOP ACTION BAR -->
 <div id="resume-bar">
-  <span id="bar-title-wrap" style="cursor:pointer;user-select:none;" onclick="handleTitleClick()" title="Chủ sở hữu: Nhấp vào đây để Đăng nhập Quản trị">
-    📄 CV of <strong id="bar-owner-name">Duc Anh Pham</strong> <span style="font-size:12px;opacity:0.75;" title="Nhấp để đăng nhập">🔐</span>
-  </span>
+  <button type="button" id="bar-title-wrap" class="bar-title-btn" onclick="handleTitleClick()" title="Chủ sở hữu: Nhấp chuột vào đây để Đăng nhập &amp; Cập nhật CV">
+    📄 CV of <strong id="bar-owner-name">Duc Anh Pham</strong> <span style="font-size:12px;opacity:0.85;" title="Nhấp để đăng nhập">🔐</span>
+  </button>
 
   <!-- DOWNLOAD / PRINT DROPDOWN -->
   <div class="bar-dropdown" id="cv-download-dropdown">
@@ -267,6 +279,13 @@
         <div class="item-text">
           <div class="item-title">Sao chép Link chia sẻ Online</div>
           <div class="item-desc">Copy liên kết để gửi cho nhà tuyển dụng qua Zalo, Email</div>
+        </div>
+      </button>
+      <button type="button" class="dropdown-item" onclick="closeDownloadDropdown();handleTitleClick();" style="border-top:1px dashed #e5e7eb;">
+        <div class="item-icon">🔐</div>
+        <div class="item-text">
+          <div class="item-title">Chủ sở hữu: Đăng nhập &amp; Cập nhật CV</div>
+          <div class="item-desc">Mở trình Quản lý, Chỉnh sửa và Upload CV (@ducanhphamorg)</div>
         </div>
       </button>
     </div>
@@ -950,10 +969,73 @@ const CV_FILE_PATH = 'img/CV/My_CV.html';
 // Chuỗi mã hóa băm một chiều chuẩn SHA-512 (512-bit / 128 ký tự hex) bảo mật của Mật khẩu Chủ sở hữu (One-way cryptographic hash / Không thể dịch ngược)
 const OWNER_PASSWORD_HASH = '82fb7344185aaa59e4c3e0c9a944cdd2241f7f44b935e06a1a07cd554c85e7f1cc502df874f8a451c615723cb872fdbbf5e4955b02ebdb2274e40cbaf28ecf6c';
 
-let ownerToken = sessionStorage.getItem('cv_owner_token') || '';
+// Bộ nhớ đệm an toàn trong phiên (hoạt động tốt ngay cả trong iframe sandboxed hoặc khi trình duyệt chặn 3rd-party storage)
+const memSession = {};
+function safeSessionGet(key) {
+  try { return sessionStorage.getItem(key) || ''; } catch (_) { return memSession[key] || ''; }
+}
+function safeSessionSet(key, val) {
+  try { sessionStorage.setItem(key, String(val)); } catch (_) { memSession[key] = String(val); }
+}
+function safeSessionRemove(key) {
+  try { sessionStorage.removeItem(key); } catch (_) { delete memSession[key]; }
+}
+
+let ownerToken = safeSessionGet('cv_owner_token');
 let isOwnerVerified = false;
 let cachedCleanHtml = '';
-let cvData = JSON.parse(document.getElementById('cv-template-data').textContent);
+
+function getRawTemplateText() {
+  const el = document.getElementById('cv-template-data');
+  if (!el) return '';
+  if (el.content && el.content.textContent && el.content.textContent.trim()) {
+    return el.content.textContent.trim();
+  }
+  if (el.textContent && el.textContent.trim()) {
+    return el.textContent.trim();
+  }
+  if (el.innerHTML && el.innerHTML.trim()) {
+    const d = document.createElement('textarea');
+    d.innerHTML = el.innerHTML.trim();
+    return d.value;
+  }
+  return '';
+}
+
+function setTemplateJsonText(jsonStr) {
+  const el = document.getElementById('cv-template-data');
+  if (!el) return;
+  if ('content' in el) {
+    el.innerHTML = jsonStr;
+  }
+  el.textContent = jsonStr;
+}
+
+// Trích xuất dữ liệu CV an toàn tuyệt đối (Không bao giờ crash script dù ở bất kỳ trình duyệt nào)
+let cvData = null;
+try {
+  const rawText = getRawTemplateText();
+  if (rawText) cvData = JSON.parse(rawText);
+} catch (e) {
+  console.warn('cv-template-data parse error, using fallback data:', e);
+}
+if (!cvData || typeof cvData !== 'object') {
+  cvData = {
+    updatedAt: "2026-11-07T09:30:00.000Z",
+    name: "Pham Duc Anh",
+    role: "Software Development",
+    recruitingPosition: "Software Development Intern",
+    aboutMe: "Fresh IT graduate looking for my first internship in software development.",
+    skills: ["Attitude: Positive, proactive and responsible at work", "Teamwork: Listening, coordinating, and communicating effectively", "Quick learner, open to feedback", "Technical: HTML, CSS, JavaScript, PHP, Java, C#, Python, MySQL"],
+    languages: [{ name: "Vietnamese", level: "Native" }, { name: "English", level: "Working proficiency" }],
+    coreTech: ["HTML", "CSS", "JavaScript", "PHP", "Java", "C#", "Python", "MySQL"],
+    toolTech: ["Git", "GitHub", "VS Code", "NetBeans", "Visual Studio", "XAMPP", "Cisco Packet Tracer", "Visio"],
+    achievement: { title: "Consistently ranked in the top 5 academic performers of the cohort across multiple semesters.", subtitle: "University of Greenwich Vietnam · 2021 – 2025" },
+    education: { degree: "Bachelor of Science in Information Technology", school: "University of Greenwich Vietnam", period: "2021 – 2025" },
+    contact: { phone: "(+84) 0969625640", location: "Hanoi, Vietnam", email1: "ducanh040202003@gmail.com", email2: "DucAnhPham@544wfm.onmicrosoft.com", github: "github.com/ducanhphamorg" },
+    projects: []
+  };
+}
 
 function escapeHtml(str) {
   return String(str ?? '')
@@ -1075,11 +1157,7 @@ function hasOwnerQueryParam() {
 }
 
 function isOwnerAuthenticated() {
-  try {
-    return sessionStorage.getItem('cv_owner_auth') === 'true';
-  } catch (_) {
-    return false;
-  }
+  return safeSessionGet('cv_owner_auth') === 'true';
 }
 
 async function computeSha512(str) {
@@ -1135,28 +1213,31 @@ async function verifyOwnerPassword() {
   }
 
   setStatus('auth-status', 'info', 'Đang xác thực mật khẩu...');
-  const hash = await computeSha512(val);
-  const isValid = (hash === OWNER_PASSWORD_HASH);
-
-  if (!isValid) {
-    setStatus('auth-status', 'err', '❌ Mật khẩu không chính xác! Vui lòng thử lại.');
-    inputEl.value = '';
-    if (inputEl.focus) inputEl.focus();
-    return;
-  }
-
   try {
-    sessionStorage.setItem('cv_owner_auth', 'true');
-  } catch (_) {}
-  isOwnerVerified = true;
-  setStatus('auth-status', 'ok', '✅ Mật khẩu chính xác! Đang mở khóa...');
+    const hash = await computeSha512(val);
+    const isValid = (hash === OWNER_PASSWORD_HASH);
 
-  setTimeout(() => {
-    closeAuthModal();
-    updateOwnerUI(true);
-    openEditorModal('template');
-    showToast('🎉 Đã mở khóa Chế độ Chủ sở hữu (@ducanhphamorg)!');
-  }, 300);
+    if (!isValid) {
+      setStatus('auth-status', 'err', '❌ Mật khẩu không chính xác! Vui lòng thử lại.');
+      inputEl.value = '';
+      if (inputEl.focus) inputEl.focus();
+      return;
+    }
+
+    safeSessionSet('cv_owner_auth', 'true');
+    isOwnerVerified = true;
+    setStatus('auth-status', 'ok', '✅ Mật khẩu chính xác! Đang mở khóa...');
+
+    setTimeout(() => {
+      closeAuthModal();
+      updateOwnerUI(true);
+      openEditorModal('template');
+      showToast('🎉 Đã mở khóa Chế độ Chủ sở hữu (@ducanhphamorg)!');
+    }, 300);
+  } catch (err) {
+    console.error('Lỗi tính toán mã băm SHA-512:', err);
+    setStatus('auth-status', 'err', '⚠️ Lỗi môi trường xác thực: ' + (err.message || err));
+  }
 }
 
 function updateOwnerUI(enabled) {
@@ -1340,10 +1421,8 @@ async function verifyOwnerToken(silent = false) {
 }
 
 function logoutOwner() {
-  try {
-    sessionStorage.removeItem('cv_owner_auth');
-    sessionStorage.removeItem('cv_owner_token');
-  } catch (_) {}
+  safeSessionRemove('cv_owner_auth');
+  safeSessionRemove('cv_owner_token');
   ownerToken = '';
   isOwnerVerified = false;
   updateOwnerUI(false);
@@ -1533,7 +1612,7 @@ function safeJsonForScript(obj) {
 function applyFormToPreview() {
   cvData = collectFormData();
   renderCV(cvData);
-  document.getElementById('cv-template-data').textContent = safeJsonForScript(cvData);
+  setTemplateJsonText(safeJsonForScript(cvData));
   setStatus('editor-status', 'ok', 'Đã cập nhật bản xem trước trên trang CV! Bấm "Lưu & Commit lên GitHub" để lưu vĩnh viễn.');
 }
 
@@ -1559,7 +1638,7 @@ function serializeFullHtmlDocument() {
   }
   cvData = collectFormData();
   renderCV(cvData);
-  document.getElementById('cv-template-data').textContent = safeJsonForScript(cvData);
+  setTemplateJsonText(safeJsonForScript(cvData));
 
   const clone = document.documentElement.cloneNode(true);
   clone.querySelectorAll('base').forEach(b => b.remove());
@@ -1595,26 +1674,30 @@ function downloadUpdatedHtml() {
   setStatus('editor-status', 'ok', '✅ Đã tải file My_CV.html mới về máy tính!');
 }
 
-async function saveViaGitHubWebSession() {
+function saveViaGitHubWebSession() {
   const html = serializeFullHtmlDocument();
-  let copied = false;
+  const editUrl = `https://github.com/${REPO_FULL}/edit/main/${CV_FILE_PATH}`;
   try {
-    if (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.writeText) {
-      await navigator.clipboard.writeText(html);
-      copied = true;
+    if (typeof window !== 'undefined' && window.open) {
+      window.open(editUrl, '_blank', 'noopener');
     }
   } catch (_) {}
-  const editUrl = `https://github.com/${REPO_FULL}/edit/main/${CV_FILE_PATH}`;
-  if (typeof window !== 'undefined' && window.open) {
-    window.open(editUrl, '_blank', 'noopener');
+
+  const setNotice = (copied) => {
+    setStatus(
+      'editor-status',
+      'ok',
+      copied
+        ? '✅ Đã copy toàn bộ code CV mới vào Clipboard và mở trang GitHub Editor! Bạn chỉ cần nhấn Ctrl+A → Ctrl+V → Commit changes.'
+        : '✅ Đã mở trang GitHub Editor! Hãy bấm nút "Lưu file My_CV.html về máy" để lấy nội dung dán vào GitHub.'
+    );
+  };
+
+  if (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(html).then(() => setNotice(true)).catch(() => setNotice(false));
+  } else {
+    setNotice(false);
   }
-  setStatus(
-    'editor-status',
-    'ok',
-    copied
-      ? '✅ Đã copy toàn bộ code CV mới vào Clipboard và mở trang GitHub.com (dùng tài khoản @ducanhphamorg đang đăng nhập sẵn). Bạn chỉ cần nhấn Ctrl+A → Ctrl+V → Commit changes!'
-      : '✅ Đã mở trang chỉnh sửa trên GitHub.com. Hãy bấm "Lưu file My_CV.html về máy" rồi copy nội dung dán vào GitHub Editor!'
-  );
 }
 
 function openGitHubNativeUpload() {
@@ -1854,7 +1937,7 @@ if (isOwnerAuthenticated()) {
       const remoteData = JSON.parse(match[2]);
       if (!cvData.updatedAt || (remoteData.updatedAt && remoteData.updatedAt > cvData.updatedAt)) {
         cvData = remoteData;
-        document.getElementById('cv-template-data').textContent = safeJsonForScript(cvData);
+        setTemplateJsonText(safeJsonForScript(cvData));
         renderCV(cvData);
       }
     }
