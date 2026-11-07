@@ -25,7 +25,7 @@
   }
   .cv { width:794px; background:var(--white); display:flex; box-shadow:0 20px 60px rgba(0,0,0,.22),0 4px 12px rgba(0,0,0,.08); border-radius:2px; overflow:hidden; }
 
-  /* TOP BAR */
+  /* TOP BAR & DROPDOWN */
   #resume-bar {
     position:fixed; top:0; left:0; right:0; z-index:9990;
     background:#0A66C2; color:white;
@@ -38,15 +38,54 @@
     border:none; padding:7px 14px; border-radius:6px;
     font-weight:700; cursor:pointer; font-size:13px;
     display:inline-flex; align-items:center; gap:6px;
-    text-decoration:none; transition:opacity .15s;
+    text-decoration:none; transition:opacity .15s, background .15s;
   }
-  .bar-btn:hover { opacity:.9; }
+  .bar-btn:hover { opacity:.92; }
   .bar-btn-primary { background:white; color:#0A66C2; }
   .bar-btn-gold { background:#f0c040; color:#111827; }
   .bar-btn-ghost { background:transparent; color:white; border:1.5px solid rgba(255,255,255,.85); }
   .owner-pill {
-    background:rgba(255,255,255,.16); padding:4px 10px; border-radius:999px;
+    background:rgba(255,255,255,.18); padding:4px 10px; border-radius:999px;
     font-size:12px; font-family:'Space Mono',monospace;
+  }
+
+  /* DROPDOWN MENU */
+  .bar-dropdown { position:relative; display:inline-block; }
+  .dropdown-menu {
+    position:absolute; top:calc(100% + 8px); left:50%; transform:translateX(-50%);
+    background:#ffffff; color:#111827; min-width:310px;
+    border-radius:10px; box-shadow:0 12px 32px rgba(0,0,0,0.24), 0 2px 8px rgba(0,0,0,0.08);
+    border:1px solid #e5e7eb; padding:6px; z-index:10000;
+    display:none; flex-direction:column; gap:3px;
+    animation:dropFadeIn .16s ease-out;
+  }
+  .dropdown-menu.show { display:flex; }
+  @keyframes dropFadeIn {
+    from { opacity:0; transform:translateX(-50%) translateY(-6px); }
+    to { opacity:1; transform:translateX(-50%) translateY(0); }
+  }
+  .dropdown-item {
+    display:flex; align-items:flex-start; gap:10px; padding:9px 12px;
+    border-radius:7px; text-decoration:none; color:inherit;
+    cursor:pointer; transition:background .15s;
+  }
+  .dropdown-item:hover { background:#f3f4f6; }
+  .dropdown-item .item-icon { font-size:17px; line-height:1.2; flex-shrink:0; margin-top:2px; }
+  .dropdown-item .item-text { display:flex; flex-direction:column; gap:2px; text-align:left; }
+  .dropdown-item .item-title { font-size:13px; font-weight:700; color:#111827; }
+  .dropdown-item .item-desc { font-size:11px; color:#6b7280; font-weight:400; line-height:1.3; }
+
+  /* TOAST NOTIFICATION */
+  .cv-toast {
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(100px);
+    background:#111827; color:#ffffff; padding:10px 18px; border-radius:8px;
+    font-size:13px; font-weight:600; box-shadow:0 8px 24px rgba(0,0,0,0.35);
+    z-index:99999; pointer-events:none; opacity:0;
+    transition:transform .25s ease, opacity .25s ease;
+  }
+  .cv-toast.show {
+    transform:translateX(-50%) translateY(0);
+    opacity:1;
   }
 
   /* SIDEBAR */
@@ -195,16 +234,58 @@
 </head>
 <body>
 
-<!-- TOP ACTION BAR (CLEAN FOR VISITORS/RECRUITERS; OWNER UNLOCKS VIA CTRL+SHIFT+E OR LOCAL MODE) -->
+<!-- TOP ACTION BAR -->
 <div id="resume-bar">
-  <span>📄 CV of <strong id="bar-owner-name">Duc Anh Pham</strong></span>
-  <button class="bar-btn bar-btn-primary" onclick="window.print()">⬇️ Download PDF</button>
-  <a class="bar-btn bar-btn-ghost" href="https://raw.githubusercontent.com/ducanhphamorg/ducanhphamorg/main/CV_Latex/CV.pdf" target="_blank" rel="noopener">📎 Original PDF</a>
-  <span id="owner-badge" class="owner-pill" style="display:none;">🛠️ Owner Mode</span>
-  <button id="btn-open-editor" class="bar-btn bar-btn-gold" style="display:none;" onclick="openEditorModal('template')">✏️ Edit / Upload CV</button>
-  <button id="btn-owner-logout" class="bar-btn bar-btn-ghost" style="display:none;" onclick="logoutOwner()">🔒 Exit Owner Mode</button>
-  <button class="bar-btn bar-btn-ghost" onclick="document.getElementById('resume-bar').style.display='none';document.body.style.paddingTop='24px';">✖ Hide Bar</button>
+  <span id="bar-title-wrap" style="user-select:none; cursor:pointer;" title="Nhấp đúp hoặc bấm F2 để mở Quản lý CV">
+    📄 CV of <strong id="bar-owner-name">Duc Anh Pham</strong>
+  </span>
+
+  <!-- DOWNLOAD / PRINT DROPDOWN -->
+  <div class="bar-dropdown" id="cv-download-dropdown">
+    <button class="bar-btn bar-btn-primary" id="btn-download-dropdown" onclick="toggleDownloadDropdown(event)" aria-haspopup="true" aria-expanded="false">
+      <span>📥 Tải CV / In ấn</span> <i class="fas fa-chevron-down" style="font-size:10px;"></i>
+    </button>
+    <div class="dropdown-menu" id="download-menu">
+      <a class="dropdown-item" href="javascript:void(0)" onclick="downloadDirectPdf(); closeDownloadDropdown();">
+        <div class="item-icon">📄</div>
+        <div class="item-text">
+          <div class="item-title">Tải file PDF (Bản gốc LaTeX)</div>
+          <div class="item-desc">Tải trực tiếp file Pham_Duc_Anh_CV.pdf chuẩn A4 về máy</div>
+        </div>
+      </a>
+      <a class="dropdown-item" href="javascript:void(0)" onclick="triggerPrintCv(); closeDownloadDropdown();">
+        <div class="item-icon">🖨️</div>
+        <div class="item-text">
+          <div class="item-title">In ấn / Xuất PDF Web (Trình duyệt)</div>
+          <div class="item-desc">Mở hộp thoại in (Chọn "Save as PDF" để xuất PDF vector)</div>
+        </div>
+      </a>
+      <a class="dropdown-item" href="javascript:void(0)" onclick="downloadUpdatedHtml(); closeDownloadDropdown();">
+        <div class="item-icon">🌐</div>
+        <div class="item-text">
+          <div class="item-title">Tải file HTML Trang Web</div>
+          <div class="item-desc">Lưu toàn bộ trang CV này để mở offline mọi lúc</div>
+        </div>
+      </a>
+      <a class="dropdown-item" href="javascript:void(0)" onclick="copyShareCvLink(); closeDownloadDropdown();">
+        <div class="item-icon">🔗</div>
+        <div class="item-text">
+          <div class="item-title">Sao chép Link chia sẻ Online</div>
+          <div class="item-desc">Copy liên kết để gửi cho nhà tuyển dụng qua Zalo, Email</div>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <span id="owner-badge" class="owner-pill" style="display:none;">🛠️ Chủ sở hữu</span>
+  <button id="btn-open-editor" class="bar-btn bar-btn-gold" style="display:none;" onclick="openEditorModal('template')">✏️ Quản lý &amp; Cập nhật CV</button>
+  <button id="btn-owner-logout" class="bar-btn bar-btn-ghost" style="display:none;" onclick="logoutOwner()">🔒 Thoát</button>
+  <button id="btn-owner-entry" class="bar-btn bar-btn-ghost" onclick="handleOwnerEntryClick()" title="Nhấp vào đây hoặc nhấn phím F2 / Ctrl+Shift+E">🔐 Chủ sở hữu</button>
+  <button class="bar-btn bar-btn-ghost" onclick="document.getElementById('resume-bar').style.display='none';document.body.style.paddingTop='24px';">✖ Ẩn thanh công cụ</button>
 </div>
+
+<!-- TOAST NOTIFICATION -->
+<div id="cv-toast" class="cv-toast"></div>
 
 <!-- CV SHEET (RENDERED FROM STRUCTURED TEMPLATE DATA) -->
 <div class="cv" id="cv-sheet">
@@ -1011,9 +1092,16 @@ function closeAuthModal() {
 
 function updateOwnerUI(enabled) {
   isOwnerVerified = enabled;
-  document.getElementById('owner-badge').style.display = enabled ? '' : 'none';
-  document.getElementById('btn-open-editor').style.display = enabled ? '' : 'none';
-  document.getElementById('btn-owner-logout').style.display = enabled ? '' : 'none';
+  const badge = document.getElementById('owner-badge');
+  const editBtn = document.getElementById('btn-open-editor');
+  const logoutBtn = document.getElementById('btn-owner-logout');
+  const entryBtn = document.getElementById('btn-owner-entry');
+
+  if (badge) badge.style.display = enabled ? '' : 'none';
+  if (editBtn) editBtn.style.display = enabled ? '' : 'none';
+  if (logoutBtn) logoutBtn.style.display = enabled ? '' : 'none';
+  if (entryBtn) entryBtn.style.display = enabled ? 'none' : '';
+
   const trusted = isTrustedEnvironment();
   const apiSaveBtn = document.getElementById('btn-api-save');
   if (apiSaveBtn) apiSaveBtn.style.display = trusted ? '' : 'none';
@@ -1023,9 +1111,103 @@ function updateOwnerUI(enabled) {
   if (ctrlEl) ctrlEl.style.display = trusted ? 'block' : 'none';
 }
 
+function handleOwnerEntryClick() {
+  enableOwnerMode(true);
+}
+
 function enableOwnerMode(openPopup = true) {
   updateOwnerUI(true);
   if (openPopup) openEditorModal('template');
+}
+
+// ── DOWNLOAD & PRINT DROPDOWN ACTIONS ────────────────────────────────────────
+let toastTimer = null;
+function showToast(msg) {
+  const toast = document.getElementById('cv-toast');
+  if (!toast) return;
+  toast.textContent = msg;
+  toast.classList.add('show');
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    toast.classList.remove('show');
+  }, 3500);
+}
+
+function toggleDownloadDropdown(e) {
+  if (e) {
+    if (e.stopPropagation) e.stopPropagation();
+    if (e.preventDefault) e.preventDefault();
+  }
+  const menu = document.getElementById('download-menu');
+  const btn = document.getElementById('btn-download-dropdown');
+  if (!menu) return;
+  const isOpen = menu.classList.contains('show');
+  if (isOpen) {
+    closeDownloadDropdown();
+  } else {
+    menu.classList.add('show');
+    if (btn) btn.setAttribute('aria-expanded', 'true');
+  }
+}
+
+function closeDownloadDropdown() {
+  const menu = document.getElementById('download-menu');
+  const btn = document.getElementById('btn-download-dropdown');
+  if (menu) menu.classList.remove('show');
+  if (btn) btn.setAttribute('aria-expanded', 'false');
+}
+
+async function downloadDirectPdf() {
+  const isLocal = typeof location !== 'undefined' && location.protocol === 'file:';
+  const pdfUrl = isLocal
+    ? '../../CV_Latex/CV.pdf'
+    : `https://raw.githubusercontent.com/${REPO_FULL}/main/CV_Latex/CV.pdf`;
+
+  showToast('⏳ Đang chuẩn bị tải file Pham_Duc_Anh_CV.pdf...');
+  try {
+    const res = await fetch(pdfUrl);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const blob = await res.blob();
+    const blobUrl = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = blobUrl;
+    a.download = 'Pham_Duc_Anh_CV.pdf';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(blobUrl), 10000);
+    showToast('✅ Đã tải file Pham_Duc_Anh_CV.pdf về máy thành công!');
+  } catch (err) {
+    const a = document.createElement('a');
+    a.href = pdfUrl;
+    a.target = '_blank';
+    a.download = 'Pham_Duc_Anh_CV.pdf';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    showToast('✅ Đang mở file PDF gốc trong tab mới...');
+  }
+}
+
+function triggerPrintCv() {
+  showToast('🖨️ Mẹo: Trong cửa sổ in, chọn "Save as PDF" nếu muốn lưu file PDF từ bản web!');
+  setTimeout(() => {
+    window.print();
+  }, 350);
+}
+
+async function copyShareCvLink() {
+  const shareUrl = (typeof location !== 'undefined' && location.href && location.href.startsWith('http'))
+    ? location.href
+    : `https://htmlpreview.github.io/?https://github.com/${REPO_FULL}/blob/main/${CV_FILE_PATH}`;
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(shareUrl);
+      showToast('📋 Đã copy link chia sẻ CV vào Clipboard!');
+      return;
+    }
+  } catch (_) {}
+  showToast('📋 Link CV: ' + shareUrl);
 }
 
 async function verifyOwnerToken(silent = false) {
@@ -1304,12 +1486,16 @@ function serializeFullHtmlDocument() {
   if (authStatus) { authStatus.className = 'status-msg'; authStatus.textContent = ''; }
   const edStatus = clone.querySelector('#editor-status');
   if (edStatus) { edStatus.className = 'status-msg'; edStatus.textContent = ''; }
+  clone.querySelector('#download-menu')?.classList.remove('show');
+  clone.querySelector('#cv-toast')?.classList.remove('show');
   const badge = clone.querySelector('#owner-badge');
   if (badge) badge.style.display = 'none';
   const editBtn = clone.querySelector('#btn-open-editor');
   if (editBtn) editBtn.style.display = 'none';
   const logoutBtn = clone.querySelector('#btn-owner-logout');
   if (logoutBtn) logoutBtn.style.display = 'none';
+  const entryBtn = clone.querySelector('#btn-owner-entry');
+  if (entryBtn) entryBtn.style.display = '';
 
   return '<!DOCTYPE html>\n' + clone.outerHTML;
 }
@@ -1509,19 +1695,61 @@ async function uploadSelectedFileToGitHub() {
 }
 
 // Khởi chạy ban đầu:
-// - Khách xem online (htmlpreview.github.io): Chỉ thấy CV + Download PDF (ẩn hoàn toàn nút chỉnh sửa).
+// - Khách xem online: Thấy CV + Dropdown Tải file / In ấn + Nút "Chủ sở hữu".
 // - Chủ sở hữu (@ducanhphamorg): Mở tự động khi mở file trên máy cá nhân (file:// / localhost),
-//   hoặc nhấn tổ hợp phím tắt Ctrl + Shift + E.
+//   hoặc mở online bằng cách bấm nút "Chủ sở hữu", nhấn phím F2, nhấn Ctrl+Shift+E, hoặc nhấp đúp Avatar/Tiêu đề.
 renderCV(cvData);
 
-if (typeof document !== 'undefined' && document.addEventListener) {
-  document.addEventListener('keydown', e => {
-    if (e.ctrlKey && e.shiftKey && (e.key === 'E' || e.key === 'e')) {
-      e.preventDefault();
-      enableOwnerMode(true);
+function setupOwnerActivationShortcuts() {
+  const handleKey = e => {
+    // Phím Escape: đóng dropdown và các modal
+    if (e.key === 'Escape') {
+      closeDownloadDropdown();
+      closeAuthModal();
+      closeEditorModal();
+      return;
     }
-  });
+    // 1. Phím F2 đơn giản, không bị xung đột trình duyệt
+    if (e.key === 'F2') {
+      if (e.preventDefault) e.preventDefault();
+      handleOwnerEntryClick();
+      return;
+    }
+    // 2. Ctrl + Shift + E hoặc Cmd + Shift + E / O / M
+    const hasMod = e.ctrlKey || e.metaKey;
+    if (hasMod && e.shiftKey) {
+      const k = (e.key || '').toLowerCase();
+      const code = e.code || '';
+      if (k === 'e' || code === 'KeyE' || k === 'o' || code === 'KeyO' || k === 'm' || code === 'KeyM') {
+        if (e.preventDefault) e.preventDefault();
+        handleOwnerEntryClick();
+      }
+    }
+  };
+
+  if (typeof window !== 'undefined' && window.addEventListener) {
+    window.addEventListener('keydown', handleKey, { capture: true });
+  }
+  if (typeof document !== 'undefined' && document.addEventListener) {
+    document.addEventListener('keydown', handleKey, { capture: true });
+    document.addEventListener('click', e => {
+      const dd = document.getElementById('cv-download-dropdown');
+      if (dd && !dd.contains(e.target)) {
+        closeDownloadDropdown();
+      }
+    });
+  }
+
+  // 3. Cử chỉ nhấp đúp (Double Click) mở nhanh
+  const avatar = document.getElementById('cv-avatar');
+  if (avatar && avatar.addEventListener) avatar.addEventListener('dblclick', () => handleOwnerEntryClick());
+  const barTitle = document.getElementById('bar-title-wrap');
+  if (barTitle && barTitle.addEventListener) barTitle.addEventListener('dblclick', () => handleOwnerEntryClick());
+  const cvName = document.getElementById('cv-name');
+  if (cvName && cvName.addEventListener) cvName.addEventListener('dblclick', () => handleOwnerEntryClick());
 }
+
+setupOwnerActivationShortcuts();
 
 if (isTrustedEnvironment()) {
   const isLocal = typeof location !== 'undefined' && (location.protocol === 'file:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1');
