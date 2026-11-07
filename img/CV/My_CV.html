@@ -68,6 +68,8 @@
     display:flex; align-items:flex-start; gap:10px; padding:9px 12px;
     border-radius:7px; text-decoration:none; color:inherit;
     cursor:pointer; transition:background .15s;
+    border:none; background:transparent; width:100%; font-family:inherit;
+    text-align:left; box-sizing:border-box; outline:none;
   }
   .dropdown-item:hover { background:#f3f4f6; }
   .dropdown-item .item-icon { font-size:17px; line-height:1.2; flex-shrink:0; margin-top:2px; }
@@ -246,34 +248,34 @@
       <span>📥 Tải CV / In ấn</span> <i class="fas fa-chevron-down" style="font-size:10px;"></i>
     </button>
     <div class="dropdown-menu" id="download-menu">
-      <a class="dropdown-item" href="javascript:void(0)" onclick="downloadDirectPdf(); closeDownloadDropdown();">
+      <a class="dropdown-item" id="opt-download-pdf" href="https://raw.githubusercontent.com/ducanhphamorg/ducanhphamorg/main/CV_Latex/CV.pdf" target="_blank" rel="noopener" download="Pham_Duc_Anh_CV.pdf" onclick="closeDownloadDropdown();">
         <div class="item-icon">📄</div>
         <div class="item-text">
-          <div class="item-title">Tải file PDF (Bản gốc LaTeX)</div>
-          <div class="item-desc">Tải trực tiếp file Pham_Duc_Anh_CV.pdf chuẩn A4 về máy</div>
+          <div class="item-title">Tải PDF Bản Gốc (LaTeX A4)</div>
+          <div class="item-desc">Mở / tải file PDF A4 trực tiếp trong tab mới</div>
         </div>
       </a>
-      <a class="dropdown-item" href="javascript:void(0)" onclick="triggerPrintCv(); closeDownloadDropdown();">
+      <button type="button" class="dropdown-item" onclick="triggerPrintCv();">
         <div class="item-icon">🖨️</div>
         <div class="item-text">
           <div class="item-title">In ấn / Xuất PDF Web (Trình duyệt)</div>
           <div class="item-desc">Mở hộp thoại in (Chọn "Save as PDF" để xuất PDF vector)</div>
         </div>
-      </a>
-      <a class="dropdown-item" href="javascript:void(0)" onclick="downloadUpdatedHtml(); closeDownloadDropdown();">
+      </button>
+      <a class="dropdown-item" id="opt-download-html" href="https://raw.githubusercontent.com/ducanhphamorg/ducanhphamorg/main/img/CV/My_CV.html" target="_blank" rel="noopener" download="My_CV.html" onclick="handleHtmlDownloadClick(event);">
         <div class="item-icon">🌐</div>
         <div class="item-text">
           <div class="item-title">Tải file HTML Trang Web</div>
           <div class="item-desc">Lưu toàn bộ trang CV này để mở offline mọi lúc</div>
         </div>
       </a>
-      <a class="dropdown-item" href="javascript:void(0)" onclick="copyShareCvLink(); closeDownloadDropdown();">
+      <button type="button" class="dropdown-item" onclick="copyShareCvLink();">
         <div class="item-icon">🔗</div>
         <div class="item-text">
           <div class="item-title">Sao chép Link chia sẻ Online</div>
           <div class="item-desc">Copy liên kết để gửi cho nhà tuyển dụng qua Zalo, Email</div>
         </div>
-      </a>
+      </button>
     </div>
   </div>
 
@@ -1154,57 +1156,72 @@ function closeDownloadDropdown() {
   if (btn) btn.setAttribute('aria-expanded', 'false');
 }
 
-async function downloadDirectPdf() {
+function updateDownloadLinks() {
   const isLocal = typeof location !== 'undefined' && location.protocol === 'file:';
   const pdfUrl = isLocal
     ? '../../CV_Latex/CV.pdf'
     : `https://raw.githubusercontent.com/${REPO_FULL}/main/CV_Latex/CV.pdf`;
+  const htmlUrl = isLocal
+    ? 'My_CV.html'
+    : `https://raw.githubusercontent.com/${REPO_FULL}/main/${CV_FILE_PATH}`;
 
-  showToast('⏳ Đang chuẩn bị tải file Pham_Duc_Anh_CV.pdf...');
-  try {
-    const res = await fetch(pdfUrl);
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const blob = await res.blob();
-    const blobUrl = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = blobUrl;
-    a.download = 'Pham_Duc_Anh_CV.pdf';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    setTimeout(() => URL.revokeObjectURL(blobUrl), 10000);
-    showToast('✅ Đã tải file Pham_Duc_Anh_CV.pdf về máy thành công!');
-  } catch (err) {
-    const a = document.createElement('a');
-    a.href = pdfUrl;
-    a.target = '_blank';
-    a.download = 'Pham_Duc_Anh_CV.pdf';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    showToast('✅ Đang mở file PDF gốc trong tab mới...');
+  const pdfLink = document.getElementById('opt-download-pdf');
+  if (pdfLink) pdfLink.href = pdfUrl;
+  const htmlLink = document.getElementById('opt-download-html');
+  if (htmlLink) htmlLink.href = htmlUrl;
+}
+
+function handleHtmlDownloadClick(e) {
+  closeDownloadDropdown();
+  if (isTrustedEnvironment()) {
+    if (e && e.preventDefault) e.preventDefault();
+    downloadUpdatedHtml();
   }
 }
 
 function triggerPrintCv() {
-  showToast('🖨️ Mẹo: Trong cửa sổ in, chọn "Save as PDF" nếu muốn lưu file PDF từ bản web!');
-  setTimeout(() => {
-    window.print();
-  }, 350);
+  closeDownloadDropdown();
+  window.print();
 }
 
-async function copyShareCvLink() {
+function copyShareCvLink() {
+  closeDownloadDropdown();
   const shareUrl = (typeof location !== 'undefined' && location.href && location.href.startsWith('http'))
     ? location.href
     : `https://htmlpreview.github.io/?https://github.com/${REPO_FULL}/blob/main/${CV_FILE_PATH}`;
+
+  let ok = false;
   try {
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      await navigator.clipboard.writeText(shareUrl);
-      showToast('📋 Đã copy link chia sẻ CV vào Clipboard!');
-      return;
-    }
+    const ta = document.createElement('textarea');
+    ta.value = shareUrl;
+    ta.style.position = 'fixed';
+    ta.style.top = '0';
+    ta.style.left = '0';
+    ta.style.width = '1px';
+    ta.style.height = '1px';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    ok = document.execCommand('copy');
+    document.body.removeChild(ta);
   } catch (_) {}
-  showToast('📋 Link CV: ' + shareUrl);
+
+  if (ok) {
+    showToast('📋 Đã copy link chia sẻ CV vào Clipboard!');
+    return;
+  }
+
+  if (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(shareUrl).then(() => {
+      showToast('📋 Đã copy link chia sẻ CV vào Clipboard!');
+    }).catch(() => {
+      prompt('Copy link chia sẻ CV bên dưới:', shareUrl);
+    });
+    return;
+  }
+
+  prompt('Copy link chia sẻ CV bên dưới:', shareUrl);
 }
 
 async function verifyOwnerToken(silent = false) {
@@ -1690,10 +1707,11 @@ async function uploadSelectedFileToGitHub() {
 }
 
 // Khởi chạy ban đầu:
-// - Khách xem online: Thấy CV + Dropdown Tải file / In ấn + Nút "Chủ sở hữu".
+// - Khách xem online: Thấy CV + Dropdown Tải file / In ấn (hoàn toàn không có nút admin/chủ sở hữu).
 // - Chủ sở hữu (@ducanhphamorg): Mở tự động khi mở file trên máy cá nhân (file:// / localhost),
-//   hoặc mở online bằng cách bấm nút "Chủ sở hữu", nhấn phím F2, nhấn Ctrl+Shift+E, hoặc nhấp đúp Avatar/Tiêu đề.
+//   hoặc mở online bằng phím tắt Alt + E, Alt + M, Ctrl + M, F2, hoặc nhấp 3 lần liên tiếp vào thanh màu xanh.
 renderCV(cvData);
+updateDownloadLinks();
 
 function setupOwnerActivationShortcuts() {
   const handleKey = e => {
@@ -1704,20 +1722,41 @@ function setupOwnerActivationShortcuts() {
       closeEditorModal();
       return;
     }
-    // 1. Phím F2 đơn giản, không bị xung đột trình duyệt
+
+    const k = (e.key || '').toLowerCase();
+    const code = e.code || '';
+
+    // 1. Alt + E / Alt + M / Alt + C (Siêu tiện lợi trên mọi máy tính, không sợ Fn chặn)
+    if (e.altKey && !e.ctrlKey && !e.metaKey) {
+      if (k === 'e' || code === 'KeyE' || k === 'm' || code === 'KeyM' || k === 'c' || code === 'KeyC') {
+        if (e.preventDefault) e.preventDefault();
+        enableOwnerMode(true);
+        return;
+      }
+    }
+
+    // 2. Ctrl + M (hoặc Cmd + M trên Mac)
+    if ((e.ctrlKey || e.metaKey) && !e.shiftKey && !e.altKey) {
+      if (k === 'm' || code === 'KeyM') {
+        if (e.preventDefault) e.preventDefault();
+        enableOwnerMode(true);
+        return;
+      }
+    }
+
+    // 3. F2 / Fn + F2
     if (e.key === 'F2') {
       if (e.preventDefault) e.preventDefault();
-      handleOwnerEntryClick();
+      enableOwnerMode(true);
       return;
     }
-    // 2. Ctrl + Shift + E hoặc Cmd + Shift + E / O / M
+
+    // 4. Ctrl + Shift + E / O / M
     const hasMod = e.ctrlKey || e.metaKey;
     if (hasMod && e.shiftKey) {
-      const k = (e.key || '').toLowerCase();
-      const code = e.code || '';
       if (k === 'e' || code === 'KeyE' || k === 'o' || code === 'KeyO' || k === 'm' || code === 'KeyM') {
         if (e.preventDefault) e.preventDefault();
-        handleOwnerEntryClick();
+        enableOwnerMode(true);
       }
     }
   };
@@ -1735,13 +1774,32 @@ function setupOwnerActivationShortcuts() {
     });
   }
 
-  // 3. Cử chỉ nhấp đúp (Double Click) mở nhanh
+  // 5. Cử chỉ chuột: Nhấp chuột 3 lần liên tiếp vào bất kỳ chỗ trống trên thanh bar màu xanh
+  let barClickCount = 0;
+  let barClickTimer = null;
+  const bar = document.getElementById('resume-bar');
+  if (bar && bar.addEventListener) {
+    bar.addEventListener('click', e => {
+      if (e.target && e.target.closest && (e.target.closest('#cv-download-dropdown') || e.target.closest('.bar-btn') || e.target.closest('.dropdown-menu'))) return;
+      barClickCount++;
+      if (barClickCount >= 3) {
+        barClickCount = 0;
+        clearTimeout(barClickTimer);
+        enableOwnerMode(true);
+      } else {
+        clearTimeout(barClickTimer);
+        barClickTimer = setTimeout(() => { barClickCount = 0; }, 500);
+      }
+    });
+  }
+
+  // 6. Double click vào Avatar hoặc Tiêu đề CV
   const avatar = document.getElementById('cv-avatar');
-  if (avatar && avatar.addEventListener) avatar.addEventListener('dblclick', () => handleOwnerEntryClick());
+  if (avatar && avatar.addEventListener) avatar.addEventListener('dblclick', () => enableOwnerMode(true));
   const barTitle = document.getElementById('bar-title-wrap');
-  if (barTitle && barTitle.addEventListener) barTitle.addEventListener('dblclick', () => handleOwnerEntryClick());
+  if (barTitle && barTitle.addEventListener) barTitle.addEventListener('dblclick', () => enableOwnerMode(true));
   const cvName = document.getElementById('cv-name');
-  if (cvName && cvName.addEventListener) cvName.addEventListener('dblclick', () => handleOwnerEntryClick());
+  if (cvName && cvName.addEventListener) cvName.addEventListener('dblclick', () => enableOwnerMode(true));
 }
 
 setupOwnerActivationShortcuts();
