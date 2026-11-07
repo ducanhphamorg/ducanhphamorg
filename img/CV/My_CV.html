@@ -238,8 +238,8 @@
 
 <!-- TOP ACTION BAR -->
 <div id="resume-bar">
-  <span id="bar-title-wrap" style="user-select:none;">
-    📄 CV of <strong id="bar-owner-name">Duc Anh Pham</strong>
+  <span id="bar-title-wrap" style="cursor:pointer;user-select:none;" onclick="openAuthModal()" title="Chủ sở hữu: Nhấp vào đây để Đăng nhập Quản trị">
+    📄 CV of <strong id="bar-owner-name">Duc Anh Pham</strong> <span style="font-size:12px;opacity:0.75;" title="Nhấp để đăng nhập">🔐</span>
   </span>
 
   <!-- DOWNLOAD / PRINT DROPDOWN -->
@@ -269,13 +269,20 @@
           <div class="item-desc">Copy liên kết để gửi cho nhà tuyển dụng qua Zalo, Email</div>
         </div>
       </button>
+      <button type="button" class="dropdown-item" onclick="closeDownloadDropdown();openAuthModal();">
+        <div class="item-icon">🔐</div>
+        <div class="item-text">
+          <div class="item-title">Chỉnh sửa &amp; Quản trị CV</div>
+          <div class="item-desc">Dành riêng cho chủ CV @ducanhphamorg (Cần mật khẩu)</div>
+        </div>
+      </button>
     </div>
   </div>
 
   <span id="owner-badge" class="owner-pill" style="display:none;">🛠️ Chủ sở hữu</span>
   <button id="btn-open-editor" class="bar-btn bar-btn-gold" style="display:none;" onclick="openEditorModal('template')">✏️ Quản lý &amp; Cập nhật CV</button>
   <button id="btn-owner-logout" class="bar-btn bar-btn-ghost" style="display:none;" onclick="logoutOwner()">🔒 Thoát</button>
-  <button id="btn-owner-login" class="bar-btn bar-btn-ghost" style="display:none;" onclick="openAuthModal()">🔐 Chủ sở hữu</button>
+  <button id="btn-owner-login" class="bar-btn bar-btn-ghost" onclick="openAuthModal()" title="Dành riêng cho chủ sở hữu @ducanhphamorg">🔐 Chủ sở hữu</button>
   <button class="bar-btn bar-btn-ghost" onclick="document.getElementById('resume-bar').style.display='none';document.body.style.paddingTop='24px';">✖ Ẩn thanh công cụ</button>
 </div>
 
@@ -766,7 +773,13 @@
             🐙 Mở trang Upload GitHub.com (Dùng tài khoản đang đăng nhập)
           </button>
           <button type="button" class="sm-btn" onclick="openGitHubNativeEdit()">
-            📝 Mở trang Sửa trực tiếp My_CV.html trên GitHub.com
+            📝 Sửa My_CV.html trên GitHub.com
+          </button>
+          <button type="button" class="sm-btn" onclick="openGitHubLatexEdit()">
+            📝 Sửa CV.tex (LaTeX) trên GitHub.com
+          </button>
+          <button type="button" class="sm-btn" onclick="openGitHubReadmeEdit()">
+            📝 Sửa README.md trên GitHub.com
           </button>
         </div>
       </div>
@@ -1164,15 +1177,7 @@ function updateOwnerUI(enabled) {
   if (badge) badge.style.display = enabled ? '' : 'none';
   if (editBtn) editBtn.style.display = enabled ? '' : 'none';
   if (logoutBtn) logoutBtn.style.display = enabled ? '' : 'none';
-
-  if (loginBtn) {
-    if (enabled) {
-      loginBtn.style.display = 'none';
-    } else {
-      const showLogin = hasOwnerQueryParam() || isTrustedEnvironment();
-      loginBtn.style.display = showLogin ? '' : 'none';
-    }
-  }
+  if (loginBtn) loginBtn.style.display = enabled ? 'none' : '';
 
   const trusted = isTrustedEnvironment();
   const apiSaveBtn = document.getElementById('btn-api-save');
@@ -1578,7 +1583,7 @@ function serializeFullHtmlDocument() {
   const logoutBtn = clone.querySelector('#btn-owner-logout');
   if (logoutBtn) logoutBtn.style.display = 'none';
   const loginBtn = clone.querySelector('#btn-owner-login');
-  if (loginBtn) loginBtn.style.display = 'none';
+  if (loginBtn) loginBtn.style.display = '';
 
   return '<!DOCTYPE html>\n' + clone.outerHTML;
 }
@@ -1632,6 +1637,20 @@ function openGitHubNativeUpload() {
 
 function openGitHubNativeEdit() {
   const editUrl = `https://github.com/${REPO_FULL}/edit/main/${CV_FILE_PATH}`;
+  if (typeof window !== 'undefined' && window.open) {
+    window.open(editUrl, '_blank', 'noopener');
+  }
+}
+
+function openGitHubLatexEdit() {
+  const editUrl = `https://github.com/${REPO_FULL}/edit/main/CV_Latex/CV.tex`;
+  if (typeof window !== 'undefined' && window.open) {
+    window.open(editUrl, '_blank', 'noopener');
+  }
+}
+
+function openGitHubReadmeEdit() {
+  const editUrl = `https://github.com/${REPO_FULL}/edit/main/README.md`;
   if (typeof window !== 'undefined' && window.open) {
     window.open(editUrl, '_blank', 'noopener');
   }
@@ -1785,6 +1804,8 @@ renderCV(cvData);
 updateDownloadLinks();
 
 function setupOwnerActivationShortcuts() {
+  let lastShiftTime = 0;
+
   const handleKey = e => {
     // Phím Escape: đóng dropdown và các modal
     if (e.key === 'Escape') {
@@ -1794,19 +1815,51 @@ function setupOwnerActivationShortcuts() {
       return;
     }
 
+    // 1. Phím Shift nhấn 2 lần liên tiếp (Double Shift - không bao giờ bị browser chiếm)
+    if (e.key === 'Shift') {
+      const now = Date.now();
+      if (now - lastShiftTime < 450) {
+        lastShiftTime = 0;
+        enableOwnerMode(true);
+        return;
+      }
+      lastShiftTime = now;
+    }
+
     const k = (e.key || '').toLowerCase();
     const code = e.code || '';
 
-    // 1. Alt + E / Alt + M / Alt + C (Siêu tiện lợi trên mọi máy tính, không sợ Fn chặn)
-    if (e.altKey && !e.ctrlKey && !e.metaKey) {
-      if (k === 'e' || code === 'KeyE' || k === 'm' || code === 'KeyM' || k === 'c' || code === 'KeyC') {
+    // 2. Tổ hợp Ctrl + Alt + [E / M / P / C / K] (Không bao giờ bị Edge hay Chrome ghi đè)
+    if (e.ctrlKey && e.altKey) {
+      if (k === 'e' || k === 'm' || k === 'p' || k === 'c' || k === 'k' ||
+          code === 'KeyE' || code === 'KeyM' || code === 'KeyP' || code === 'KeyC' || code === 'KeyK') {
         if (e.preventDefault) e.preventDefault();
         enableOwnerMode(true);
         return;
       }
     }
 
-    // 2. Ctrl + M (hoặc Cmd + M trên Mac)
+    // 3. Phím Alt + P (Pham / Password) hoặc Alt + S (Sửa) hoặc Alt + K (Khóa)
+    if (e.altKey && !e.ctrlKey && !e.metaKey) {
+      if (k === 'p' || code === 'KeyP' || k === 's' || code === 'KeyS' || k === 'k' || code === 'KeyK' ||
+          k === 'e' || code === 'KeyE' || k === 'm' || code === 'KeyM' || k === 'c' || code === 'KeyC') {
+        if (e.preventDefault) e.preventDefault();
+        enableOwnerMode(true);
+        return;
+      }
+    }
+
+    // 4. Phím `~` (Tilde / Backtick) khi không đang gõ text vào input / textarea
+    if (!e.ctrlKey && !e.altKey && !e.metaKey && (e.key === '`' || e.key === '~')) {
+      const tag = (e.target && e.target.tagName ? e.target.tagName.toLowerCase() : '');
+      if (tag !== 'input' && tag !== 'textarea') {
+        if (e.preventDefault) e.preventDefault();
+        enableOwnerMode(true);
+        return;
+      }
+    }
+
+    // 5. Ctrl + M (hoặc Cmd + M trên Mac)
     if ((e.ctrlKey || e.metaKey) && !e.shiftKey && !e.altKey) {
       if (k === 'm' || code === 'KeyM') {
         if (e.preventDefault) e.preventDefault();
@@ -1815,28 +1868,39 @@ function setupOwnerActivationShortcuts() {
       }
     }
 
-    // 3. F2 / Fn + F2
+    // 6. F2 / Fn + F2
     if (e.key === 'F2') {
       if (e.preventDefault) e.preventDefault();
       enableOwnerMode(true);
       return;
     }
 
-    // 4. Ctrl + Shift + E / O / M
+    // 7. Ctrl + Shift + E / O / M / P
     const hasMod = e.ctrlKey || e.metaKey;
     if (hasMod && e.shiftKey) {
-      if (k === 'e' || code === 'KeyE' || k === 'o' || code === 'KeyO' || k === 'm' || code === 'KeyM') {
+      if (k === 'e' || code === 'KeyE' || k === 'o' || code === 'KeyO' || k === 'm' || code === 'KeyM' || k === 'p' || code === 'KeyP') {
         if (e.preventDefault) e.preventDefault();
         enableOwnerMode(true);
       }
     }
   };
 
+  // Tự động giành focus cho iframe khi chuột di chuyển vào hoặc click
+  function claimFocus() {
+    try {
+      if (typeof window !== 'undefined' && window.focus) window.focus();
+    } catch (_) {}
+  }
+
   if (typeof window !== 'undefined' && window.addEventListener) {
     window.addEventListener('keydown', handleKey, { capture: true });
+    window.addEventListener('load', claimFocus);
+    window.addEventListener('mouseenter', claimFocus);
   }
   if (typeof document !== 'undefined' && document.addEventListener) {
     document.addEventListener('keydown', handleKey, { capture: true });
+    document.addEventListener('mousemove', claimFocus, { once: true });
+    document.addEventListener('click', claimFocus);
     document.addEventListener('click', e => {
       const dd = document.getElementById('cv-download-dropdown');
       if (dd && !dd.contains(e.target)) {
@@ -1845,30 +1909,32 @@ function setupOwnerActivationShortcuts() {
     });
   }
 
-  // 5. Cử chỉ chuột: Nhấp chuột 3 lần liên tiếp vào bất kỳ chỗ trống trên thanh bar màu xanh
-  let barClickCount = 0;
-  let barClickTimer = null;
+  // Cố gắng bắt sự kiện trên window.parent nếu nằm trong iframe
+  try {
+    if (typeof window !== 'undefined' && window.parent && window.parent !== window) {
+      window.parent.addEventListener('keydown', handleKey, { capture: true });
+    }
+  } catch (_) {}
+
+  // Cử chỉ chuột:
+  // - Click đơn giản hoặc đúp vào tiêu đề / icon khóa trên thanh bar
+  const barTitle = document.getElementById('bar-title-wrap');
+  if (barTitle && barTitle.addEventListener) {
+    barTitle.addEventListener('click', () => enableOwnerMode(true));
+  }
+
+  // - Double click vào bất kỳ chỗ nào trên thanh bar màu xanh
   const bar = document.getElementById('resume-bar');
   if (bar && bar.addEventListener) {
-    bar.addEventListener('click', e => {
-      if (e.target && e.target.closest && (e.target.closest('#cv-download-dropdown') || e.target.closest('.bar-btn') || e.target.closest('.dropdown-menu'))) return;
-      barClickCount++;
-      if (barClickCount >= 3) {
-        barClickCount = 0;
-        clearTimeout(barClickTimer);
-        enableOwnerMode(true);
-      } else {
-        clearTimeout(barClickTimer);
-        barClickTimer = setTimeout(() => { barClickCount = 0; }, 500);
-      }
+    bar.addEventListener('dblclick', e => {
+      if (e.target && e.target.closest && (e.target.closest('#cv-download-dropdown') || e.target.closest('.dropdown-menu'))) return;
+      enableOwnerMode(true);
     });
   }
 
-  // 6. Double click vào Avatar hoặc Tiêu đề CV
+  // - Double click vào Avatar hoặc Tên
   const avatar = document.getElementById('cv-avatar');
   if (avatar && avatar.addEventListener) avatar.addEventListener('dblclick', () => enableOwnerMode(true));
-  const barTitle = document.getElementById('bar-title-wrap');
-  if (barTitle && barTitle.addEventListener) barTitle.addEventListener('dblclick', () => enableOwnerMode(true));
   const cvName = document.getElementById('cv-name');
   if (cvName && cvName.addEventListener) cvName.addEventListener('dblclick', () => enableOwnerMode(true));
 }
