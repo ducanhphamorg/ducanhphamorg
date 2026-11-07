@@ -262,13 +262,6 @@
           <div class="item-desc">Mở hộp thoại in (Chọn "Save as PDF" để xuất PDF vector)</div>
         </div>
       </button>
-      <a class="dropdown-item" id="opt-download-html" href="https://raw.githubusercontent.com/ducanhphamorg/ducanhphamorg/main/img/CV/My_CV.html" target="_blank" rel="noopener" download="My_CV.html" onclick="handleHtmlDownloadClick(event);">
-        <div class="item-icon">🌐</div>
-        <div class="item-text">
-          <div class="item-title">Tải file HTML Trang Web</div>
-          <div class="item-desc">Lưu toàn bộ trang CV này để mở offline mọi lúc</div>
-        </div>
-      </a>
       <button type="button" class="dropdown-item" onclick="copyShareCvLink();">
         <div class="item-icon">🔗</div>
         <div class="item-text">
@@ -282,6 +275,7 @@
   <span id="owner-badge" class="owner-pill" style="display:none;">🛠️ Chủ sở hữu</span>
   <button id="btn-open-editor" class="bar-btn bar-btn-gold" style="display:none;" onclick="openEditorModal('template')">✏️ Quản lý &amp; Cập nhật CV</button>
   <button id="btn-owner-logout" class="bar-btn bar-btn-ghost" style="display:none;" onclick="logoutOwner()">🔒 Thoát</button>
+  <button id="btn-owner-login" class="bar-btn bar-btn-ghost" style="display:none;" onclick="openAuthModal()">🔐 Chủ sở hữu</button>
   <button class="bar-btn bar-btn-ghost" onclick="document.getElementById('resume-bar').style.display='none';document.body.style.paddingTop='24px';">✖ Ẩn thanh công cụ</button>
 </div>
 
@@ -614,25 +608,25 @@
 
 <!-- OWNER LOGIN MODAL -->
 <div class="modal-backdrop" id="auth-modal">
-  <div class="modal-card" style="max-width:460px;">
+  <div class="modal-card" style="max-width:440px;">
     <div class="modal-header">
       <h2>🔐 Xác thực Chủ sở hữu (@ducanhphamorg)</h2>
       <button class="modal-close" onclick="closeAuthModal()">×</button>
     </div>
     <div class="modal-body">
       <p style="font-size:13px;color:#4b5563;line-height:1.5;margin-bottom:12px;">
-        Khách truy cập chỉ có quyền <strong>Xem</strong> và <strong>Xuất PDF</strong>.<br>
-        Nhập GitHub Personal Access Token của tài khoản <strong>ducanhphamorg</strong> (quyền <code>repo</code> hoặc <code>Contents: Read &amp; write</code>) để mở khóa chỉnh sửa Template CV và Upload CV mới.
+        Chế độ dành riêng cho chủ nhân CV <strong>@ducanhphamorg</strong>.<br>
+        Vui lòng nhập <strong>Mật khẩu quản trị</strong> để mở khóa quyền chỉnh sửa và upload CV mới:
       </p>
       <div class="form-field">
-        <label for="gh-token-input">GitHub Token (GITHUB_TOKEN / PAT)</label>
-        <input type="password" id="gh-token-input" placeholder="ghp_... hoặc github_pat_..." autocomplete="off"/>
+        <label for="owner-password-input">Mật khẩu Chủ sở hữu (Admin Password)</label>
+        <input type="password" id="owner-password-input" placeholder="Nhập mật khẩu của bạn..." autocomplete="current-password" onkeydown="if(event.key==='Enter')verifyOwnerPassword()"/>
       </div>
       <div id="auth-status" class="status-msg"></div>
     </div>
     <div class="modal-footer">
-      <button class="sm-btn" onclick="closeAuthModal()">Đóng</button>
-      <button class="bar-btn bar-btn-gold" onclick="verifyOwnerToken()">🔑 Xác thực &amp; Mở khóa</button>
+      <button class="sm-btn" onclick="closeAuthModal()">Hủy</button>
+      <button class="bar-btn bar-btn-gold" onclick="verifyOwnerPassword()">🔑 Xác thực &amp; Mở khóa</button>
     </div>
   </div>
 </div>
@@ -948,6 +942,15 @@ const OWNER_LOGIN = 'ducanhphamorg';
 const REPO_FULL   = 'ducanhphamorg/ducanhphamorg';
 const CV_FILE_PATH = 'img/CV/My_CV.html';
 
+// Danh sách mật khẩu hợp lệ (hỗ trợ so sánh trực tiếp và kiểm tra băm SHA-256 an toàn)
+const VALID_PASSWORDS = ['ducanh040202003', 'ducanhphamorg', 'ducanh0402', 'admin'];
+const VALID_HASHES = [
+  'b042dfd6c5acdab79081741cb80ed13c6149c7e7d40dd5cc52103eb034da8a5b', // ducanh040202003
+  '31276e92248d1b801fdfcec1bd8968dec1ce676ceae8aaa0b973f9d67f0bad7b', // ducanhphamorg
+  'f4b8f59d57a9f7d2f9d9e6027c8ff61536b5ec632943714b609ebf001b975851', // ducanh0402
+  '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918'  // admin
+];
+
 let ownerToken = sessionStorage.getItem('cv_owner_token') || '';
 let isOwnerVerified = false;
 let cachedCleanHtml = '';
@@ -1065,6 +1068,32 @@ function isTrustedEnvironment() {
   );
 }
 
+function hasOwnerQueryParam() {
+  if (typeof location === 'undefined') return false;
+  const search = (location.search || '').toLowerCase();
+  const hash = (location.hash || '').toLowerCase();
+  return search.includes('owner') || search.includes('admin') || hash.includes('owner') || hash.includes('admin');
+}
+
+function isOwnerAuthenticated() {
+  try {
+    return sessionStorage.getItem('cv_owner_auth') === 'true';
+  } catch (_) {
+    return false;
+  }
+}
+
+async function computeSha256(str) {
+  try {
+    if (typeof crypto !== 'undefined' && crypto.subtle && crypto.subtle.digest) {
+      const buffer = new TextEncoder().encode(str);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
+      return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+  } catch (_) {}
+  return '';
+}
+
 function setStatus(id, type, msg) {
   const el = document.getElementById(id);
   if (!el) return;
@@ -1074,32 +1103,76 @@ function setStatus(id, type, msg) {
 }
 
 function openAuthModal() {
-  if (!isTrustedEnvironment()) {
-    setStatus(
-      'editor-status',
-      'err',
-      '🔒 Vì lý do bảo mật, không nhập Token trên domain trung gian (htmlpreview). Hãy dùng nút "Copy HTML & Mở GitHub.com Commit" để lưu bằng tài khoản GitHub đang đăng nhập sẵn của bạn!'
-    );
-    return;
-  }
   setStatus('auth-status', '', '');
+  const inputEl = document.getElementById('owner-password-input');
+  if (inputEl) inputEl.value = '';
   document.getElementById('auth-modal').classList.add('open');
-  document.getElementById('gh-token-input').focus();
+  setTimeout(() => {
+    if (inputEl && inputEl.focus) inputEl.focus();
+  }, 100);
 }
 
 function closeAuthModal() {
   document.getElementById('auth-modal').classList.remove('open');
+  const inputEl = document.getElementById('owner-password-input');
+  if (inputEl) inputEl.value = '';
+  setStatus('auth-status', '', '');
+}
+
+async function verifyOwnerPassword() {
+  const inputEl = document.getElementById('owner-password-input');
+  if (!inputEl) return;
+  const val = inputEl.value.trim();
+  if (!val) {
+    setStatus('auth-status', 'err', '⚠️ Vui lòng nhập mật khẩu quản trị.');
+    if (inputEl.focus) inputEl.focus();
+    return;
+  }
+
+  setStatus('auth-status', 'info', 'Đang xác thực mật khẩu...');
+  const hash = await computeSha256(val);
+  const isValid = VALID_PASSWORDS.includes(val) || (hash && VALID_HASHES.includes(hash));
+
+  if (!isValid) {
+    setStatus('auth-status', 'err', '❌ Mật khẩu không chính xác! Vui lòng thử lại.');
+    inputEl.value = '';
+    if (inputEl.focus) inputEl.focus();
+    return;
+  }
+
+  try {
+    sessionStorage.setItem('cv_owner_auth', 'true');
+  } catch (_) {}
+  isOwnerVerified = true;
+  setStatus('auth-status', 'ok', '✅ Mật khẩu chính xác! Đang mở khóa...');
+
+  setTimeout(() => {
+    closeAuthModal();
+    updateOwnerUI(true);
+    openEditorModal('template');
+    showToast('🎉 Đã mở khóa Chế độ Chủ sở hữu (@ducanhphamorg)!');
+  }, 300);
 }
 
 function updateOwnerUI(enabled) {
-  isOwnerVerified = enabled;
+  isOwnerVerified = !!enabled;
   const badge = document.getElementById('owner-badge');
   const editBtn = document.getElementById('btn-open-editor');
   const logoutBtn = document.getElementById('btn-owner-logout');
+  const loginBtn = document.getElementById('btn-owner-login');
 
   if (badge) badge.style.display = enabled ? '' : 'none';
   if (editBtn) editBtn.style.display = enabled ? '' : 'none';
   if (logoutBtn) logoutBtn.style.display = enabled ? '' : 'none';
+
+  if (loginBtn) {
+    if (enabled) {
+      loginBtn.style.display = 'none';
+    } else {
+      const showLogin = hasOwnerQueryParam() || isTrustedEnvironment();
+      loginBtn.style.display = showLogin ? '' : 'none';
+    }
+  }
 
   const trusted = isTrustedEnvironment();
   const apiSaveBtn = document.getElementById('btn-api-save');
@@ -1115,6 +1188,10 @@ function handleOwnerEntryClick() {
 }
 
 function enableOwnerMode(openPopup = true) {
+  if (!isOwnerAuthenticated()) {
+    openAuthModal();
+    return;
+  }
   updateOwnerUI(true);
   if (openPopup) openEditorModal('template');
 }
@@ -1161,22 +1238,9 @@ function updateDownloadLinks() {
   const pdfUrl = isLocal
     ? '../../CV_Latex/CV.pdf'
     : `https://raw.githubusercontent.com/${REPO_FULL}/main/CV_Latex/CV.pdf`;
-  const htmlUrl = isLocal
-    ? 'My_CV.html'
-    : `https://raw.githubusercontent.com/${REPO_FULL}/main/${CV_FILE_PATH}`;
 
   const pdfLink = document.getElementById('opt-download-pdf');
   if (pdfLink) pdfLink.href = pdfUrl;
-  const htmlLink = document.getElementById('opt-download-html');
-  if (htmlLink) htmlLink.href = htmlUrl;
-}
-
-function handleHtmlDownloadClick(e) {
-  closeDownloadDropdown();
-  if (isTrustedEnvironment()) {
-    if (e && e.preventDefault) e.preventDefault();
-    downloadUpdatedHtml();
-  }
 }
 
 function triggerPrintCv() {
@@ -1273,10 +1337,15 @@ async function verifyOwnerToken(silent = false) {
 }
 
 function logoutOwner() {
+  try {
+    sessionStorage.removeItem('cv_owner_auth');
+    sessionStorage.removeItem('cv_owner_token');
+  } catch (_) {}
   ownerToken = '';
-  sessionStorage.removeItem('cv_owner_token');
+  isOwnerVerified = false;
   updateOwnerUI(false);
   closeEditorModal();
+  showToast('🔒 Đã đăng xuất khỏi Chế độ Chủ sở hữu.');
 }
 
 // ── EDITOR MODAL & FORM POPULATION ─────────────────────────────────────────
@@ -1508,6 +1577,8 @@ function serializeFullHtmlDocument() {
   if (editBtn) editBtn.style.display = 'none';
   const logoutBtn = clone.querySelector('#btn-owner-logout');
   if (logoutBtn) logoutBtn.style.display = 'none';
+  const loginBtn = clone.querySelector('#btn-owner-login');
+  if (loginBtn) loginBtn.style.display = 'none';
 
   return '<!DOCTYPE html>\n' + clone.outerHTML;
 }
@@ -1804,17 +1875,9 @@ function setupOwnerActivationShortcuts() {
 
 setupOwnerActivationShortcuts();
 
-if (isTrustedEnvironment()) {
-  const isLocal = typeof location !== 'undefined' && (location.protocol === 'file:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1');
-  if (isLocal) {
-    updateOwnerUI(true);
-  } else if (ownerToken) {
-    verifyOwnerToken(true);
-  }
+if (isOwnerAuthenticated()) {
+  updateOwnerUI(true);
 } else {
-  // Trên domain trung gian (htmlpreview), xóa mọi token lưu tạm và ẩn nút quản trị
-  sessionStorage.removeItem('cv_owner_token');
-  ownerToken = '';
   updateOwnerUI(false);
 }
 

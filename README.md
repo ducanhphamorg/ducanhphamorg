@@ -21,11 +21,24 @@ to grow in a real-world environment.
 - 🤝 A fast learner who values teamwork, feedback, and continuous improvement
 - 📬 Actively looking for **Internship / Fresher Developer** opportunities
 
-- 📋 My Resume
-  [![Resume](https://img.shields.io/badge/View%20Resume-Click%20Here-0A66C2?style=flat&logo=html5&logoColor=white)](https://htmlpreview.github.io/?https://github.com/ducanhphamorg/ducanhphamorg/blob/main/img/CV/My_CV.html)
+<br/>
 
-- 📫 Let's Connect
-  [![Email](https://img.shields.io/badge/-ducanh040202003@gmail.com-D14836?style=flat&logo=gmail&logoColor=white)](mailto:ducanh040202003@gmail.com)
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <strong>📋 My Resume</strong><br/><br/>
+      <a href="https://htmlpreview.github.io/?https://github.com/ducanhphamorg/ducanhphamorg/blob/main/img/CV/My_CV.html">
+        <img src="https://img.shields.io/badge/View_Resume-Click_Here-0A66C2?style=for-the-badge&logo=html5&logoColor=white" alt="View Resume" height="34"/>
+      </a>
+    </td>
+    <td align="center" width="50%">
+      <strong>📫 Let's Connect</strong><br/><br/>
+      <a href="mailto:ducanh040202003@gmail.com">
+        <img src="https://img.shields.io/badge/Email-ducanh040202003%40gmail.com-D14836?style=for-the-badge&logo=gmail&logoColor=white" alt="Email" height="34"/>
+      </a>
+    </td>
+  </tr>
+</table>
 
 ---
 
