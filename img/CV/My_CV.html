@@ -44,18 +44,14 @@
   .bar-btn-primary { background:white; color:#0A66C2; }
   .bar-btn-gold { background:#f0c040; color:#111827; }
   .bar-btn-ghost { background:transparent; color:white; border:1.5px solid rgba(255,255,255,.85); }
-  .bar-title-btn {
-    background:rgba(255,255,255,0.08); color:white;
-    border:1px solid rgba(255,255,255,0.28); padding:6px 12px; border-radius:6px;
-    font-size:14px; font-family:'DM Sans',sans-serif; cursor:pointer;
-    display:inline-flex; align-items:center; gap:6px;
-    transition:background .15s, border-color .15s, transform .1s;
+  .bar-title-text {
+    font-size:14px; color:white; display:inline-flex; align-items:center; gap:4px; user-select:none;
   }
-  .bar-title-btn:hover {
-    background:rgba(255,255,255,0.2); border-color:rgba(255,255,255,0.6);
-    transform:translateY(-1px);
+  .owner-lock-trigger {
+    cursor:pointer; display:inline-block; font-size:12px; opacity:0.85; transition:opacity .15s;
+    user-select:none; padding:1px 2px;
   }
-  .bar-title-btn:active { transform:translateY(0); }
+  .owner-lock-trigger:hover { opacity:1; }
   .owner-pill {
     background:rgba(255,255,255,.18); padding:4px 10px; border-radius:999px;
     font-size:12px; font-family:'Space Mono',monospace;
@@ -250,9 +246,9 @@
 
 <!-- TOP ACTION BAR -->
 <div id="resume-bar">
-  <button type="button" id="bar-title-wrap" class="bar-title-btn" onclick="handleTitleClick()" title="Chủ sở hữu: Nhấp chuột vào đây để Đăng nhập &amp; Cập nhật CV">
-    📄 CV of <strong id="bar-owner-name">Duc Anh Pham</strong> <span style="font-size:12px;opacity:0.85;" title="Nhấp để đăng nhập">🔐</span>
-  </button>
+  <span id="bar-title-wrap" class="bar-title-text">
+    📄 CV of <strong id="bar-owner-name">Duc Anh Pham</strong> <span id="bar-owner-lock" class="owner-lock-trigger" onclick="handleLockClick(event)" role="button" aria-label="Owner Login">🔐</span>
+  </span>
 
   <!-- DOWNLOAD / PRINT DROPDOWN -->
   <div class="bar-dropdown" id="cv-download-dropdown">
@@ -279,13 +275,6 @@
         <div class="item-text">
           <div class="item-title">Sao chép Link chia sẻ Online</div>
           <div class="item-desc">Copy liên kết để gửi cho nhà tuyển dụng qua Zalo, Email</div>
-        </div>
-      </button>
-      <button type="button" class="dropdown-item" onclick="closeDownloadDropdown();handleTitleClick();" style="border-top:1px dashed #e5e7eb;">
-        <div class="item-icon">🔐</div>
-        <div class="item-text">
-          <div class="item-title">Chủ sở hữu: Đăng nhập &amp; Cập nhật CV</div>
-          <div class="item-desc">Mở trình Quản lý, Chỉnh sửa và Upload CV (@ducanhphamorg)</div>
         </div>
       </button>
     </div>
@@ -1259,12 +1248,17 @@ function updateOwnerUI(enabled) {
   if (ctrlEl) ctrlEl.style.display = trusted ? 'block' : 'none';
 }
 
-function handleTitleClick() {
+function handleLockClick(event) {
+  if (event && event.stopPropagation) event.stopPropagation();
   if (isOwnerAuthenticated()) {
     openEditorModal('template');
   } else {
     openAuthModal();
   }
+}
+
+function handleTitleClick(event) {
+  return handleLockClick(event);
 }
 
 function handleOwnerEntryClick() {
