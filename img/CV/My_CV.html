@@ -238,7 +238,7 @@
 
 <!-- TOP ACTION BAR -->
 <div id="resume-bar">
-  <span id="bar-title-wrap" style="cursor:pointer;user-select:none;" onclick="openAuthModal()" title="Chủ sở hữu: Nhấp vào đây để Đăng nhập Quản trị">
+  <span id="bar-title-wrap" style="cursor:pointer;user-select:none;" onclick="handleTitleClick()" title="Chủ sở hữu: Nhấp vào đây để Đăng nhập Quản trị">
     📄 CV of <strong id="bar-owner-name">Duc Anh Pham</strong> <span style="font-size:12px;opacity:0.75;" title="Nhấp để đăng nhập">🔐</span>
   </span>
 
@@ -269,20 +269,12 @@
           <div class="item-desc">Copy liên kết để gửi cho nhà tuyển dụng qua Zalo, Email</div>
         </div>
       </button>
-      <button type="button" class="dropdown-item" onclick="closeDownloadDropdown();openAuthModal();">
-        <div class="item-icon">🔐</div>
-        <div class="item-text">
-          <div class="item-title">Chỉnh sửa &amp; Quản trị CV</div>
-          <div class="item-desc">Dành riêng cho chủ CV @ducanhphamorg (Cần mật khẩu)</div>
-        </div>
-      </button>
     </div>
   </div>
 
   <span id="owner-badge" class="owner-pill" style="display:none;">🛠️ Chủ sở hữu</span>
   <button id="btn-open-editor" class="bar-btn bar-btn-gold" style="display:none;" onclick="openEditorModal('template')">✏️ Quản lý &amp; Cập nhật CV</button>
   <button id="btn-owner-logout" class="bar-btn bar-btn-ghost" style="display:none;" onclick="logoutOwner()">🔒 Thoát</button>
-  <button id="btn-owner-login" class="bar-btn bar-btn-ghost" onclick="openAuthModal()" title="Dành riêng cho chủ sở hữu @ducanhphamorg">🔐 Chủ sở hữu</button>
   <button class="bar-btn bar-btn-ghost" onclick="document.getElementById('resume-bar').style.display='none';document.body.style.paddingTop='24px';">✖ Ẩn thanh công cụ</button>
 </div>
 
@@ -955,14 +947,9 @@ const OWNER_LOGIN = 'ducanhphamorg';
 const REPO_FULL   = 'ducanhphamorg/ducanhphamorg';
 const CV_FILE_PATH = 'img/CV/My_CV.html';
 
-// Danh sách mật khẩu hợp lệ (hỗ trợ so sánh trực tiếp và kiểm tra băm SHA-256 an toàn)
-const VALID_PASSWORDS = ['ducanh040202003', 'ducanhphamorg', 'ducanh0402', 'admin'];
-const VALID_HASHES = [
-  'b042dfd6c5acdab79081741cb80ed13c6149c7e7d40dd5cc52103eb034da8a5b', // ducanh040202003
-  '31276e92248d1b801fdfcec1bd8968dec1ce676ceae8aaa0b973f9d67f0bad7b', // ducanhphamorg
-  'f4b8f59d57a9f7d2f9d9e6027c8ff61536b5ec632943714b609ebf001b975851', // ducanh0402
-  '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918'  // admin
-];
+// Chuỗi mã hóa băm một chiều SHA-256 an toàn của Mật khẩu Chủ sở hữu (Không thể dịch ngược / One-way cryptographic hash)
+// Mật khẩu thiết lập: DucAnh422003#!
+const OWNER_PASSWORD_HASH = '51425b31c7df5dcc02de10a0a283e132f468edbde44da8e98f28db52df889d05';
 
 let ownerToken = sessionStorage.getItem('cv_owner_token') || '';
 let isOwnerVerified = false;
@@ -1096,6 +1083,46 @@ function isOwnerAuthenticated() {
   }
 }
 
+function sha256Pure(ascii) {
+  function r(v, a) { return (v >>> a) | (v << (32 - a)); }
+  const pow = Math.pow, maxW = pow(2, 32);
+  let res = '', w = [], len = ascii.length * 8, hash = [], k = [], pc = 0, comp = {};
+  for (let c = 2; pc < 64; c++) {
+    if (!comp[c]) {
+      for (let i = 0; i < 313; i += c) comp[i] = c;
+      hash[pc] = (pow(c, .5) * maxW) | 0;
+      k[pc++] = (pow(c, 1 / 3) * maxW) | 0;
+    }
+  }
+  hash = hash.slice(0, 8);
+  ascii += '\x80';
+  while ((ascii.length % 64) - 56) ascii += '\x00';
+  for (let i = 0; i < ascii.length; i++) w[i >> 2] |= ascii.charCodeAt(i) << ((3 - i) % 4) * 8;
+  w[w.length] = (len / maxW) | 0;
+  w[w.length] = len;
+  for (let j = 0; j < w.length;) {
+    const subW = w.slice(j, j += 16), oldH = hash;
+    hash = hash.slice(0, 8);
+    for (let i = 0; i < 64; i++) {
+      const w15 = subW[i - 15], w2 = subW[i - 2];
+      const a = hash[0], e = hash[4];
+      const t1 = hash[7] + (r(e, 6) ^ r(e, 11) ^ r(e, 25)) + ((e & hash[5]) ^ ((~e) & hash[6])) + k[i]
+        + (subW[i] = (i < 16) ? subW[i] : (subW[i - 16] + (r(w15, 7) ^ r(w15, 18) ^ (w15 >>> 3)) + subW[i - 7] + (r(w2, 17) ^ r(w2, 19) ^ (w2 >>> 10))) | 0);
+      const t2 = (r(a, 2) ^ r(a, 13) ^ r(a, 22)) + ((a & hash[1]) ^ (a & hash[2]) ^ (hash[1] & hash[2]));
+      hash = [(t1 + t2) | 0].concat(hash);
+      hash[4] = (hash[4] + t1) | 0;
+    }
+    for (let i = 0; i < 8; i++) hash[i] = (hash[i] + oldH[i]) | 0;
+  }
+  for (let i = 0; i < 8; i++) {
+    for (let j = 3; j >= 0; j--) {
+      const b = (hash[i] >> (j * 8)) & 255;
+      res += (b < 16 ? '0' : '') + b.toString(16);
+    }
+  }
+  return res;
+}
+
 async function computeSha256(str) {
   try {
     if (typeof crypto !== 'undefined' && crypto.subtle && crypto.subtle.digest) {
@@ -1104,7 +1131,7 @@ async function computeSha256(str) {
       return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
     }
   } catch (_) {}
-  return '';
+  return sha256Pure(str);
 }
 
 function setStatus(id, type, msg) {
@@ -1135,7 +1162,7 @@ function closeAuthModal() {
 async function verifyOwnerPassword() {
   const inputEl = document.getElementById('owner-password-input');
   if (!inputEl) return;
-  const val = inputEl.value.trim();
+  const val = inputEl.value;
   if (!val) {
     setStatus('auth-status', 'err', '⚠️ Vui lòng nhập mật khẩu quản trị.');
     if (inputEl.focus) inputEl.focus();
@@ -1144,7 +1171,7 @@ async function verifyOwnerPassword() {
 
   setStatus('auth-status', 'info', 'Đang xác thực mật khẩu...');
   const hash = await computeSha256(val);
-  const isValid = VALID_PASSWORDS.includes(val) || (hash && VALID_HASHES.includes(hash));
+  const isValid = (hash === OWNER_PASSWORD_HASH);
 
   if (!isValid) {
     setStatus('auth-status', 'err', '❌ Mật khẩu không chính xác! Vui lòng thử lại.');
@@ -1172,12 +1199,10 @@ function updateOwnerUI(enabled) {
   const badge = document.getElementById('owner-badge');
   const editBtn = document.getElementById('btn-open-editor');
   const logoutBtn = document.getElementById('btn-owner-logout');
-  const loginBtn = document.getElementById('btn-owner-login');
 
   if (badge) badge.style.display = enabled ? '' : 'none';
   if (editBtn) editBtn.style.display = enabled ? '' : 'none';
   if (logoutBtn) logoutBtn.style.display = enabled ? '' : 'none';
-  if (loginBtn) loginBtn.style.display = enabled ? 'none' : '';
 
   const trusted = isTrustedEnvironment();
   const apiSaveBtn = document.getElementById('btn-api-save');
@@ -1186,6 +1211,14 @@ function updateOwnerUI(enabled) {
   if (warnEl) warnEl.style.display = trusted ? 'none' : 'block';
   const ctrlEl = document.getElementById('trusted-api-controls');
   if (ctrlEl) ctrlEl.style.display = trusted ? 'block' : 'none';
+}
+
+function handleTitleClick() {
+  if (isOwnerAuthenticated()) {
+    openEditorModal('template');
+  } else {
+    openAuthModal();
+  }
 }
 
 function handleOwnerEntryClick() {
@@ -1582,8 +1615,6 @@ function serializeFullHtmlDocument() {
   if (editBtn) editBtn.style.display = 'none';
   const logoutBtn = clone.querySelector('#btn-owner-logout');
   if (logoutBtn) logoutBtn.style.display = 'none';
-  const loginBtn = clone.querySelector('#btn-owner-login');
-  if (loginBtn) loginBtn.style.display = '';
 
   return '<!DOCTYPE html>\n' + clone.outerHTML;
 }
@@ -1803,104 +1834,21 @@ async function uploadSelectedFileToGitHub() {
 renderCV(cvData);
 updateDownloadLinks();
 
-function setupOwnerActivationShortcuts() {
-  let lastShiftTime = 0;
-
+function setupOwnerActivation() {
   const handleKey = e => {
     // Phím Escape: đóng dropdown và các modal
     if (e.key === 'Escape') {
       closeDownloadDropdown();
       closeAuthModal();
       closeEditorModal();
-      return;
-    }
-
-    // 1. Phím Shift nhấn 2 lần liên tiếp (Double Shift - không bao giờ bị browser chiếm)
-    if (e.key === 'Shift') {
-      const now = Date.now();
-      if (now - lastShiftTime < 450) {
-        lastShiftTime = 0;
-        enableOwnerMode(true);
-        return;
-      }
-      lastShiftTime = now;
-    }
-
-    const k = (e.key || '').toLowerCase();
-    const code = e.code || '';
-
-    // 2. Tổ hợp Ctrl + Alt + [E / M / P / C / K] (Không bao giờ bị Edge hay Chrome ghi đè)
-    if (e.ctrlKey && e.altKey) {
-      if (k === 'e' || k === 'm' || k === 'p' || k === 'c' || k === 'k' ||
-          code === 'KeyE' || code === 'KeyM' || code === 'KeyP' || code === 'KeyC' || code === 'KeyK') {
-        if (e.preventDefault) e.preventDefault();
-        enableOwnerMode(true);
-        return;
-      }
-    }
-
-    // 3. Phím Alt + P (Pham / Password) hoặc Alt + S (Sửa) hoặc Alt + K (Khóa)
-    if (e.altKey && !e.ctrlKey && !e.metaKey) {
-      if (k === 'p' || code === 'KeyP' || k === 's' || code === 'KeyS' || k === 'k' || code === 'KeyK' ||
-          k === 'e' || code === 'KeyE' || k === 'm' || code === 'KeyM' || k === 'c' || code === 'KeyC') {
-        if (e.preventDefault) e.preventDefault();
-        enableOwnerMode(true);
-        return;
-      }
-    }
-
-    // 4. Phím `~` (Tilde / Backtick) khi không đang gõ text vào input / textarea
-    if (!e.ctrlKey && !e.altKey && !e.metaKey && (e.key === '`' || e.key === '~')) {
-      const tag = (e.target && e.target.tagName ? e.target.tagName.toLowerCase() : '');
-      if (tag !== 'input' && tag !== 'textarea') {
-        if (e.preventDefault) e.preventDefault();
-        enableOwnerMode(true);
-        return;
-      }
-    }
-
-    // 5. Ctrl + M (hoặc Cmd + M trên Mac)
-    if ((e.ctrlKey || e.metaKey) && !e.shiftKey && !e.altKey) {
-      if (k === 'm' || code === 'KeyM') {
-        if (e.preventDefault) e.preventDefault();
-        enableOwnerMode(true);
-        return;
-      }
-    }
-
-    // 6. F2 / Fn + F2
-    if (e.key === 'F2') {
-      if (e.preventDefault) e.preventDefault();
-      enableOwnerMode(true);
-      return;
-    }
-
-    // 7. Ctrl + Shift + E / O / M / P
-    const hasMod = e.ctrlKey || e.metaKey;
-    if (hasMod && e.shiftKey) {
-      if (k === 'e' || code === 'KeyE' || k === 'o' || code === 'KeyO' || k === 'm' || code === 'KeyM' || k === 'p' || code === 'KeyP') {
-        if (e.preventDefault) e.preventDefault();
-        enableOwnerMode(true);
-      }
     }
   };
 
-  // Tự động giành focus cho iframe khi chuột di chuyển vào hoặc click
-  function claimFocus() {
-    try {
-      if (typeof window !== 'undefined' && window.focus) window.focus();
-    } catch (_) {}
-  }
-
   if (typeof window !== 'undefined' && window.addEventListener) {
     window.addEventListener('keydown', handleKey, { capture: true });
-    window.addEventListener('load', claimFocus);
-    window.addEventListener('mouseenter', claimFocus);
   }
   if (typeof document !== 'undefined' && document.addEventListener) {
     document.addEventListener('keydown', handleKey, { capture: true });
-    document.addEventListener('mousemove', claimFocus, { once: true });
-    document.addEventListener('click', claimFocus);
     document.addEventListener('click', e => {
       const dd = document.getElementById('cv-download-dropdown');
       if (dd && !dd.contains(e.target)) {
@@ -1908,38 +1856,9 @@ function setupOwnerActivationShortcuts() {
       }
     });
   }
-
-  // Cố gắng bắt sự kiện trên window.parent nếu nằm trong iframe
-  try {
-    if (typeof window !== 'undefined' && window.parent && window.parent !== window) {
-      window.parent.addEventListener('keydown', handleKey, { capture: true });
-    }
-  } catch (_) {}
-
-  // Cử chỉ chuột:
-  // - Click đơn giản hoặc đúp vào tiêu đề / icon khóa trên thanh bar
-  const barTitle = document.getElementById('bar-title-wrap');
-  if (barTitle && barTitle.addEventListener) {
-    barTitle.addEventListener('click', () => enableOwnerMode(true));
-  }
-
-  // - Double click vào bất kỳ chỗ nào trên thanh bar màu xanh
-  const bar = document.getElementById('resume-bar');
-  if (bar && bar.addEventListener) {
-    bar.addEventListener('dblclick', e => {
-      if (e.target && e.target.closest && (e.target.closest('#cv-download-dropdown') || e.target.closest('.dropdown-menu'))) return;
-      enableOwnerMode(true);
-    });
-  }
-
-  // - Double click vào Avatar hoặc Tên
-  const avatar = document.getElementById('cv-avatar');
-  if (avatar && avatar.addEventListener) avatar.addEventListener('dblclick', () => enableOwnerMode(true));
-  const cvName = document.getElementById('cv-name');
-  if (cvName && cvName.addEventListener) cvName.addEventListener('dblclick', () => enableOwnerMode(true));
 }
 
-setupOwnerActivationShortcuts();
+setupOwnerActivation();
 
 if (isOwnerAuthenticated()) {
   updateOwnerUI(true);
