@@ -2,7 +2,7 @@ name: 📊 Multi-Repo Traffic Tracker
 
 on:
   schedule:
-    - cron: "0 * * * *"   # Mỗi giờ
+    - cron: "0 */6 * * *"   # Mỗi 6 giờ (GitHub Traffic API cập nhật theo ngày)
   workflow_dispatch:
 
 jobs:
@@ -229,8 +229,10 @@ jobs:
                   print(f"  🗑 Removed stale data for deleted repo: {n}")
 
           # ── 4. Global summary snapshot ────────────────────────────────────────
+          prev_count = int(global_hist.get("snapshot_count") or len(global_hist.get("summary", [])))
+          global_hist["snapshot_count"] = prev_count + 1
           global_hist["summary"].append(snapshot_row)
-          global_hist["summary"] = global_hist["summary"][-720:]  # 30d
+          global_hist["summary"] = global_hist["summary"][-30:]  # Giữ 30 bản ghi gần nhất để tránh phình repo
           global_hist["last_updated"] = now_utc
           total_views = sum(r["all_time"]["views"]  for r in global_hist["repos"].values())
           total_unique_views = sum(r["all_time"]["unique_views"] for r in global_hist["repos"].values())
@@ -294,6 +296,10 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name  "github-actions[bot]"
           git add traffic/
-          git diff --staged --quiet && echo "⏭ No new data" || \
+          if git diff --staged --quiet; then
+            echo "⏭ No new data"
+          else
             git commit -m "📊 Multi-repo traffic $(date -u '+%Y-%m-%d %H:%M UTC')"
-          git push
+            git pull --rebase origin main
+            git push
+          fi

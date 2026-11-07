@@ -371,6 +371,15 @@
 const RAW_URL = 'https://raw.githubusercontent.com/ducanhphamorg/ducanhphamorg/main/traffic/history/global.json';
 const MAX_REPO_LABEL_LENGTH = 10;
 
+function escapeHtml(str) {
+  return String(str ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 const tip = document.getElementById('tooltip');
 function showTip(e, html) {
   tip.innerHTML = html;
@@ -468,7 +477,7 @@ function buildRepoChart(repos) {
     const displayName = r.name.length > MAX_REPO_LABEL_LENGTH
       ? `${r.name.slice(0, MAX_REPO_LABEL_LENGTH)}…`
       : r.name;
-    const tipHtml = `<b>${r.full_name || r.name}</b><br>⭐ ${r.stars || 0} stars<br>🍴 ${r.forks || 0} forks`;
+    const tipHtml = `<b>${escapeHtml(r.full_name || r.name)}</b><br>⭐ ${r.stars || 0} stars<br>🍴 ${r.forks || 0} forks`;
 
     const sBar = document.createElement('div');
     sBar.className = 'bar bar-views';
@@ -500,13 +509,13 @@ function buildTable(items, tbodyId, colorVar) {
   const max = Math.max(...items.map(r => r.count || 0), 1);
   tbody.innerHTML = items.map(r => {
     const pct = Math.round((r.count / max) * 100);
-    const name = r.referrer || r.path || '—';
+    const name = escapeHtml(r.referrer || r.path || '—');
     return `
       <tr>
         <td class="ref-name" title="${name}">${name}</td>
         <td class="ref-bar"><div class="ref-bar-inner" style="width:${pct}%;background:${colorVar}"></div></td>
-        <td class="ref-count">${r.count ?? 0}</td>
-        <td class="ref-uniq">${r.uniques ?? 0}</td>
+        <td class="ref-count">${Number(r.count ?? 0).toLocaleString()}</td>
+        <td class="ref-uniq">${Number(r.uniques ?? 0).toLocaleString()}</td>
       </tr>`;
   }).join('');
 }
@@ -520,9 +529,10 @@ async function loadData() {
     const repos = Object.values(data.repos || {});
     const trafficAvailable = Boolean(data.traffic_api?.enabled);
     const formatter = n => (Number(n || 0)).toLocaleString();
+    const totalSnapshots = data.snapshot_count ?? (data.summary || []).length;
 
-    document.getElementById('kpi-days').textContent = formatter(data.summary?.length || 0);
-    document.getElementById('kpi-snapshots').textContent = formatter(data.summary?.length || 0);
+    document.getElementById('kpi-days').textContent = formatter(totalSnapshots);
+    document.getElementById('kpi-snapshots').textContent = formatter(totalSnapshots);
 
     if (trafficAvailable) {
       isFallbackMode = false;
@@ -532,7 +542,7 @@ async function loadData() {
       document.getElementById('kpi-days-label').textContent = '📅 Tracked Days';
       document.getElementById('kpi-days-sub').textContent = 'days of history';
       document.getElementById('kpi-snapshots-label').textContent = '📸 Snapshots';
-      document.getElementById('kpi-snapshots-sub').textContent = 'hourly records';
+      document.getElementById('kpi-snapshots-sub').textContent = 'recorded runs';
       document.getElementById('chart-title').textContent = '📈 Daily Views & Clones';
       document.getElementById('legend-1').textContent = 'Views';
       document.getElementById('legend-2').textContent = 'Clones';
@@ -546,14 +556,14 @@ async function loadData() {
       document.getElementById('paths-col-4').textContent = 'Unique';
 
       document.getElementById('kpi-views').textContent = formatter(totals.views);
-      document.getElementById('kpi-views-sub').textContent = `${formatter(totals.unique_views)} unique`;
+      document.getElementById('kpi-views-sub').textContent = `${formatter(totals.unique_views)} daily unique sum`;
       document.getElementById('kpi-clones').textContent = formatter(totals.clones);
-      document.getElementById('kpi-clones-sub').textContent = `${formatter(totals.unique_clones)} unique`;
+      document.getElementById('kpi-clones-sub').textContent = `${formatter(totals.unique_clones)} daily unique sum`;
 
       const vDays = Object.values(data.views_by_day || {}).sort((a,b) => a.timestamp > b.timestamp ? 1 : -1);
       const cDays = Object.values(data.clones_by_day || {}).sort((a,b) => a.timestamp > b.timestamp ? 1 : -1);
       document.getElementById('kpi-days').textContent = formatter(Math.max(vDays.length, cDays.length));
-      document.getElementById('kpi-snapshots').textContent = formatter((data.summary || []).length);
+      document.getElementById('kpi-snapshots').textContent = formatter(totalSnapshots);
 
       allViewDays = vDays.map(d => ({ts: d.timestamp, count: d.count, uniques: d.uniques}));
       allCloneDays = cDays.map(d => ({ts: d.timestamp, count: d.count, uniques: d.uniques}));
@@ -570,7 +580,7 @@ async function loadData() {
       document.getElementById('kpi-days-label').textContent = '📦 Public Repos';
       document.getElementById('kpi-days-sub').textContent = 'repos tracked';
       document.getElementById('kpi-snapshots-label').textContent = '📊 Snapshots';
-      document.getElementById('kpi-snapshots-sub').textContent = 'hourly records';
+      document.getElementById('kpi-snapshots-sub').textContent = 'recorded runs';
       document.getElementById('chart-title').textContent = '📈 Repo Stars & Forks (Fallback)';
       document.getElementById('legend-1').textContent = 'Stars';
       document.getElementById('legend-2').textContent = 'Forks';
@@ -588,7 +598,7 @@ async function loadData() {
       document.getElementById('kpi-clones').textContent = formatter(totals.forks);
       document.getElementById('kpi-clones-sub').textContent = `${formatter(totals.watchers)} watchers`;
       document.getElementById('kpi-days').textContent = formatter(totals.repos);
-      document.getElementById('kpi-snapshots').textContent = formatter((data.summary || []).length);
+      document.getElementById('kpi-snapshots').textContent = formatter(totalSnapshots);
 
       const topRepos = repos
         .sort((a,b) => (b.stars || 0) - (a.stars || 0))
@@ -620,7 +630,7 @@ document.getElementById('chart-tabs').addEventListener('click', e => {
   if (!btn) return;
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
-  chartRange = btn.dataset.range === 'all' ? 999 : parseInt(btn.dataset.range);
+  chartRange = btn.dataset.range === 'all' ? 'all' : parseInt(btn.dataset.range, 10);
   if (isFallbackMode) {
     buildRepoChart(cachedTopRepos);
   } else {

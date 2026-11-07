@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2000 120" role="img" aria-label="Greetings everyone! then I'm Pɦạლ Đứℭ Aղɦ">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2000 120" role="img" aria-label="Greetings everyone! I'm Pɦạლ Đứℭ Aղɦ">
   <defs>
     <linearGradient id="grad" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0" stop-color="#b7446d"/>
@@ -6,10 +6,6 @@
       <stop offset="0.6" stop-color="#653ae1"/>
       <stop offset="0.8" stop-color="#5b37da"/>
       <stop offset="1" stop-color="#2c238d"/>
-    </linearGradient>
-    <linearGradient id="starGrad" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#ffd700"/>
-      <stop offset="1" stop-color="#ffb000"/>
     </linearGradient>
     <mask id="typeMask" maskUnits="objectBoundingBox" maskContentUnits="objectBoundingBox">
       <rect x="0" y="0" width="0" height="1" fill="#fff">
@@ -23,13 +19,6 @@
         <animate attributeName="width" dur="6s" repeatCount="indefinite"
                  keyTimes="0;0.5;0.85;0.9;1"
                  values="0;0;1;1;0"/>
-      </rect>
-    </mask>
-    <mask id="starMask" maskUnits="objectBoundingBox" maskContentUnits="objectBoundingBox">
-      <rect x="0" y="0" width="0" height="1" fill="#fff">
-        <animate attributeName="width" dur="6s" repeatCount="indefinite"
-                 keyTimes="0;0.9;1"
-                 values="0;0;1"/>
       </rect>
     </mask>
   </defs>

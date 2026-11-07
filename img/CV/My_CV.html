@@ -14,8 +14,40 @@
     --white:#ffffff; --off:#fafaf8; --ink:#111827;
     --ink-mid:#374151; --ink-soft:#6b7280; --div:#e5e7eb; --sw:228px;
   }
-  body { font-family:'DM Sans',sans-serif; background:#d0d4d8; display:flex; justify-content:center; align-items:flex-start; min-height:100vh; padding:32px 16px; }
+  body {
+    font-family:'DM Sans',sans-serif;
+    background:#d0d4d8;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    min-height:100vh;
+    padding:76px 16px 32px;
+  }
   .cv { width:794px; background:var(--white); display:flex; box-shadow:0 20px 60px rgba(0,0,0,.22),0 4px 12px rgba(0,0,0,.08); border-radius:2px; overflow:hidden; }
+
+  /* TOP BAR */
+  #resume-bar {
+    position:fixed; top:0; left:0; right:0; z-index:9990;
+    background:#0A66C2; color:white;
+    display:flex; align-items:center; justify-content:center; flex-wrap:wrap;
+    gap:10px; padding:10px 20px;
+    font-family:'DM Sans',sans-serif; font-size:14px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.3);
+  }
+  .bar-btn {
+    border:none; padding:7px 14px; border-radius:6px;
+    font-weight:700; cursor:pointer; font-size:13px;
+    display:inline-flex; align-items:center; gap:6px;
+    text-decoration:none; transition:opacity .15s;
+  }
+  .bar-btn:hover { opacity:.9; }
+  .bar-btn-primary { background:white; color:#0A66C2; }
+  .bar-btn-gold { background:#f0c040; color:#111827; }
+  .bar-btn-ghost { background:transparent; color:white; border:1.5px solid rgba(255,255,255,.85); }
+  .owner-pill {
+    background:rgba(255,255,255,.16); padding:4px 10px; border-radius:999px;
+    font-size:12px; font-family:'Space Mono',monospace;
+  }
 
   /* SIDEBAR */
   .sb { width:var(--sw); flex-shrink:0; background:var(--teal); display:flex; flex-direction:column; padding-bottom:20px; position:relative; }
@@ -63,8 +95,8 @@
   .period-role { font-size:8px; color:var(--teal); font-weight:600; text-transform:uppercase; }
   .period::after { content:''; flex:1; height:1px; background:var(--gold); opacity:.45; }
   .proj { display:grid; grid-template-columns:46px 7px 1fr; gap:0 5px; margin-bottom:6px; align-items:start; }
-  .p-date { font-family:'Space Mono',monospace; font-size:7.8px; color:var(--teal); font-weight:700; text-align:right; padding-top:2px; line-height:1.2; }
-  .p-col { display:flex; flex-direction:column; align-items:center; padding-top:5px; }
+  .p-date { font-family:'Space Mono',monospace; font-size:7.8px; color:var(--teal); font-weight:700; text-align:right; padding-top:2px; line-height:1.2; white-space:pre-line; }
+  .p-col { display:flex; flex-direction:column; align-items:center; padding-top:5px; height:100%; }
   .p-dot { width:6px; height:6px; border-radius:50%; background:var(--gold); flex-shrink:0; }
   .p-line { width:1px; flex:1; background:rgba(184,134,11,.22); min-height:10px; margin-top:2px; }
   .p-name { font-size:10px; font-weight:700; color:var(--ink); line-height:1.3; }
@@ -80,38 +112,118 @@
   .edu-deg { font-family:'DM Serif Display',serif; font-size:11px; color:var(--ink); line-height:1.3; }
   .edu-sch { font-size:8.5px; color:var(--ink-soft); margin-top:1px; }
   .edu-per { font-family:'Space Mono',monospace; font-size:8px; color:var(--teal); font-weight:700; margin-top:1px; }
-  @media print { body { background:white; padding:0; display:block; } .cv { box-shadow:none; width:210mm; border-radius:0; } }
+
+  /* MODAL POPUP (OWNER AUTH + TEMPLATE EDITOR + UPLOAD) */
+  .modal-backdrop {
+    position:fixed; inset:0; z-index:9995;
+    background:rgba(17,24,39,.72); backdrop-filter:blur(3px);
+    display:none; align-items:center; justify-content:center; padding:20px;
+  }
+  .modal-backdrop.open { display:flex; }
+  .modal-card {
+    background:#ffffff; color:#111827; width:100%; max-width:860px; max-height:90vh;
+    border-radius:12px; box-shadow:0 25px 70px rgba(0,0,0,.38);
+    display:flex; flex-direction:column; overflow:hidden;
+  }
+  .modal-header {
+    background:var(--teal-dark); color:white; padding:14px 20px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .modal-header h2 { font-size:16px; font-weight:700; display:flex; align-items:center; gap:8px; }
+  .modal-close {
+    background:transparent; border:none; color:white; font-size:20px; cursor:pointer; line-height:1;
+  }
+  .modal-tabs {
+    display:flex; gap:6px; background:#f3f4f6; padding:10px 20px 0; border-bottom:1px solid #e5e7eb;
+  }
+  .modal-tab {
+    border:1px solid transparent; border-bottom:none; background:transparent;
+    padding:8px 16px; border-radius:8px 8px 0 0; font-weight:700; font-size:13px;
+    color:#4b5563; cursor:pointer;
+  }
+  .modal-tab.active {
+    background:#ffffff; color:var(--teal-dark); border-color:#e5e7eb;
+  }
+  .modal-body { padding:18px 20px; overflow-y:auto; flex:1; }
+  .modal-footer {
+    padding:12px 20px; background:#f9fafb; border-top:1px solid #e5e7eb;
+    display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;
+  }
+  .form-section {
+    border:1px solid #e5e7eb; border-radius:8px; padding:14px; margin-bottom:14px; background:#fafafa;
+  }
+  .form-section h3 {
+    font-size:13px; text-transform:uppercase; letter-spacing:.06em; color:var(--teal-dark);
+    margin-bottom:10px; display:flex; align-items:center; justify-content:space-between;
+  }
+  .form-grid {
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:10px;
+  }
+  .form-field { display:flex; flex-direction:column; gap:4px; margin-bottom:8px; }
+  .form-field label { font-size:11.5px; font-weight:700; color:#374151; }
+  .form-field input, .form-field textarea, .form-field select {
+    padding:8px 10px; border:1px solid #d1d5db; border-radius:6px; font-size:13px;
+    font-family:inherit; background:white; color:#111827;
+  }
+  .form-field textarea { min-height:66px; resize:vertical; }
+  .proj-editor-card {
+    background:white; border:1px solid #d1d5db; border-radius:8px; padding:12px; margin-top:8px;
+  }
+  .proj-editor-head {
+    display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;
+    font-size:12.5px; font-weight:700; color:#111827;
+  }
+  .sm-btn {
+    border:1px solid #d1d5db; background:white; color:#111827; padding:4px 10px;
+    border-radius:5px; font-size:12px; font-weight:600; cursor:pointer;
+  }
+  .sm-btn-danger { border-color:#fca5a5; color:#dc2626; background:#fef2f2; }
+  .sm-btn-teal { border-color:var(--teal); color:white; background:var(--teal); }
+  .status-msg {
+    font-size:12.5px; font-weight:600; padding:8px 12px; border-radius:6px; display:none;
+  }
+  .status-msg.info { display:block; background:#eff6ff; color:#1d4ed8; border:1px solid #bfdbfe; }
+  .status-msg.ok   { display:block; background:#ecfdf5; color:#047857; border:1px solid #a7f3d0; }
+  .status-msg.err  { display:block; background:#fef2f2; color:#b91c1c; border:1px solid #fecaca; }
+
+  @media print {
+    body { background:white; padding:0; display:block; }
+    .cv { box-shadow:none; width:210mm; border-radius:0; }
+    #resume-bar, .modal-backdrop { display:none !important; }
+  }
 </style>
 </head>
-
-<div id="resume-bar" style="position:fixed;top:0;left:0;right:0;z-index:9999;background:#0A66C2;color:white;display:flex;align-items:center;justify-content:center;gap:16px;padding:12px 24px;font-family:sans-serif;font-size:15px;box-shadow:0 2px 8px rgba(0,0,0,0.3);">
-  <span>📄 CV of <strong>Duc Anh Pham</strong></span>
-  <button onclick="window.print()" style="background:white;color:#0A66C2;border:none;padding:8px 18px;border-radius:6px;font-weight:bold;cursor:pointer;font-size:14px;">⬇️ Download PDF</button>
-  <button onclick="document.getElementById('resume-bar').style.display='none'" style="background:transparent;color:white;border:2px solid white;padding:8px 18px;border-radius:6px;font-weight:bold;cursor:pointer;font-size:14px;">✖ Ignore</button>
-</div>
-<div style="height:56px;"></div>
-<style>@media print{#resume-bar,#resume-bar+div{display:none!important;}}</style>
-
 <body>
-<div class="cv">
 
+<!-- TOP ACTION BAR (CLEAN FOR VISITORS/RECRUITERS; OWNER UNLOCKS VIA CTRL+SHIFT+E OR LOCAL MODE) -->
+<div id="resume-bar">
+  <span>📄 CV of <strong id="bar-owner-name">Duc Anh Pham</strong></span>
+  <button class="bar-btn bar-btn-primary" onclick="window.print()">⬇️ Download PDF</button>
+  <a class="bar-btn bar-btn-ghost" href="https://raw.githubusercontent.com/ducanhphamorg/ducanhphamorg/main/CV_Latex/CV.pdf" target="_blank" rel="noopener">📎 Original PDF</a>
+  <span id="owner-badge" class="owner-pill" style="display:none;">🛠️ Owner Mode</span>
+  <button id="btn-open-editor" class="bar-btn bar-btn-gold" style="display:none;" onclick="openEditorModal('template')">✏️ Edit / Upload CV</button>
+  <button id="btn-owner-logout" class="bar-btn bar-btn-ghost" style="display:none;" onclick="logoutOwner()">🔒 Exit Owner Mode</button>
+  <button class="bar-btn bar-btn-ghost" onclick="document.getElementById('resume-bar').style.display='none';document.body.style.paddingTop='24px';">✖ Hide Bar</button>
+</div>
+
+<!-- CV SHEET (RENDERED FROM STRUCTURED TEMPLATE DATA) -->
+<div class="cv" id="cv-sheet">
   <!-- SIDEBAR -->
   <div class="sb">
     <div class="photo-area">
       <div class="photo-ring">
-        <img src="../CV/Ảnh Avatar 2.jpg" alt="Pham Duc Anh"
-             onerror="this.style.display='none';this.parentElement.textContent='👤'"/>
+        <img id="cv-avatar" src="../CV/Ảnh Avatar 2.jpg" alt="Pham Duc Anh"
+             onerror="this.onerror=null;this.src='https://raw.githubusercontent.com/ducanhphamorg/ducanhphamorg/main/img/CV/%E1%BA%A2nh%20Avatar%202.jpg';"/>
       </div>
     </div>
 
-    <!-- ABOUT ME — unchanged -->
     <div class="sb-lbl">About Me</div>
-    <p class="sb-para">
+    <p class="sb-para" id="cv-about">
       Fresh IT graduate looking for my first internship in software development. Throughout university, I completed several academic projects covering web and mobile development — learning by doing and figuring things out step by step. I know I am still at the beginning and have a lot to grow. I am eager to bring a proactive attitude and a genuine willingness to learn into a real working environment — and to grow alongside experienced developers.
     </p>
 
     <div class="sb-lbl">Skill</div>
-    <ul class="sk-list">
+    <ul class="sk-list" id="cv-skills">
       <li>Attitude: Positive, proactive and responsible at work</li>
       <li>Teamwork: Listening, coordinating, and communicating effectively</li>
       <li>Quick learner, open to feedback; used AI tools to support learning and coding</li>
@@ -119,13 +231,15 @@
     </ul>
 
     <div class="sb-lbl">Language</div>
-    <div class="lang-row">
-      <span class="lang-name">English</span>
-      <span class="lang-lvl">Basic Reading &amp; Writing</span>
+    <div id="cv-languages">
+      <div class="lang-row">
+        <span class="lang-name">English</span>
+        <span class="lang-lvl">Basic Reading &amp; Writing</span>
+      </div>
     </div>
 
     <div class="sb-lbl">Basic Technologies</div>
-    <div class="tech-cloud">
+    <div class="tech-cloud" id="cv-tech-cloud">
       <span class="pill p-core">HTML/CSS</span>
       <span class="pill p-core">JavaScript</span>
       <span class="pill p-core">PHP</span>
@@ -152,8 +266,8 @@
     <div class="ach-box">
       <div class="ach-icon">🏆</div>
       <div class="ach-txt">
-        <strong>Best Student — Security Subject (2023)</strong>
-        <em>Greenwich International Bachelor Program</em>
+        <strong id="cv-ach-title">Best Student — Security Subject (2023)</strong>
+        <em id="cv-ach-sub">Greenwich International Bachelor Program</em>
       </div>
     </div>
   </div>
@@ -161,250 +275,242 @@
   <!-- MAIN -->
   <div class="main">
     <div class="name-banner">
-      <h1>Pham Duc Anh</h1>
-      <div class="role">Software Development</div>
+      <h1 id="cv-name">Pham Duc Anh</h1>
+      <div class="role" id="cv-role">Software Development</div>
     </div>
 
     <div class="content">
-
       <!-- CONTACT -->
       <div class="sh"><div class="sh-bar">Contact</div><div class="sh-line"></div></div>
-      <div class="c-flex">
+      <div class="c-flex" id="cv-contact">
         <div class="c-item"><div class="c-ico"><i class="fas fa-phone"></i></div>(+84) 903 796 863</div>
         <div class="c-item"><div class="c-ico"><i class="fas fa-envelope"></i></div>
           <a href="mailto:ducanh040202003@gmail.com">ducanh040202003@gmail.com</a></div>
         <div class="c-item"><div class="c-ico"><i class="fas fa-envelope-open"></i></div>
           <a href="mailto:DucAnhPham@544wfm.onmicrosoft.com">DucAnhPham@544wfm.onmicrosoft.com</a></div>
         <div class="c-item"><div class="c-ico"><i class="fab fa-github"></i></div>
-          <a href="https://github.com/ducanhphamorg" target="_blank">github.com/ducanhphamorg</a></div>
+          <a href="https://github.com/ducanhphamorg" target="_blank" rel="noopener">github.com/ducanhphamorg</a></div>
         <div class="c-item"><div class="c-ico"><i class="fas fa-map-marker-alt"></i></div>
-          210/16A Cach Mang Thang 8, Nhiêu Loc Ward, Dist. 3, Ho Chi Minh City</div>
+          Dist. 3, Ho Chi Minh City</div>
       </div>
 
       <!-- RECRUITING -->
       <div class="sh"><div class="sh-bar">Recruiting Position</div><div class="sh-line"></div></div>
-      <div class="rec-badge">👤&nbsp; Software Development Intern</div>
+      <div class="rec-badge" id="cv-recruiting">👤&nbsp; Software Development Intern</div>
 
       <!-- PROJECTS -->
       <div class="sh"><div class="sh-bar">Academic Projects</div><div class="sh-line"></div></div>
+      <div id="cv-projects">
+        <!-- 2024–2025 -->
+        <div class="period">
+          <span class="period-lbl">2024 – 2025</span>
+          <span class="period-role">&nbsp;·&nbsp; Final Year (Graduation)</span>
+        </div>
 
-      <!-- 2024–2025 -->
-      <div class="period">
-        <span class="period-lbl">2024 – 2025</span>
-        <span class="period-role">&nbsp;·&nbsp; Final Year (Graduation)</span>
-      </div>
-
-      <!-- MediCare — solo -->
-      <div class="proj">
-        <div class="p-date">Jun<br>2025</div>
-        <div class="p-col"><div class="p-dot"></div><div class="p-line"></div></div>
-        <div>
-          <div class="p-name">🏥 MediCare — Clinic Appointment System
-            <a class="p-link" href="https://github.com/ducanhphamorg" target="_blank">↗ GitHub</a>
-          </div>
-          <div class="p-desc">
-            <strong>Individual graduation project.</strong> Built a full-stack clinic management system.
-            Designed the <strong>PostgreSQL database schema</strong> and implemented
-            <strong>REST API endpoints (Spring Boot 3)</strong> for appointments, medical records,
-            payments, and notifications. Integrated JWT-based authentication and set up
-            <strong>Docker</strong> for local containerization. Used AI tools (ChatGPT) to understand
-            Spring Boot concepts and debug issues throughout development. Managed workflow with
-            Jira (Agile/Scrum) and prototyped screens in Figma.
-          </div>
-          <div class="tags">
-            <span class="t t-gold">Java 21</span><span class="t t-gold">Spring Boot 3</span>
-            <span class="t t-gold">REST API</span><span class="t t-gold">PostgreSQL</span>
-            <span class="t t-gold">JWT Auth</span><span class="t t-gold">Docker</span>
-            <span class="t t-teal">Thymeleaf</span><span class="t t-teal">Bootstrap</span>
-            <span class="t t-teal">Jira</span><span class="t t-teal">Figma</span>
-            <span class="t t-teal">Agile / Scrum</span><span class="t t-teal">GitHub</span>
+        <div class="proj">
+          <div class="p-date">Jun<br>2025</div>
+          <div class="p-col"><div class="p-dot"></div><div class="p-line"></div></div>
+          <div>
+            <div class="p-name">🏥 MediCare — Clinic Appointment System
+              <a class="p-link" href="https://github.com/ducanhphamorg/Final_Project" target="_blank" rel="noopener">↗ GitHub</a>
+            </div>
+            <div class="p-desc">
+              <strong>Individual graduation project.</strong> Built a full-stack clinic management system.
+              Designed the <strong>PostgreSQL database schema</strong> and implemented
+              <strong>REST API endpoints (Spring Boot 3)</strong> for appointments, medical records,
+              payments, and notifications. Integrated JWT-based authentication and set up
+              <strong>Docker</strong> for local containerization. Used AI tools (ChatGPT) to understand
+              Spring Boot concepts and debug issues throughout development. Managed workflow with
+              Jira (Agile/Scrum) and prototyped screens in Figma.
+            </div>
+            <div class="tags">
+              <span class="t t-gold">Java 21</span><span class="t t-gold">Spring Boot 3</span>
+              <span class="t t-gold">REST API</span><span class="t t-gold">PostgreSQL</span>
+              <span class="t t-gold">JWT Auth</span><span class="t t-gold">Docker</span>
+              <span class="t t-teal">Thymeleaf</span><span class="t t-teal">Bootstrap</span>
+              <span class="t t-teal">Jira</span><span class="t t-teal">Figma</span>
+              <span class="t t-teal">Agile / Scrum</span><span class="t t-teal">GitHub</span>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Bina — team of 5, main dev -->
-      <div class="proj">
-        <div class="p-date">2024–<br>2025</div>
-        <div class="p-col"><div class="p-dot"></div></div>
-        <div>
-          <div class="p-name">📰 Bina — University Magazine Portal
-            <a class="p-link" href="https://github.com/ducanhphamorg" target="_blank">↗ GitHub</a>
-          </div>
-          <div class="p-desc">
-            <strong>Team of 5.</strong> Handled the majority of backend coding
-            while teammates assisted with UI and testing. Built a multi-role web portal
-            (Admin, Coordinator, Manager, Student, Guest) using <strong>ASP.NET Core MVC (.NET 8)</strong>.
-            Implemented role-based routing, article submission flow, coordinator review, and
-            <strong>Firebase Storage</strong> for file uploads. Integrated
-            <strong>Google &amp; Microsoft OAuth</strong>. Used AI tools to learn C# and
-            Entity Framework Core patterns during development.
-          </div>
-          <div class="tags">
-            <span class="t t-gold">C# / .NET 8</span><span class="t t-gold">ASP.NET Core MVC</span>
-            <span class="t t-gold">Entity Framework Core</span><span class="t t-gold">SQL Server</span>
-            <span class="t t-gold">Firebase Storage</span>
-            <span class="t t-teal">Google OAuth</span><span class="t t-teal">Razor Views</span>
-            <span class="t t-teal">Bootstrap</span><span class="t t-teal">GitHub</span>
+        <div class="proj">
+          <div class="p-date">2024–<br>2025</div>
+          <div class="p-col"><div class="p-dot"></div></div>
+          <div>
+            <div class="p-name">📰 Bina — University Magazine Portal
+              <a class="p-link" href="https://github.com/ducanhphamorg/Bina" target="_blank" rel="noopener">↗ GitHub</a>
+            </div>
+            <div class="p-desc">
+              <strong>Team of 5.</strong> Handled the majority of backend coding
+              while teammates assisted with UI and testing. Built a multi-role web portal
+              (Admin, Coordinator, Manager, Student, Guest) using <strong>ASP.NET Core MVC (.NET 8)</strong>.
+              Implemented role-based routing, article submission flow, coordinator review, and
+              <strong>Firebase Storage</strong> for file uploads. Integrated
+              <strong>Google &amp; Microsoft OAuth</strong>. Used AI tools to learn C# and
+              Entity Framework Core patterns during development.
+            </div>
+            <div class="tags">
+              <span class="t t-gold">C# / .NET 8</span><span class="t t-gold">ASP.NET Core MVC</span>
+              <span class="t t-gold">Entity Framework Core</span><span class="t t-gold">SQL Server</span>
+              <span class="t t-gold">Firebase Storage</span>
+              <span class="t t-teal">Google OAuth</span><span class="t t-teal">Razor Views</span>
+              <span class="t t-teal">Bootstrap</span><span class="t t-teal">GitHub</span>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- 2023–2024 -->
-      <div class="period">
-        <span class="period-lbl">2023 – 2024</span>
-        <span class="period-role">&nbsp;·&nbsp; Project Design &amp; Construction</span>
-      </div>
+        <!-- 2023–2024 -->
+        <div class="period">
+          <span class="period-lbl">2023 – 2024</span>
+          <span class="period-role">&nbsp;·&nbsp; Project Design &amp; Construction</span>
+        </div>
 
-      <!-- Flip-Mart — team of 2 -->
-      <div class="proj">
-        <div class="p-date">2023–<br>2024</div>
-        <div class="p-col"><div class="p-dot"></div><div class="p-line"></div></div>
-        <div>
-          <div class="p-name">🛒 Flip-Mart — E-Commerce Website
-            <a class="p-link" href="https://github.com/ducanhphamorg/Shopping_Store" target="_blank">↗ GitHub</a>
-          </div>
-          <div class="p-desc">
-            <strong>Team of 2.</strong> Collaborated with one teammate on a full e-commerce site.
-            Personally responsible for <strong>Laravel 9 backend routes and controllers</strong>,
-            <strong>MySQL schema design</strong>, and integrating the Stripe payment flow.
-            Used AI tools to understand Laravel MVC conventions and debug Blade template issues.
-          </div>
-          <div class="tags">
-            <span class="t t-gold">PHP Laravel 9</span><span class="t t-gold">MySQL</span>
-            <span class="t t-gold">Stripe</span><span class="t t-gold">MVC</span>
-            <span class="t t-teal">Tailwind CSS</span><span class="t t-teal">Blade</span>
-            <span class="t t-teal">JavaScript</span><span class="t t-teal">GitHub</span>
+        <div class="proj">
+          <div class="p-date">2023–<br>2024</div>
+          <div class="p-col"><div class="p-dot"></div><div class="p-line"></div></div>
+          <div>
+            <div class="p-name">🛒 Flip-Mart — E-Commerce Website
+              <a class="p-link" href="https://github.com/ducanhphamorg/Shopping_Store" target="_blank" rel="noopener">↗ GitHub</a>
+            </div>
+            <div class="p-desc">
+              <strong>Team of 2.</strong> Collaborated with one teammate on a full e-commerce site.
+              Personally responsible for <strong>Laravel 9 backend routes and controllers</strong>,
+              <strong>MySQL schema design</strong>, and integrating the Stripe payment flow.
+              Used AI tools to understand Laravel MVC conventions and debug Blade template issues.
+            </div>
+            <div class="tags">
+              <span class="t t-gold">PHP Laravel 9</span><span class="t t-gold">MySQL</span>
+              <span class="t t-gold">Stripe</span><span class="t t-gold">MVC</span>
+              <span class="t t-teal">Tailwind CSS</span><span class="t t-teal">Blade</span>
+              <span class="t t-teal">JavaScript</span><span class="t t-teal">GitHub</span>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- COMP1786 — individual -->
-      <div class="proj">
-        <div class="p-date">2023–<br>2024</div>
-        <div class="p-col"><div class="p-dot"></div><div class="p-line"></div></div>
-        <div>
-          <div class="p-name">🧘 Yoga Class Management App (Android)
-            <a class="p-link" href="https://github.com/ducanhphamorg/COMP1786" target="_blank">↗ GitHub</a>
-          </div>
-          <div class="p-desc">
-            <strong>Individual coursework.</strong> Built an Android admin app (Java) to manage
-            yoga courses, class instances, and bookings with role-based access. Used
-            <strong>Firebase Auth + Firestore</strong> for authentication/data sync and
-            <strong>local SQLite</strong> for offline storage. Also completed 3 smaller Kotlin
-            apps (unit converter, to-do list with/without SQLite) as learning exercises.
-            Used AI to understand Android lifecycle and Firebase SDK integration.
-          </div>
-          <div class="tags">
-            <span class="t t-gold">Java (Android)</span><span class="t t-gold">Kotlin</span>
-            <span class="t t-gold">Firebase Auth</span><span class="t t-gold">Firestore</span>
-            <span class="t t-teal">SQLite</span><span class="t t-teal">Android SDK</span>
-            <span class="t t-teal">GitHub</span>
+        <div class="proj">
+          <div class="p-date">2023–<br>2024</div>
+          <div class="p-col"><div class="p-dot"></div><div class="p-line"></div></div>
+          <div>
+            <div class="p-name">🧘 Yoga Class Management App (Android)
+              <a class="p-link" href="https://github.com/ducanhphamorg/COMP1786" target="_blank" rel="noopener">↗ GitHub</a>
+            </div>
+            <div class="p-desc">
+              <strong>Individual coursework.</strong> Built an Android admin app (Java) to manage
+              yoga courses, class instances, and bookings with role-based access. Used
+              <strong>Firebase Auth + Firestore</strong> for authentication/data sync and
+              <strong>local SQLite</strong> for offline storage. Also completed 3 smaller Kotlin
+              apps (unit converter, to-do list with/without SQLite) as learning exercises.
+              Used AI to understand Android lifecycle and Firebase SDK integration.
+            </div>
+            <div class="tags">
+              <span class="t t-gold">Java (Android)</span><span class="t t-gold">Kotlin</span>
+              <span class="t t-gold">Firebase Auth</span><span class="t t-gold">Firestore</span>
+              <span class="t t-teal">SQLite</span><span class="t t-teal">Android SDK</span>
+              <span class="t t-teal">GitHub</span>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- House Price Prediction — individual -->
-      <div class="proj">
-        <div class="p-date">2023–<br>2024</div>
-        <div class="p-col"><div class="p-dot"></div></div>
-        <div>
-          <div class="p-name">📊 House Price Prediction — Data Analysis (King County)
-            <a class="p-link" href="https://github.com/ducanhphamorg" target="_blank">↗ GitHub</a>
-          </div>
-          <div class="p-desc">
-            <strong>Individual project.</strong> Followed an end-to-end data pipeline:
-            EDA with pandas/seaborn, OLS regression with statsmodels, price prediction using
-            <strong>XGBoost + scikit-learn</strong>, and geographic maps with
-            <strong>folium</strong>. Created a <strong>Tableau dashboard</strong> for
-            non-technical stakeholders. Used AI tools to understand Python data science
-            libraries and interpret model outputs.
-          </div>
-          <div class="tags">
-            <span class="t t-gold">Python</span><span class="t t-gold">scikit-learn</span>
-            <span class="t t-gold">XGBoost</span><span class="t t-gold">pandas / numpy</span>
-            <span class="t t-teal">Seaborn / Matplotlib</span><span class="t t-teal">folium</span>
-            <span class="t t-teal">Tableau</span><span class="t t-teal">Jupyter Notebook</span>
+        <div class="proj">
+          <div class="p-date">2023–<br>2024</div>
+          <div class="p-col"><div class="p-dot"></div></div>
+          <div>
+            <div class="p-name">📊 House Price Prediction — Data Analysis (King County)
+              <a class="p-link" href="https://github.com/ducanhphamorg/House_Price_Prediction" target="_blank" rel="noopener">↗ GitHub</a>
+            </div>
+            <div class="p-desc">
+              <strong>Individual project.</strong> Followed an end-to-end data pipeline:
+              EDA with pandas/seaborn, OLS regression with statsmodels, price prediction using
+              <strong>XGBoost + scikit-learn</strong>, and geographic maps with
+              <strong>folium</strong>. Created a <strong>Tableau dashboard</strong> for
+              non-technical stakeholders. Used AI tools to understand Python data science
+              libraries and interpret model outputs.
+            </div>
+            <div class="tags">
+              <span class="t t-gold">Python</span><span class="t t-gold">scikit-learn</span>
+              <span class="t t-gold">XGBoost</span><span class="t t-gold">pandas / numpy</span>
+              <span class="t t-teal">Seaborn / Matplotlib</span><span class="t t-teal">folium</span>
+              <span class="t t-teal">Tableau</span><span class="t t-teal">Jupyter Notebook</span>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- 2022–2023 -->
-      <div class="period">
-        <span class="period-lbl">2022 – 2023</span>
-        <span class="period-role">&nbsp;·&nbsp; Foundational Projects</span>
-      </div>
+        <!-- 2022–2023 -->
+        <div class="period">
+          <span class="period-lbl">2022 – 2023</span>
+          <span class="period-role">&nbsp;·&nbsp; Foundational Projects</span>
+        </div>
 
-      <!-- Tune Source -->
-      <div class="proj">
-        <div class="p-date">Mar<br>2023</div>
-        <div class="p-col"><div class="p-dot"></div><div class="p-line"></div></div>
-        <div>
-          <div class="p-name">🎵 Tune Source System — Music CD Store
-            <a class="p-link" href="https://github.com/ducanhphamorg" target="_blank">↗ GitHub</a>
-          </div>
-          <div class="p-desc">
-            <strong>Individual project.</strong> Built a music CD e-commerce site with customer
-            storefront and admin CRUD dashboard using plain <strong>PHP (PDO)</strong> and MySQL.
-            Implemented session-based login for both customer and admin roles.
-            Used AI assistance to understand PDO connections and debug SQL queries.
-          </div>
-          <div class="tags">
-            <span class="t t-teal">PHP (PDO)</span><span class="t t-teal">MySQL</span>
-            <span class="t t-teal">Bootstrap</span><span class="t t-teal">JavaScript</span>
-            <span class="t t-teal">MVC</span><span class="t t-teal">Apache / XAMPP</span>
+        <div class="proj">
+          <div class="p-date">Mar<br>2023</div>
+          <div class="p-col"><div class="p-dot"></div><div class="p-line"></div></div>
+          <div>
+            <div class="p-name">🎵 Tune Source System — Music CD Store
+              <a class="p-link" href="https://github.com/ducanhphamorg/Tune-Source-System" target="_blank" rel="noopener">↗ GitHub</a>
+            </div>
+            <div class="p-desc">
+              <strong>Individual project.</strong> Built a music CD e-commerce site with customer
+              storefront and admin CRUD dashboard using plain <strong>PHP (PDO)</strong> and MySQL.
+              Implemented session-based login for both customer and admin roles.
+              Used AI assistance to understand PDO connections and debug SQL queries.
+            </div>
+            <div class="tags">
+              <span class="t t-teal">PHP (PDO)</span><span class="t t-teal">MySQL</span>
+              <span class="t t-teal">Bootstrap</span><span class="t t-teal">JavaScript</span>
+              <span class="t t-teal">MVC</span><span class="t t-teal">Apache / XAMPP</span>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Phone Case -->
-      <div class="proj">
-        <div class="p-date">Nov<br>2022</div>
-        <div class="p-col"><div class="p-dot"></div><div class="p-line"></div></div>
-        <div>
-          <div class="p-name">📱 First Web Project — Phone Case Store</div>
-          <div class="p-desc">
-            <strong>Individual — first hands-on project.</strong> Applied fundamental HTML/CSS/JS
-            front-end skills alongside basic PHP + MySQL back-end to build a simple product store.
-          </div>
-          <div class="tags">
-            <span class="t t-teal">HTML</span><span class="t t-teal">CSS</span>
-            <span class="t t-teal">JavaScript</span><span class="t t-teal">jQuery</span>
-            <span class="t t-teal">PHP</span><span class="t t-teal">MySQL</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- SQL Server -->
-      <div class="proj">
-        <div class="p-date">Sep<br>2022</div>
-        <div class="p-col"><div class="p-dot"></div></div>
-        <div>
-          <div class="p-name">🗄 Database Design — Library Management System</div>
-          <div class="p-desc">Designed and implemented a relational database schema for library storage and management as a course assignment.</div>
-          <div class="tags">
-            <span class="t t-teal">SQL Server</span><span class="t t-teal">Database Design</span>
+        <div class="proj">
+          <div class="p-date">Nov<br>2022</div>
+          <div class="p-col"><div class="p-dot"></div><div class="p-line"></div></div>
+          <div>
+            <div class="p-name">📱 First Web Project — Phone Case Store</div>
+            <div class="p-desc">
+              <strong>Individual — first hands-on project.</strong> Applied fundamental HTML/CSS/JS
+              front-end skills alongside basic PHP + MySQL back-end to build a simple product store.
+            </div>
+            <div class="tags">
+              <span class="t t-teal">HTML</span><span class="t t-teal">CSS</span>
+              <span class="t t-teal">JavaScript</span><span class="t t-teal">jQuery</span>
+              <span class="t t-teal">PHP</span><span class="t t-teal">MySQL</span>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- 2021–2022 -->
-      <div class="period">
-        <span class="period-lbl">2021 – 2022</span>
-        <span class="period-role">&nbsp;·&nbsp; Networking Group Leader</span>
-      </div>
-
-      <div class="proj">
-        <div class="p-date">Aug<br>2022</div>
-        <div class="p-col"><div class="p-dot"></div></div>
-        <div>
-          <div class="p-name">🌐 Network Infrastructure Simulation</div>
-          <div class="p-desc">
-            <strong>Group leader - Team of 4.</strong> Led team to design and simulate a company network
-            infrastructure using Cisco Packet Tracer and Visio before a simulated go-live.
+        <div class="proj">
+          <div class="p-date">Sep<br>2022</div>
+          <div class="p-col"><div class="p-dot"></div></div>
+          <div>
+            <div class="p-name">🗄 Database Design — Library Management System</div>
+            <div class="p-desc">Designed and implemented a relational database schema for library storage and management as a course assignment.</div>
+            <div class="tags">
+              <span class="t t-teal">SQL Server</span><span class="t t-teal">Database Design</span>
+            </div>
           </div>
-          <div class="tags">
-            <span class="t t-teal">Cisco Packet Tracer</span><span class="t t-teal">Visio</span>
-            <span class="t t-teal">Networking</span>
+        </div>
+
+        <!-- 2021–2022 -->
+        <div class="period">
+          <span class="period-lbl">2021 – 2022</span>
+          <span class="period-role">&nbsp;·&nbsp; Networking Group Leader</span>
+        </div>
+
+        <div class="proj">
+          <div class="p-date">Aug<br>2022</div>
+          <div class="p-col"><div class="p-dot"></div></div>
+          <div>
+            <div class="p-name">🌐 Network Infrastructure Simulation</div>
+            <div class="p-desc">
+              <strong>Group leader - Team of 4.</strong> Led team to design and simulate a company network
+              infrastructure using Cisco Packet Tracer and Visio before a simulated go-live.
+            </div>
+            <div class="tags">
+              <span class="t t-teal">Cisco Packet Tracer</span><span class="t t-teal">Visio</span>
+              <span class="t t-teal">Networking</span>
+            </div>
           </div>
         </div>
       </div>
@@ -414,14 +520,1054 @@
       <div class="edu">
         <div class="edu-ico">🎓</div>
         <div>
-          <div class="edu-deg">Bachelor of Information Technology</div>
-          <div class="edu-sch">University of Greenwich (Greenwich International Bachelor Program)</div>
-          <div class="edu-per">Summer 2021 — Summer 2025</div>
+          <div class="edu-deg" id="cv-edu-deg">Bachelor of Information Technology</div>
+          <div class="edu-sch" id="cv-edu-sch">University of Greenwich (Greenwich International Bachelor Program)</div>
+          <div class="edu-per" id="cv-edu-per">Summer 2021 — Summer 2025</div>
         </div>
       </div>
 
     </div>
   </div>
 </div>
+
+<!-- OWNER LOGIN MODAL -->
+<div class="modal-backdrop" id="auth-modal">
+  <div class="modal-card" style="max-width:460px;">
+    <div class="modal-header">
+      <h2>🔐 Xác thực Chủ sở hữu (@ducanhphamorg)</h2>
+      <button class="modal-close" onclick="closeAuthModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:#4b5563;line-height:1.5;margin-bottom:12px;">
+        Khách truy cập chỉ có quyền <strong>Xem</strong> và <strong>Xuất PDF</strong>.<br>
+        Nhập GitHub Personal Access Token của tài khoản <strong>ducanhphamorg</strong> (quyền <code>repo</code> hoặc <code>Contents: Read &amp; write</code>) để mở khóa chỉnh sửa Template CV và Upload CV mới.
+      </p>
+      <div class="form-field">
+        <label for="gh-token-input">GitHub Token (GITHUB_TOKEN / PAT)</label>
+        <input type="password" id="gh-token-input" placeholder="ghp_... hoặc github_pat_..." autocomplete="off"/>
+      </div>
+      <div id="auth-status" class="status-msg"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="sm-btn" onclick="closeAuthModal()">Đóng</button>
+      <button class="bar-btn bar-btn-gold" onclick="verifyOwnerToken()">🔑 Xác thực &amp; Mở khóa</button>
+    </div>
+  </div>
+</div>
+
+<!-- CV TEMPLATE EDITOR & UPLOAD MODAL (OWNER ONLY) -->
+<div class="modal-backdrop" id="editor-modal">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h2>🛠️ Quản lý &amp; Cập nhật CV (@ducanhphamorg)</h2>
+      <button class="modal-close" onclick="closeEditorModal()">×</button>
+    </div>
+    <div class="modal-tabs">
+      <button class="modal-tab active" id="tab-btn-template" onclick="switchEditorTab('template')">✏️ Chỉnh sửa Template CV</button>
+      <button class="modal-tab" id="tab-btn-upload" onclick="switchEditorTab('upload')">📤 Upload File CV mới</button>
+    </div>
+
+    <!-- TAB 1: STRUCTURED TEMPLATE EDITOR -->
+    <div class="modal-body" id="tab-panel-template">
+      <div class="form-section">
+        <h3>1. Thông tin chung &amp; Giới thiệu</h3>
+        <div class="form-grid">
+          <div class="form-field">
+            <label>Họ và tên</label>
+            <input type="text" id="f-name"/>
+          </div>
+          <div class="form-field">
+            <label>Chức danh (Role)</label>
+            <input type="text" id="f-role"/>
+          </div>
+          <div class="form-field">
+            <label>Vị trí ứng tuyển (Recruiting Position)</label>
+            <input type="text" id="f-recruiting"/>
+          </div>
+          <div class="form-field">
+            <label>Đường dẫn ảnh đại diện</label>
+            <input type="text" id="f-avatar"/>
+          </div>
+        </div>
+        <div class="form-field">
+          <label>Giới thiệu bản thân (About Me)</label>
+          <textarea id="f-about"></textarea>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3>2. Thông tin liên hệ</h3>
+        <div class="form-grid">
+          <div class="form-field">
+            <label>Số điện thoại</label>
+            <input type="text" id="f-phone"/>
+          </div>
+          <div class="form-field">
+            <label>Email chính</label>
+            <input type="email" id="f-email1"/>
+          </div>
+          <div class="form-field">
+            <label>Email phụ (tùy chọn)</label>
+            <input type="email" id="f-email2"/>
+          </div>
+          <div class="form-field">
+            <label>GitHub (VD: github.com/ducanhphamorg)</label>
+            <input type="text" id="f-github"/>
+          </div>
+          <div class="form-field">
+            <label>Địa chỉ</label>
+            <input type="text" id="f-address"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3>3. Kỹ năng, Công nghệ, Thành tích &amp; Học vấn</h3>
+        <div class="form-field">
+          <label>Danh sách Kỹ năng (mỗi dòng 1 ý; dùng **Chữ đậm** để tô vàng)</label>
+          <textarea id="f-skills"></textarea>
+        </div>
+        <div class="form-grid">
+          <div class="form-field">
+            <label>Công nghệ chính (Core Tech — cách nhau bằng dấu phẩy)</label>
+            <input type="text" id="f-core-tech"/>
+          </div>
+          <div class="form-field">
+            <label>Công cụ (Tools — cách nhau bằng dấu phẩy)</label>
+            <input type="text" id="f-tool-tech"/>
+          </div>
+          <div class="form-field">
+            <label>Ngôn ngữ (VD: English | Basic Reading &amp; Writing)</label>
+            <input type="text" id="f-languages"/>
+          </div>
+          <div class="form-field">
+            <label>Thành tích (Tiêu đề | Chương trình)</label>
+            <input type="text" id="f-achievement"/>
+          </div>
+          <div class="form-field">
+            <label>Bằng cấp (Degree)</label>
+            <input type="text" id="f-edu-deg"/>
+          </div>
+          <div class="form-field">
+            <label>Trường đại học (School)</label>
+            <input type="text" id="f-edu-sch"/>
+          </div>
+          <div class="form-field">
+            <label>Thời gian học (Period)</label>
+            <input type="text" id="f-edu-per"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3>
+          <span>4. Dự án Học thuật / Kinh nghiệm (Projects)</span>
+          <button type="button" class="sm-btn sm-btn-teal" onclick="addProjectRow()">+ Thêm Dự án</button>
+        </h3>
+        <div id="f-projects-list"></div>
+      </div>
+    </div>
+
+    <!-- TAB 2: DIRECT FILE UPLOAD -->
+    <div class="modal-body" id="tab-panel-upload" style="display:none;">
+      <div class="form-section">
+        <h3>📤 Upload File CV mới qua phiên đăng nhập GitHub.com (Khuyên dùng — Không cần Token)</h3>
+        <p style="font-size:13px;color:#4b5563;line-height:1.5;margin-bottom:12px;">
+          Tận dụng trực tiếp tài khoản <strong>@ducanhphamorg</strong> bạn đang đăng nhập sẵn trên <code>github.com</code> (người ngoài truy cập link này sẽ bị chính GitHub chặn quyền ghi):
+        </p>
+        <div class="form-grid">
+          <div class="form-field">
+            <label>Chọn thư mục đích trên Repository</label>
+            <select id="upload-target-path">
+              <option value="CV_Latex/CV.pdf">📄 CV PDF (CV_Latex/CV.pdf)</option>
+              <option value="img/CV/My_CV.html">🌐 CV HTML (img/CV/My_CV.html)</option>
+              <option value="img/CV/Ảnh Avatar 2.jpg">🖼️ Ảnh đại diện CV (img/CV/Ảnh Avatar 2.jpg)</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;">
+          <button type="button" class="bar-btn bar-btn-gold" onclick="openGitHubNativeUpload()">
+            🐙 Mở trang Upload GitHub.com (Dùng tài khoản đang đăng nhập)
+          </button>
+          <button type="button" class="sm-btn" onclick="openGitHubNativeEdit()">
+            📝 Mở trang Sửa trực tiếp My_CV.html trên GitHub.com
+          </button>
+        </div>
+      </div>
+
+      <div class="form-section" id="trusted-api-upload-box">
+        <h3>⚡ Tự động Commit qua GitHub API (Chỉ bật trên máy cá nhân / môi trường tin cậy)</h3>
+        <p id="untrusted-host-warning" style="font-size:12.5px;color:#b91c1c;display:none;margin-bottom:8px;">
+          🔒 Bạn đang mở trang qua domain trung gian (<code>htmlpreview.github.io</code>). Để bảo vệ tuyệt đối tài khoản, tính năng nhập Token đã bị khóa trên domain này — vui lòng dùng nút <strong>Mở trang Upload GitHub.com</strong> phía trên hoặc mở file trực tiếp trên máy tính của bạn.
+        </p>
+        <div id="trusted-api-controls">
+          <div class="form-grid">
+            <div class="form-field">
+              <label>Chọn file từ máy tính</label>
+              <input type="file" id="upload-file-input" accept=".pdf,.html,.htm,.jpg,.jpeg,.png"/>
+            </div>
+            <div class="form-field">
+              <label>Nội dung Commit (Commit message)</label>
+              <input type="text" id="upload-commit-msg" value="📄 Update CV via Owner Portal"/>
+            </div>
+          </div>
+          <button type="button" class="sm-btn sm-btn-teal" style="margin-top:6px;" onclick="uploadSelectedFileToGitHub()">
+            🚀 Upload &amp; Commit bằng API (Local/Trusted Host)
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <div id="editor-status" class="status-msg" style="flex:1;"></div>
+      <div id="editor-footer-actions" style="display:flex;gap:8px;margin-left:auto;flex-wrap:wrap;">
+        <button type="button" class="sm-btn" onclick="applyFormToPreview()">👁️ Xem trước (Live Preview)</button>
+        <button type="button" class="sm-btn" onclick="downloadUpdatedHtml()">💾 Lưu file My_CV.html về máy</button>
+        <button type="button" class="bar-btn bar-btn-gold" onclick="saveViaGitHubWebSession()">🐙 Copy HTML &amp; Mở GitHub.com Commit</button>
+        <button type="button" id="btn-api-save" class="sm-btn sm-btn-teal" onclick="saveTemplateToGitHub()">⚡ Commit nhanh (Local API)</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STRUCTURED CV DATA SOURCE OF TRUTH -->
+<script id="cv-template-data" type="application/json">
+{
+  "updatedAt": "2026-11-07T09:30:00.000Z",
+  "name": "Pham Duc Anh",
+  "role": "Software Development",
+  "recruitingPosition": "Software Development Intern",
+  "avatarUrl": "../CV/Ảnh Avatar 2.jpg",
+  "aboutMe": "Fresh IT graduate looking for my first internship in software development. Throughout university, I completed several academic projects covering web and mobile development — learning by doing and figuring things out step by step. I know I am still at the beginning and have a lot to grow. I am eager to bring a proactive attitude and a genuine willingness to learn into a real working environment — and to grow alongside experienced developers.",
+  "contact": {
+    "phone": "(+84) 903 796 863",
+    "email1": "ducanh040202003@gmail.com",
+    "email2": "DucAnhPham@544wfm.onmicrosoft.com",
+    "github": "github.com/ducanhphamorg",
+    "address": "Dist. 3, Ho Chi Minh City"
+  },
+  "skills": [
+    "Attitude: Positive, proactive and responsible at work",
+    "Teamwork: Listening, coordinating, and communicating effectively",
+    "Quick learner, open to feedback; used AI tools to support learning and coding",
+    "**Technical:** HTML, CSS, JavaScript, PHP, Java, C#, Python, MySQL"
+  ],
+  "languages": [
+    { "name": "English", "level": "Basic Reading & Writing" }
+  ],
+  "coreTech": ["HTML/CSS", "JavaScript", "PHP", "Java", "C# / .NET", "Python", "MySQL", "Bootstrap", "jQuery"],
+  "toolTech": ["GitHub", "Figma", "Jira", "Postman", "Docker", "Firebase", "Tableau", "Notion", "ClickUp"],
+  "achievement": {
+    "title": "Best Student — Security Subject (2023)",
+    "subtitle": "Greenwich International Bachelor Program"
+  },
+  "education": {
+    "degree": "Bachelor of Information Technology",
+    "school": "University of Greenwich (Greenwich International Bachelor Program)",
+    "period": "Summer 2021 — Summer 2025"
+  },
+  "projects": [
+    {
+      "periodLabel": "2024 – 2025",
+      "periodRole": "Final Year (Graduation)",
+      "date": "Jun\n2025",
+      "name": "🏥 MediCare — Clinic Appointment System",
+      "link": "https://github.com/ducanhphamorg/Final_Project",
+      "desc": "**Individual graduation project.** Built a full-stack clinic management system. Designed the **PostgreSQL database schema** and implemented **REST API endpoints (Spring Boot 3)** for appointments, medical records, payments, and notifications. Integrated JWT-based authentication and set up **Docker** for local containerization. Used AI tools (ChatGPT) to understand Spring Boot concepts and debug issues throughout development. Managed workflow with Jira (Agile/Scrum) and prototyped screens in Figma.",
+      "coreTags": ["Java 21", "Spring Boot 3", "REST API", "PostgreSQL", "JWT Auth", "Docker"],
+      "toolTags": ["Thymeleaf", "Bootstrap", "Jira", "Figma", "Agile / Scrum", "GitHub"]
+    },
+    {
+      "periodLabel": "2024 – 2025",
+      "periodRole": "Final Year (Graduation)",
+      "date": "2024–\n2025",
+      "name": "📰 Bina — University Magazine Portal",
+      "link": "https://github.com/ducanhphamorg/Bina",
+      "desc": "**Team of 5.** Handled the majority of backend coding while teammates assisted with UI and testing. Built a multi-role web portal (Admin, Coordinator, Manager, Student, Guest) using **ASP.NET Core MVC (.NET 8)**. Implemented role-based routing, article submission flow, coordinator review, and **Firebase Storage** for file uploads. Integrated **Google & Microsoft OAuth**. Used AI tools to learn C# and Entity Framework Core patterns during development.",
+      "coreTags": ["C# / .NET 8", "ASP.NET Core MVC", "Entity Framework Core", "SQL Server", "Firebase Storage"],
+      "toolTags": ["Google OAuth", "Razor Views", "Bootstrap", "GitHub"]
+    },
+    {
+      "periodLabel": "2023 – 2024",
+      "periodRole": "Project Design & Construction",
+      "date": "2023–\n2024",
+      "name": "🛒 Flip-Mart — E-Commerce Website",
+      "link": "https://github.com/ducanhphamorg/Shopping_Store",
+      "desc": "**Team of 2.** Collaborated with one teammate on a full e-commerce site. Personally responsible for **Laravel 9 backend routes and controllers**, **MySQL schema design**, and integrating the Stripe payment flow. Used AI tools to understand Laravel MVC conventions and debug Blade template issues.",
+      "coreTags": ["PHP Laravel 9", "MySQL", "Stripe", "MVC"],
+      "toolTags": ["Tailwind CSS", "Blade", "JavaScript", "GitHub"]
+    },
+    {
+      "periodLabel": "2023 – 2024",
+      "periodRole": "Project Design & Construction",
+      "date": "2023–\n2024",
+      "name": "🧘 Yoga Class Management App (Android)",
+      "link": "https://github.com/ducanhphamorg/COMP1786",
+      "desc": "**Individual coursework.** Built an Android admin app (Java) to manage yoga courses, class instances, and bookings with role-based access. Used **Firebase Auth + Firestore** for authentication/data sync and **local SQLite** for offline storage. Also completed 3 smaller Kotlin apps (unit converter, to-do list with/without SQLite) as learning exercises. Used AI to understand Android lifecycle and Firebase SDK integration.",
+      "coreTags": ["Java (Android)", "Kotlin", "Firebase Auth", "Firestore"],
+      "toolTags": ["SQLite", "Android SDK", "GitHub"]
+    },
+    {
+      "periodLabel": "2023 – 2024",
+      "periodRole": "Project Design & Construction",
+      "date": "2023–\n2024",
+      "name": "📊 House Price Prediction — Data Analysis (King County)",
+      "link": "https://github.com/ducanhphamorg/House_Price_Prediction",
+      "desc": "**Individual project.** Followed an end-to-end data pipeline: EDA with pandas/seaborn, OLS regression with statsmodels, price prediction using **XGBoost + scikit-learn**, and geographic maps with **folium**. Created a **Tableau dashboard** for non-technical stakeholders. Used AI tools to understand Python data science libraries and interpret model outputs.",
+      "coreTags": ["Python", "scikit-learn", "XGBoost", "pandas / numpy"],
+      "toolTags": ["Seaborn / Matplotlib", "folium", "Tableau", "Jupyter Notebook"]
+    },
+    {
+      "periodLabel": "2022 – 2023",
+      "periodRole": "Foundational Projects",
+      "date": "Mar\n2023",
+      "name": "🎵 Tune Source System — Music CD Store",
+      "link": "https://github.com/ducanhphamorg/Tune-Source-System",
+      "desc": "**Individual project.** Built a music CD e-commerce site with customer storefront and admin CRUD dashboard using plain **PHP (PDO)** and MySQL. Implemented session-based login for both customer and admin roles. Used AI assistance to understand PDO connections and debug SQL queries.",
+      "coreTags": [],
+      "toolTags": ["PHP (PDO)", "MySQL", "Bootstrap", "JavaScript", "MVC", "Apache / XAMPP"]
+    },
+    {
+      "periodLabel": "2022 – 2023",
+      "periodRole": "Foundational Projects",
+      "date": "Nov\n2022",
+      "name": "📱 First Web Project — Phone Case Store",
+      "link": "",
+      "desc": "**Individual — first hands-on project.** Applied fundamental HTML/CSS/JS front-end skills alongside basic PHP + MySQL back-end to build a simple product store.",
+      "coreTags": [],
+      "toolTags": ["HTML", "CSS", "JavaScript", "jQuery", "PHP", "MySQL"]
+    },
+    {
+      "periodLabel": "2022 – 2023",
+      "periodRole": "Foundational Projects",
+      "date": "Sep\n2022",
+      "name": "🗄 Database Design — Library Management System",
+      "link": "",
+      "desc": "Designed and implemented a relational database schema for library storage and management as a course assignment.",
+      "coreTags": [],
+      "toolTags": ["SQL Server", "Database Design"]
+    },
+    {
+      "periodLabel": "2021 – 2022",
+      "periodRole": "Networking Group Leader",
+      "date": "Aug\n2022",
+      "name": "🌐 Network Infrastructure Simulation",
+      "link": "",
+      "desc": "**Group leader - Team of 4.** Led team to design and simulate a company network infrastructure using Cisco Packet Tracer and Visio before a simulated go-live.",
+      "coreTags": [],
+      "toolTags": ["Cisco Packet Tracer", "Visio", "Networking"]
+    }
+  ]
+}
+</script>
+
+<script>
+const OWNER_LOGIN = 'ducanhphamorg';
+const REPO_FULL   = 'ducanhphamorg/ducanhphamorg';
+const CV_FILE_PATH = 'img/CV/My_CV.html';
+
+let ownerToken = sessionStorage.getItem('cv_owner_token') || '';
+let isOwnerVerified = false;
+let cachedCleanHtml = '';
+let cvData = JSON.parse(document.getElementById('cv-template-data').textContent);
+
+function escapeHtml(str) {
+  return String(str ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function formatRichText(str) {
+  return escapeHtml(str).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+}
+
+function renderCV(data) {
+  document.getElementById('bar-owner-name').textContent = data.name || 'Duc Anh Pham';
+  document.getElementById('cv-name').textContent = data.name || '';
+  document.getElementById('cv-role').textContent = data.role || '';
+  document.getElementById('cv-about').textContent = data.aboutMe || '';
+  document.getElementById('cv-recruiting').innerHTML = `👤&nbsp; ${escapeHtml(data.recruitingPosition || '')}`;
+  if (data.avatarUrl) {
+    document.getElementById('cv-avatar').src = data.avatarUrl;
+  }
+
+  // Skills
+  const skillsEl = document.getElementById('cv-skills');
+  skillsEl.innerHTML = (data.skills || []).map(s => `<li>${formatRichText(s)}</li>`).join('');
+
+  // Languages
+  const langEl = document.getElementById('cv-languages');
+  langEl.innerHTML = (data.languages || []).map(l => `
+    <div class="lang-row">
+      <span class="lang-name">${escapeHtml(l.name)}</span>
+      <span class="lang-lvl">${escapeHtml(l.level)}</span>
+    </div>`).join('');
+
+  // Tech cloud
+  const techEl = document.getElementById('cv-tech-cloud');
+  const coreHtml = (data.coreTech || []).map(t => `<span class="pill p-core">${escapeHtml(t)}</span>`).join('');
+  const toolHtml = (data.toolTech || []).map(t => `<span class="pill p-tool">${escapeHtml(t)}</span>`).join('');
+  techEl.innerHTML = coreHtml + toolHtml;
+
+  // Achievement & Education
+  document.getElementById('cv-ach-title').textContent = data.achievement?.title || '';
+  document.getElementById('cv-ach-sub').textContent = data.achievement?.subtitle || '';
+  document.getElementById('cv-edu-deg').textContent = data.education?.degree || '';
+  document.getElementById('cv-edu-sch').textContent = data.education?.school || '';
+  document.getElementById('cv-edu-per').textContent = data.education?.period || '';
+
+  // Contact
+  const c = data.contact || {};
+  const contactItems = [];
+  if (c.phone) contactItems.push(`<div class="c-item"><div class="c-ico"><i class="fas fa-phone"></i></div>${escapeHtml(c.phone)}</div>`);
+  if (c.email1) contactItems.push(`<div class="c-item"><div class="c-ico"><i class="fas fa-envelope"></i></div><a href="mailto:${escapeHtml(c.email1)}">${escapeHtml(c.email1)}</a></div>`);
+  if (c.email2) contactItems.push(`<div class="c-item"><div class="c-ico"><i class="fas fa-envelope-open"></i></div><a href="mailto:${escapeHtml(c.email2)}">${escapeHtml(c.email2)}</a></div>`);
+  if (c.github) {
+    const ghHref = c.github.startsWith('http') ? c.github : `https://${c.github}`;
+    contactItems.push(`<div class="c-item"><div class="c-ico"><i class="fab fa-github"></i></div><a href="${escapeHtml(ghHref)}" target="_blank" rel="noopener">${escapeHtml(c.github)}</a></div>`);
+  }
+  if (c.address) contactItems.push(`<div class="c-item"><div class="c-ico"><i class="fas fa-map-marker-alt"></i></div>${escapeHtml(c.address)}</div>`);
+  document.getElementById('cv-contact').innerHTML = contactItems.join('');
+
+  // Projects grouped by periodLabel
+  const projs = data.projects || [];
+  let projHtml = '';
+  let lastPeriod = null;
+  projs.forEach((p, idx) => {
+    const pKey = `${p.periodLabel || ''}__${p.periodRole || ''}`;
+    if (pKey !== lastPeriod) {
+      lastPeriod = pKey;
+      projHtml += `
+        <div class="period">
+          <span class="period-lbl">${escapeHtml(p.periodLabel || '')}</span>
+          <span class="period-role">&nbsp;·&nbsp; ${escapeHtml(p.periodRole || '')}</span>
+        </div>`;
+    }
+    const nextKey = idx + 1 < projs.length ? `${projs[idx + 1].periodLabel || ''}__${projs[idx + 1].periodRole || ''}` : null;
+    const hasLine = nextKey === pKey;
+    const dateHtml = escapeHtml(p.date || '').replace(/\n/g, '<br>');
+    const linkHtml = p.link
+      ? `<a class="p-link" href="${escapeHtml(p.link)}" target="_blank" rel="noopener">↗ GitHub</a>`
+      : '';
+    const tagsHtml = [
+      ...(p.coreTags || []).map(t => `<span class="t t-gold">${escapeHtml(t)}</span>`),
+      ...(p.toolTags || []).map(t => `<span class="t t-teal">${escapeHtml(t)}</span>`)
+    ].join('');
+
+    projHtml += `
+      <div class="proj">
+        <div class="p-date">${dateHtml}</div>
+        <div class="p-col"><div class="p-dot"></div>${hasLine ? '<div class="p-line"></div>' : ''}</div>
+        <div>
+          <div class="p-name">${escapeHtml(p.name || '')} ${linkHtml}</div>
+          <div class="p-desc">${formatRichText(p.desc || '')}</div>
+          <div class="tags">${tagsHtml}</div>
+        </div>
+      </div>`;
+  });
+  document.getElementById('cv-projects').innerHTML = projHtml;
+}
+
+// ── OWNER MODE & SECURITY BOUNDARY (SOLUTION 1) ─────────────────────────────
+function isTrustedEnvironment() {
+  const proto = (typeof location !== 'undefined' && location.protocol) || '';
+  const host  = (typeof location !== 'undefined' && location.hostname) || '';
+  return (
+    proto === 'file:' ||
+    host === 'localhost' ||
+    host === '127.0.0.1' ||
+    host === 'ducanhphamorg.github.io'
+  );
+}
+
+function setStatus(id, type, msg) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (!type) { el.className = 'status-msg'; el.textContent = ''; return; }
+  el.className = `status-msg ${type}`;
+  el.textContent = msg;
+}
+
+function openAuthModal() {
+  if (!isTrustedEnvironment()) {
+    setStatus(
+      'editor-status',
+      'err',
+      '🔒 Vì lý do bảo mật, không nhập Token trên domain trung gian (htmlpreview). Hãy dùng nút "Copy HTML & Mở GitHub.com Commit" để lưu bằng tài khoản GitHub đang đăng nhập sẵn của bạn!'
+    );
+    return;
+  }
+  setStatus('auth-status', '', '');
+  document.getElementById('auth-modal').classList.add('open');
+  document.getElementById('gh-token-input').focus();
+}
+
+function closeAuthModal() {
+  document.getElementById('auth-modal').classList.remove('open');
+}
+
+function updateOwnerUI(enabled) {
+  isOwnerVerified = enabled;
+  document.getElementById('owner-badge').style.display = enabled ? '' : 'none';
+  document.getElementById('btn-open-editor').style.display = enabled ? '' : 'none';
+  document.getElementById('btn-owner-logout').style.display = enabled ? '' : 'none';
+  const trusted = isTrustedEnvironment();
+  const apiSaveBtn = document.getElementById('btn-api-save');
+  if (apiSaveBtn) apiSaveBtn.style.display = trusted ? '' : 'none';
+  const warnEl = document.getElementById('untrusted-host-warning');
+  if (warnEl) warnEl.style.display = trusted ? 'none' : 'block';
+  const ctrlEl = document.getElementById('trusted-api-controls');
+  if (ctrlEl) ctrlEl.style.display = trusted ? 'block' : 'none';
+}
+
+function enableOwnerMode(openPopup = true) {
+  updateOwnerUI(true);
+  if (openPopup) openEditorModal('template');
+}
+
+async function verifyOwnerToken(silent = false) {
+  if (!isTrustedEnvironment()) {
+    sessionStorage.removeItem('cv_owner_token');
+    ownerToken = '';
+    if (!silent) {
+      setStatus('auth-status', 'err', '🔒 Không cho phép nhập Token trên domain bên thứ ba.');
+    }
+    return;
+  }
+  const inputVal = document.getElementById('gh-token-input').value.trim() || ownerToken;
+  if (!inputVal) {
+    if (!silent) setStatus('auth-status', 'err', 'Vui lòng nhập GitHub Token.');
+    return;
+  }
+  if (!silent) setStatus('auth-status', 'info', 'Đang kiểm tra quyền sở hữu trên GitHub API...');
+  try {
+    const res = await fetch('https://api.github.com/user', {
+      headers: {
+        'Authorization': `Bearer ${inputVal}`,
+        'Accept': 'application/vnd.github+json'
+      }
+    });
+    if (!res.ok) throw new Error(`Token không hợp lệ (HTTP ${res.status})`);
+    const user = await res.json();
+    if (!user.login || user.login.toLowerCase() !== OWNER_LOGIN) {
+      sessionStorage.removeItem('cv_owner_token');
+      ownerToken = '';
+      if (!silent) {
+        setStatus(
+          'auth-status',
+          'err',
+          `Truy cập bị từ chối: Tài khoản @${user.login || 'unknown'} chỉ có quyền Xem và Xuất PDF. Chỉ chủ sở hữu @${OWNER_LOGIN} mới được commit CV.`
+        );
+      }
+      return;
+    }
+    ownerToken = inputVal;
+    sessionStorage.setItem('cv_owner_token', ownerToken);
+    updateOwnerUI(true);
+    closeAuthModal();
+    if (!silent) openEditorModal('template');
+  } catch (err) {
+    sessionStorage.removeItem('cv_owner_token');
+    ownerToken = '';
+    if (!silent) setStatus('auth-status', 'err', err.message || 'Không thể xác thực token.');
+  }
+}
+
+function logoutOwner() {
+  ownerToken = '';
+  sessionStorage.removeItem('cv_owner_token');
+  updateOwnerUI(false);
+  closeEditorModal();
+}
+
+// ── EDITOR MODAL & FORM POPULATION ─────────────────────────────────────────
+function openEditorModal(tab = 'template') {
+  updateOwnerUI(true);
+  populateEditorForm(cvData);
+  switchEditorTab(tab);
+  setStatus('editor-status', '', '');
+  document.getElementById('editor-modal').classList.add('open');
+}
+
+function closeEditorModal() {
+  document.getElementById('editor-modal').classList.remove('open');
+}
+
+function switchEditorTab(tab) {
+  const isTpl = tab === 'template';
+  document.getElementById('tab-btn-template').classList.toggle('active', isTpl);
+  document.getElementById('tab-btn-upload').classList.toggle('active', !isTpl);
+  document.getElementById('tab-panel-template').style.display = isTpl ? '' : 'none';
+  document.getElementById('tab-panel-upload').style.display = isTpl ? 'none' : '';
+  const footerActions = document.getElementById('editor-footer-actions');
+  if (footerActions) footerActions.style.display = isTpl ? 'flex' : 'none';
+}
+
+function populateEditorForm(data) {
+  document.getElementById('f-name').value = data.name || '';
+  document.getElementById('f-role').value = data.role || '';
+  document.getElementById('f-recruiting').value = data.recruitingPosition || '';
+  document.getElementById('f-avatar').value = data.avatarUrl || '';
+  document.getElementById('f-about').value = data.aboutMe || '';
+
+  const c = data.contact || {};
+  document.getElementById('f-phone').value = c.phone || '';
+  document.getElementById('f-email1').value = c.email1 || '';
+  document.getElementById('f-email2').value = c.email2 || '';
+  document.getElementById('f-github').value = c.github || '';
+  document.getElementById('f-address').value = c.address || '';
+
+  document.getElementById('f-skills').value = (data.skills || []).join('\n');
+  document.getElementById('f-core-tech').value = (data.coreTech || []).join(', ');
+  document.getElementById('f-tool-tech').value = (data.toolTech || []).join(', ');
+  document.getElementById('f-languages').value = (data.languages || [])
+    .map(l => `${l.name} | ${l.level}`).join('; ');
+  document.getElementById('f-achievement').value =
+    `${data.achievement?.title || ''} | ${data.achievement?.subtitle || ''}`;
+  document.getElementById('f-edu-deg').value = data.education?.degree || '';
+  document.getElementById('f-edu-sch').value = data.education?.school || '';
+  document.getElementById('f-edu-per').value = data.education?.period || '';
+
+  renderProjectEditorList(data.projects || []);
+}
+
+function renderProjectEditorList(projects) {
+  const wrap = document.getElementById('f-projects-list');
+  wrap.innerHTML = '';
+  projects.forEach((p, i) => {
+    const card = document.createElement('div');
+    card.className = 'proj-editor-card';
+    card.innerHTML = `
+      <div class="proj-editor-head">
+        <span>Dự án #${i + 1}</span>
+        <button type="button" class="sm-btn sm-btn-danger" onclick="removeProjectRow(${i})">🗑️ Xóa</button>
+      </div>
+      <div class="form-grid">
+        <div class="form-field">
+          <label>Giai đoạn (VD: 2024 – 2025)</label>
+          <input type="text" class="pf-period-lbl" value="${escapeHtml(p.periodLabel || '')}"/>
+        </div>
+        <div class="form-field">
+          <label>Nhãn giai đoạn (VD: Final Year)</label>
+          <input type="text" class="pf-period-role" value="${escapeHtml(p.periodRole || '')}"/>
+        </div>
+        <div class="form-field">
+          <label>Thời gian (VD: Jun\\n2025)</label>
+          <input type="text" class="pf-date" value="${escapeHtml((p.date || '').replace(/\n/g, '\\n'))}"/>
+        </div>
+        <div class="form-field">
+          <label>Tên dự án</label>
+          <input type="text" class="pf-name" value="${escapeHtml(p.name || '')}"/>
+        </div>
+        <div class="form-field">
+          <label>Link GitHub</label>
+          <input type="text" class="pf-link" value="${escapeHtml(p.link || '')}"/>
+        </div>
+        <div class="form-field">
+          <label>Core Tags (vàng — cách nhau dấu phẩy)</label>
+          <input type="text" class="pf-core-tags" value="${escapeHtml((p.coreTags || []).join(', '))}"/>
+        </div>
+        <div class="form-field">
+          <label>Tool Tags (xanh — cách nhau dấu phẩy)</label>
+          <input type="text" class="pf-tool-tags" value="${escapeHtml((p.toolTags || []).join(', '))}"/>
+        </div>
+      </div>
+      <div class="form-field">
+        <label>Mô tả dự án (hỗ trợ **in đậm**)</label>
+        <textarea class="pf-desc">${escapeHtml(p.desc || '')}</textarea>
+      </div>
+    `;
+    wrap.appendChild(card);
+  });
+}
+
+function collectFormData() {
+  const splitCsv = str => str.split(',').map(s => s.trim()).filter(Boolean);
+  const [achTitle, achSub] = document.getElementById('f-achievement').value.split('|').map(s => (s || '').trim());
+  const languages = document.getElementById('f-languages').value
+    .split(';')
+    .map(item => {
+      const [name, level] = item.split('|').map(s => (s || '').trim());
+      return name ? { name, level: level || '' } : null;
+    })
+    .filter(Boolean);
+
+  const projCards = [...document.querySelectorAll('#f-projects-list .proj-editor-card')];
+  const projects = projCards.map(card => ({
+    periodLabel: card.querySelector('.pf-period-lbl').value.trim(),
+    periodRole:  card.querySelector('.pf-period-role').value.trim(),
+    date:        card.querySelector('.pf-date').value.trim().replace(/\\n/g, '\n'),
+    name:        card.querySelector('.pf-name').value.trim(),
+    link:        card.querySelector('.pf-link').value.trim(),
+    desc:        card.querySelector('.pf-desc').value.trim(),
+    coreTags:    splitCsv(card.querySelector('.pf-core-tags').value),
+    toolTags:    splitCsv(card.querySelector('.pf-tool-tags').value)
+  }));
+
+  return {
+    updatedAt: new Date().toISOString(),
+    name: document.getElementById('f-name').value.trim(),
+    role: document.getElementById('f-role').value.trim(),
+    recruitingPosition: document.getElementById('f-recruiting').value.trim(),
+    avatarUrl: document.getElementById('f-avatar').value.trim(),
+    aboutMe: document.getElementById('f-about').value.trim(),
+    contact: {
+      phone:   document.getElementById('f-phone').value.trim(),
+      email1:  document.getElementById('f-email1').value.trim(),
+      email2:  document.getElementById('f-email2').value.trim(),
+      github:  document.getElementById('f-github').value.trim(),
+      address: document.getElementById('f-address').value.trim()
+    },
+    skills: document.getElementById('f-skills').value.split('\n').map(s => s.trim()).filter(Boolean),
+    languages: languages.length ? languages : [{ name: 'English', level: 'Basic Reading & Writing' }],
+    coreTech: splitCsv(document.getElementById('f-core-tech').value),
+    toolTech: splitCsv(document.getElementById('f-tool-tech').value),
+    achievement: { title: achTitle || '', subtitle: achSub || '' },
+    education: {
+      degree: document.getElementById('f-edu-deg').value.trim(),
+      school: document.getElementById('f-edu-sch').value.trim(),
+      period: document.getElementById('f-edu-per').value.trim()
+    },
+    projects
+  };
+}
+
+function addProjectRow() {
+  const current = collectFormData();
+  current.projects.unshift({
+    periodLabel: '2025 – Present',
+    periodRole: 'New Project',
+    date: '2025',
+    name: '🚀 New Project Name',
+    link: 'https://github.com/ducanhphamorg',
+    desc: '**Role / Team.** Describe what you built and the technologies used.',
+    coreTags: ['Java', 'Spring Boot'],
+    toolTags: ['Docker', 'GitHub']
+  });
+  cvData = current;
+  renderProjectEditorList(cvData.projects);
+}
+
+function removeProjectRow(index) {
+  const current = collectFormData();
+  current.projects.splice(index, 1);
+  cvData = current;
+  renderProjectEditorList(cvData.projects);
+}
+
+function safeJsonForScript(obj) {
+  return '\n' + JSON.stringify(obj, null, 2).replace(/<\//g, '<\\/') + '\n';
+}
+
+function applyFormToPreview() {
+  cvData = collectFormData();
+  renderCV(cvData);
+  document.getElementById('cv-template-data').textContent = safeJsonForScript(cvData);
+  setStatus('editor-status', 'ok', 'Đã cập nhật bản xem trước trên trang CV! Bấm "Lưu & Commit lên GitHub" để lưu vĩnh viễn.');
+}
+
+function injectDataIntoHtmlSource(baseHtml) {
+  cvData = collectFormData();
+  renderCV(cvData);
+  const jsonBlock = `<script id="cv-template-data" type="application/json">${safeJsonForScript(cvData)}<\/script>`;
+  let updated = baseHtml.replace(
+    /<script id="cv-template-data" type="application\/json">[\s\S]*?<\/script>/,
+    () => jsonBlock
+  );
+  const sheetHtml = document.getElementById('cv-sheet').innerHTML;
+  updated = updated.replace(
+    /(<div class="cv" id="cv-sheet">)[\s\S]*?(<\/div>\s*<!-- OWNER LOGIN MODAL -->)/,
+    (_, openTag, closeAnchor) => `${openTag}${sheetHtml}${closeAnchor}`
+  );
+  return updated;
+}
+
+function serializeFullHtmlDocument() {
+  if (cachedCleanHtml && cachedCleanHtml.includes('id="cv-template-data"')) {
+    return injectDataIntoHtmlSource(cachedCleanHtml);
+  }
+  cvData = collectFormData();
+  renderCV(cvData);
+  document.getElementById('cv-template-data').textContent = safeJsonForScript(cvData);
+
+  const clone = document.documentElement.cloneNode(true);
+  clone.querySelectorAll('base').forEach(b => b.remove());
+  clone.querySelectorAll('script[src*="htmlpreview"]').forEach(s => s.remove());
+  clone.querySelector('#auth-modal')?.classList.remove('open');
+  clone.querySelector('#editor-modal')?.classList.remove('open');
+  const projList = clone.querySelector('#f-projects-list');
+  if (projList) projList.innerHTML = '';
+  const authStatus = clone.querySelector('#auth-status');
+  if (authStatus) { authStatus.className = 'status-msg'; authStatus.textContent = ''; }
+  const edStatus = clone.querySelector('#editor-status');
+  if (edStatus) { edStatus.className = 'status-msg'; edStatus.textContent = ''; }
+  const badge = clone.querySelector('#owner-badge');
+  if (badge) badge.style.display = 'none';
+  const editBtn = clone.querySelector('#btn-open-editor');
+  if (editBtn) editBtn.style.display = 'none';
+  const logoutBtn = clone.querySelector('#btn-owner-logout');
+  if (logoutBtn) logoutBtn.style.display = 'none';
+
+  return '<!DOCTYPE html>\n' + clone.outerHTML;
+}
+
+function downloadUpdatedHtml() {
+  const html = serializeFullHtmlDocument();
+  const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'My_CV.html';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  setStatus('editor-status', 'ok', '✅ Đã tải file My_CV.html mới về máy tính!');
+}
+
+async function saveViaGitHubWebSession() {
+  const html = serializeFullHtmlDocument();
+  let copied = false;
+  try {
+    if (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(html);
+      copied = true;
+    }
+  } catch (_) {}
+  const editUrl = `https://github.com/${REPO_FULL}/edit/main/${CV_FILE_PATH}`;
+  if (typeof window !== 'undefined' && window.open) {
+    window.open(editUrl, '_blank', 'noopener');
+  }
+  setStatus(
+    'editor-status',
+    'ok',
+    copied
+      ? '✅ Đã copy toàn bộ code CV mới vào Clipboard và mở trang GitHub.com (dùng tài khoản @ducanhphamorg đang đăng nhập sẵn). Bạn chỉ cần nhấn Ctrl+A → Ctrl+V → Commit changes!'
+      : '✅ Đã mở trang chỉnh sửa trên GitHub.com. Hãy bấm "Lưu file My_CV.html về máy" rồi copy nội dung dán vào GitHub Editor!'
+  );
+}
+
+function openGitHubNativeUpload() {
+  const targetPath = document.getElementById('upload-target-path').value || 'CV_Latex/CV.pdf';
+  const folder = targetPath.includes('/') ? targetPath.slice(0, targetPath.lastIndexOf('/')) : '';
+  const uploadUrl = `https://github.com/${REPO_FULL}/upload/main/${folder}`;
+  if (typeof window !== 'undefined' && window.open) {
+    window.open(uploadUrl, '_blank', 'noopener');
+  }
+  setStatus(
+    'editor-status',
+    'ok',
+    `✅ Đã mở trang Upload chính chủ của GitHub.com (${folder || 'root'}) — kéo thả file CV mới của bạn vào và bấm Commit changes!`
+  );
+}
+
+function openGitHubNativeEdit() {
+  const editUrl = `https://github.com/${REPO_FULL}/edit/main/${CV_FILE_PATH}`;
+  if (typeof window !== 'undefined' && window.open) {
+    window.open(editUrl, '_blank', 'noopener');
+  }
+}
+
+function utf8ToBase64(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+  return btoa(binary);
+}
+
+function base64ToUtf8(b64) {
+  const clean = String(b64 || '').replace(/\s+/g, '');
+  const binary = atob(clean);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder().decode(bytes);
+}
+
+async function commitFileToGitHub(repoPath, base64Content, commitMessage, existingSha) {
+  if (!isTrustedEnvironment()) {
+    throw new Error('Không dùng API Token trên domain bên thứ ba. Hãy dùng nút "Copy HTML & Mở GitHub.com Commit".');
+  }
+  if (!ownerToken) {
+    openAuthModal();
+    throw new Error('Vui lòng nhập GitHub Token của @ducanhphamorg để commit tự động từ máy cá nhân.');
+  }
+  const userRes = await fetch('https://api.github.com/user', {
+    headers: { 'Authorization': `Bearer ${ownerToken}`, 'Accept': 'application/vnd.github+json' }
+  });
+  if (!userRes.ok) {
+    sessionStorage.removeItem('cv_owner_token');
+    ownerToken = '';
+    throw new Error(`Token không hợp lệ (HTTP ${userRes.status})`);
+  }
+  const user = await userRes.json();
+  if (!user.login || user.login.toLowerCase() !== OWNER_LOGIN) {
+    sessionStorage.removeItem('cv_owner_token');
+    ownerToken = '';
+    throw new Error(`Từ chối: Tài khoản @${user.login || 'unknown'} không phải chủ sở hữu @${OWNER_LOGIN}.`);
+  }
+
+  const encodedPath = repoPath.split('/').map(encodeURIComponent).join('/');
+  const apiUrl = `https://api.github.com/repos/${REPO_FULL}/contents/${encodedPath}`;
+  const headers = {
+    'Authorization': `Bearer ${ownerToken}`,
+    'Accept': 'application/vnd.github+json',
+    'Content-Type': 'application/json'
+  };
+
+  let sha = existingSha;
+  if (!sha) {
+    const getRes = await fetch(`${apiUrl}?ref=main&t=${Date.now()}`, { headers });
+    if (getRes.ok) {
+      const existing = await getRes.json();
+      sha = existing.sha;
+    }
+  }
+
+  const putRes = await fetch(apiUrl, {
+    method: 'PUT',
+    headers,
+    body: JSON.stringify({
+      message: commitMessage,
+      content: base64Content,
+      branch: 'main',
+      ...(sha ? { sha } : {})
+    })
+  });
+
+  if (!putRes.ok) {
+    const errBody = await putRes.json().catch(() => ({}));
+    throw new Error(errBody.message || `GitHub API trả lỗi HTTP ${putRes.status}`);
+  }
+  return putRes.json();
+}
+
+async function saveTemplateToGitHub() {
+  if (!isTrustedEnvironment()) {
+    await saveViaGitHubWebSession();
+    return;
+  }
+  if (!ownerToken) {
+    openAuthModal();
+    return;
+  }
+  try {
+    setStatus('editor-status', 'info', 'Đang đóng gói Template CV và commit lên GitHub...');
+    const encodedPath = CV_FILE_PATH.split('/').map(encodeURIComponent).join('/');
+    const apiUrl = `https://api.github.com/repos/${REPO_FULL}/contents/${encodedPath}?ref=main&t=${Date.now()}`;
+    const getRes = await fetch(apiUrl, {
+      headers: {
+        'Authorization': `Bearer ${ownerToken}`,
+        'Accept': 'application/vnd.github+json'
+      }
+    });
+    let sha = undefined;
+    let html = '';
+    if (getRes.ok) {
+      const existing = await getRes.json();
+      sha = existing.sha;
+      const remoteHtml = existing.content ? base64ToUtf8(existing.content) : '';
+      if (remoteHtml.includes('id="cv-template-data"')) {
+        html = injectDataIntoHtmlSource(remoteHtml);
+      }
+    }
+    if (!html) {
+      html = serializeFullHtmlDocument();
+    }
+    const b64 = utf8ToBase64(html);
+    await commitFileToGitHub(CV_FILE_PATH, b64, '📄 Update CV template content via Owner Editor', sha);
+    setStatus('editor-status', 'ok', '✅ Đã lưu và commit CV mới lên nhánh main của GitHub thành công!');
+  } catch (err) {
+    setStatus('editor-status', 'err', `❌ Lỗi khi lưu lên GitHub: ${err.message}`);
+  }
+}
+
+async function uploadSelectedFileToGitHub() {
+  const fileInput = document.getElementById('upload-file-input');
+  const targetPath = document.getElementById('upload-target-path').value;
+  const commitMsg = document.getElementById('upload-commit-msg').value.trim() || '📄 Upload new CV file';
+  const file = fileInput.files?.[0];
+  if (!file) {
+    setStatus('editor-status', 'err', 'Vui lòng chọn một file từ máy tính để upload.');
+    return;
+  }
+  try {
+    setStatus('editor-status', 'info', `Đang tải file "${file.name}" (${(file.size / 1024).toFixed(1)} KB) lên ${targetPath}...`);
+    const base64Content = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const result = String(reader.result || '');
+        resolve(result.includes(',') ? result.split(',')[1] : result);
+      };
+      reader.onerror = () => reject(new Error('Không thể đọc file từ máy tính.'));
+      reader.readAsDataURL(file);
+    });
+    await commitFileToGitHub(targetPath, base64Content, commitMsg);
+    setStatus('editor-status', 'ok', `✅ Đã upload "${file.name}" vào "${targetPath}" trên nhánh main thành công!`);
+  } catch (err) {
+    setStatus('editor-status', 'err', `❌ Upload thất bại: ${err.message}`);
+  }
+}
+
+// Khởi chạy ban đầu:
+// - Khách xem online (htmlpreview.github.io): Chỉ thấy CV + Download PDF (ẩn hoàn toàn nút chỉnh sửa).
+// - Chủ sở hữu (@ducanhphamorg): Mở tự động khi mở file trên máy cá nhân (file:// / localhost),
+//   hoặc nhấn tổ hợp phím tắt Ctrl + Shift + E.
+renderCV(cvData);
+
+if (typeof document !== 'undefined' && document.addEventListener) {
+  document.addEventListener('keydown', e => {
+    if (e.ctrlKey && e.shiftKey && (e.key === 'E' || e.key === 'e')) {
+      e.preventDefault();
+      enableOwnerMode(true);
+    }
+  });
+}
+
+if (isTrustedEnvironment()) {
+  const isLocal = typeof location !== 'undefined' && (location.protocol === 'file:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1');
+  if (isLocal) {
+    updateOwnerUI(true);
+  } else if (ownerToken) {
+    verifyOwnerToken(true);
+  }
+} else {
+  // Trên domain trung gian (htmlpreview), xóa mọi token lưu tạm và ẩn nút quản trị
+  sessionStorage.removeItem('cv_owner_token');
+  ownerToken = '';
+  updateOwnerUI(false);
+}
+
+(async function syncLatestFromGitHub() {
+  try {
+    const encodedPath = CV_FILE_PATH.split('/').map(encodeURIComponent).join('/');
+    const apiUrl = `https://api.github.com/repos/${REPO_FULL}/contents/${encodedPath}?ref=main&t=${Date.now()}`;
+    let htmlText = '';
+    const apiRes = await fetch(apiUrl, { headers: { 'Accept': 'application/vnd.github+json' } });
+    if (apiRes.ok) {
+      const meta = await apiRes.json();
+      if (meta.content) htmlText = base64ToUtf8(meta.content);
+    } else {
+      const rawUrl = `https://raw.githubusercontent.com/${REPO_FULL}/main/${CV_FILE_PATH}?t=${Date.now()}`;
+      const rawRes = await fetch(rawUrl);
+      if (rawRes.ok) htmlText = await rawRes.text();
+    }
+    if (!htmlText) return;
+    if (htmlText.includes('id="cv-template-data"')) {
+      cachedCleanHtml = htmlText;
+    }
+    const match = htmlText.match(/<script id="cv-template-data" type="application\/json">([\s\S]*?)<\/script>/);
+    if (match && match[1]) {
+      const remoteData = JSON.parse(match[1]);
+      if (!cvData.updatedAt || (remoteData.updatedAt && remoteData.updatedAt > cvData.updatedAt)) {
+        cvData = remoteData;
+        document.getElementById('cv-template-data').textContent = safeJsonForScript(cvData);
+        renderCV(cvData);
+      }
+    }
+  } catch (_) {
+    // Fallback to embedded cvData when offline
+  }
+})();
+</script>
 </body>
 </html>
