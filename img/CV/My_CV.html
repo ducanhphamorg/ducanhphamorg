@@ -236,7 +236,7 @@
 
 <!-- TOP ACTION BAR -->
 <div id="resume-bar">
-  <span id="bar-title-wrap" style="user-select:none; cursor:pointer;" title="Nhấp đúp hoặc bấm F2 để mở Quản lý CV">
+  <span id="bar-title-wrap" style="user-select:none;">
     📄 CV of <strong id="bar-owner-name">Duc Anh Pham</strong>
   </span>
 
@@ -280,7 +280,6 @@
   <span id="owner-badge" class="owner-pill" style="display:none;">🛠️ Chủ sở hữu</span>
   <button id="btn-open-editor" class="bar-btn bar-btn-gold" style="display:none;" onclick="openEditorModal('template')">✏️ Quản lý &amp; Cập nhật CV</button>
   <button id="btn-owner-logout" class="bar-btn bar-btn-ghost" style="display:none;" onclick="logoutOwner()">🔒 Thoát</button>
-  <button id="btn-owner-entry" class="bar-btn bar-btn-ghost" onclick="handleOwnerEntryClick()" title="Nhấp vào đây hoặc nhấn phím F2 / Ctrl+Shift+E">🔐 Chủ sở hữu</button>
   <button class="bar-btn bar-btn-ghost" onclick="document.getElementById('resume-bar').style.display='none';document.body.style.paddingTop='24px';">✖ Ẩn thanh công cụ</button>
 </div>
 
@@ -811,8 +810,8 @@
   </div>
 </div>
 
-<!-- STRUCTURED CV DATA SOURCE OF TRUTH -->
-<script id="cv-template-data" type="application/json">
+<!-- STRUCTURED CV DATA SOURCE OF TRUTH (PROTECTED FROM HTMLPREVIEW EXECUTION) -->
+<template id="cv-template-data">
 {
   "updatedAt": "2026-11-07T09:30:00.000Z",
   "name": "Pham Duc Anh",
@@ -940,7 +939,7 @@
     }
   ]
 }
-</script>
+</template>
 
 <script>
 const OWNER_LOGIN = 'ducanhphamorg';
@@ -1095,12 +1094,10 @@ function updateOwnerUI(enabled) {
   const badge = document.getElementById('owner-badge');
   const editBtn = document.getElementById('btn-open-editor');
   const logoutBtn = document.getElementById('btn-owner-logout');
-  const entryBtn = document.getElementById('btn-owner-entry');
 
   if (badge) badge.style.display = enabled ? '' : 'none';
   if (editBtn) editBtn.style.display = enabled ? '' : 'none';
   if (logoutBtn) logoutBtn.style.display = enabled ? '' : 'none';
-  if (entryBtn) entryBtn.style.display = enabled ? 'none' : '';
 
   const trusted = isTrustedEnvironment();
   const apiSaveBtn = document.getElementById('btn-api-save');
@@ -1454,9 +1451,9 @@ function applyFormToPreview() {
 function injectDataIntoHtmlSource(baseHtml) {
   cvData = collectFormData();
   renderCV(cvData);
-  const jsonBlock = `<script id="cv-template-data" type="application/json">${safeJsonForScript(cvData)}<\/script>`;
+  const jsonBlock = `<template id="cv-template-data">${safeJsonForScript(cvData)}</template>`;
   let updated = baseHtml.replace(
-    /<script id="cv-template-data" type="application\/json">[\s\S]*?<\/script>/,
+    /<(script|template) id="cv-template-data"[^>]*>[\s\S]*?<\/\1>/,
     () => jsonBlock
   );
   const sheetHtml = document.getElementById('cv-sheet').innerHTML;
@@ -1494,8 +1491,6 @@ function serializeFullHtmlDocument() {
   if (editBtn) editBtn.style.display = 'none';
   const logoutBtn = clone.querySelector('#btn-owner-logout');
   if (logoutBtn) logoutBtn.style.display = 'none';
-  const entryBtn = clone.querySelector('#btn-owner-entry');
-  if (entryBtn) entryBtn.style.display = '';
 
   return '<!DOCTYPE html>\n' + clone.outerHTML;
 }
@@ -1783,9 +1778,9 @@ if (isTrustedEnvironment()) {
     if (htmlText.includes('id="cv-template-data"')) {
       cachedCleanHtml = htmlText;
     }
-    const match = htmlText.match(/<script id="cv-template-data" type="application\/json">([\s\S]*?)<\/script>/);
-    if (match && match[1]) {
-      const remoteData = JSON.parse(match[1]);
+    const match = htmlText.match(/<(script|template) id="cv-template-data"[^>]*>([\s\S]*?)<\/\1>/);
+    if (match && match[2]) {
+      const remoteData = JSON.parse(match[2]);
       if (!cvData.updatedAt || (remoteData.updatedAt && remoteData.updatedAt > cvData.updatedAt)) {
         cvData = remoteData;
         document.getElementById('cv-template-data').textContent = safeJsonForScript(cvData);
