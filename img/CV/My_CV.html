@@ -251,6 +251,34 @@
   .field-split-2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
   @media (max-width: 600px) { .field-split-2 { grid-template-columns:1fr; } }
 
+  /* FLOATING LIVE PREVIEW BAR */
+  .preview-floating-bar {
+    position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+    background:rgba(17, 24, 39, 0.95); backdrop-filter:blur(8px);
+    color:white; padding:10px 18px; border-radius:999px;
+    display:none; align-items:center; gap:14px; z-index:99990;
+    box-shadow:0 10px 30px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.15);
+    font-size:13px; font-weight:600; animation:slideUpPreview .22s ease-out;
+    flex-wrap:wrap; justify-content:center;
+  }
+  .preview-floating-bar.show { display:flex; }
+  @keyframes slideUpPreview {
+    from { opacity:0; transform:translateX(-50%) translateY(20px); }
+    to { opacity:1; transform:translateX(-50%) translateY(0); }
+  }
+  .preview-bar-label { display:flex; align-items:center; gap:8px; font-size:13px; color:#f3f4f6; }
+  .preview-bar-actions { display:flex; align-items:center; gap:8px; }
+  .preview-pulse {
+    width:9px; height:9px; border-radius:50%; background:#10b981;
+    box-shadow:0 0 0 0 rgba(16, 185, 129, 0.7);
+    animation:pulseRing 1.6s infinite;
+  }
+  @keyframes pulseRing {
+    0% { transform:scale(0.95); box-shadow:0 0 0 0 rgba(16, 185, 129, 0.7); }
+    70% { transform:scale(1); box-shadow:0 0 0 6px rgba(16, 185, 129, 0); }
+    100% { transform:scale(0.95); box-shadow:0 0 0 0 rgba(16, 185, 129, 0); }
+  }
+
   @page {
     size: A4 portrait;
     margin: 0;
@@ -273,7 +301,7 @@
       display: block !important;
       overflow: hidden !important;
     }
-    #resume-bar, .modal-backdrop, #cv-toast {
+    #resume-bar, .modal-backdrop, #cv-toast, #cv-preview-bar, .preview-floating-bar {
       display: none !important;
     }
     .cv {
@@ -377,6 +405,19 @@
 
 <!-- TOAST NOTIFICATION -->
 <div id="cv-toast" class="cv-toast"></div>
+
+<!-- FLOATING LIVE PREVIEW BAR -->
+<div id="cv-preview-bar" class="preview-floating-bar">
+  <div class="preview-bar-label">
+    <span class="preview-pulse"></span>
+    <span id="preview-bar-status-text">Live Preview Active</span>
+  </div>
+  <div class="preview-bar-actions">
+    <button type="button" class="bar-btn bar-btn-gold" onclick="returnToEditor()">✏️ Back to Editor</button>
+    <button type="button" class="sm-btn sm-btn-teal" onclick="directPushToGitHub()" style="font-size:13px;padding:6px 14px;">🚀 Push to GitHub</button>
+    <button type="button" class="sm-btn" onclick="exitPreviewMode()" style="background:rgba(255,255,255,.15);color:white;border-color:rgba(255,255,255,.3);">✕ Close Preview</button>
+  </div>
+</div>
 
 <!-- CV SHEET (RENDERED FROM STRUCTURED TEMPLATE DATA) -->
 <div class="cv" id="cv-sheet">
@@ -947,9 +988,35 @@
       <div id="editor-footer-actions" style="display:flex;gap:8px;margin-left:auto;flex-wrap:wrap;">
         <button type="button" class="sm-btn" onclick="applyFormToPreview()">👁️ Live Preview</button>
         <button type="button" class="sm-btn" onclick="downloadUpdatedHtml()">💾 Download My_CV.html</button>
-        <button type="button" class="bar-btn bar-btn-gold" onclick="saveViaGitHubWebSession()">🐙 Copy HTML &amp; Open GitHub Commit</button>
-        <button type="button" id="btn-api-save" class="sm-btn sm-btn-teal" onclick="saveTemplateToGitHub()">⚡ Quick Commit (Local API)</button>
+        <button type="button" class="bar-btn bar-btn-gold" id="btn-direct-push" onclick="directPushToGitHub()">🚀 Push to GitHub (@ducanhphamorg)</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- GITHUB TOKEN PROMPT MODAL -->
+<div class="modal-backdrop" id="token-modal">
+  <div class="modal-card" style="max-width:500px;">
+    <div class="modal-header">
+      <h2>🚀 Push to GitHub (@ducanhphamorg)</h2>
+      <button class="modal-close" onclick="closeTokenModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:#374151;line-height:1.5;margin-bottom:12px;">
+        To push changes directly to <strong>ducanhphamorg/ducanhphamorg</strong> via GitHub API, please provide your <strong>GitHub Personal Access Token (PAT)</strong> with <code>repo</code> scope.
+      </p>
+      <div class="form-field">
+        <label for="gh-token-input">GitHub Personal Access Token (Classic)</label>
+        <input type="password" id="gh-token-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" autocomplete="off" onkeydown="if(event.key==='Enter')saveTokenAndPush()"/>
+      </div>
+      <div style="font-size:12px;color:#6b7280;line-height:1.4;margin-top:6px;">
+        💡 Don't have a token? <a href="https://github.com/settings/tokens/new?scopes=repo&description=CV+Editor+Portal" target="_blank" rel="noopener" style="color:var(--teal);font-weight:700;text-decoration:underline;">Click here to generate a token with 'repo' scope pre-selected</a>.
+      </div>
+      <div id="token-status" class="status-msg" style="margin-top:10px;"></div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="sm-btn" onclick="closeTokenModal()">Cancel</button>
+      <button type="button" class="bar-btn bar-btn-gold" onclick="saveTokenAndPush()">🔑 Save &amp; Push Now</button>
     </div>
   </div>
 </div>
@@ -1904,7 +1971,177 @@ function applyFormToPreview() {
   cvData = collectFormData();
   renderCV(cvData);
   setTemplateJsonText(safeJsonForScript(cvData));
-  setStatus('editor-status', 'ok', '✅ Live preview updated on CV sheet! Click "Copy HTML & Open GitHub Commit" to save permanently.');
+
+  // Temporarily close editor modal to reveal the live CV sheet
+  closeEditorModal();
+
+  // Show floating live preview bar
+  const pBar = document.getElementById('cv-preview-bar');
+  if (pBar) pBar.classList.add('show');
+
+  // Smooth scroll to top of CV sheet
+  if (typeof window !== 'undefined' && window.scrollTo) {
+    try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (_) {}
+  }
+
+  showToast('👁️ Live Preview Mode! Review changes on CV sheet below.');
+}
+
+function returnToEditor() {
+  const pBar = document.getElementById('cv-preview-bar');
+  if (pBar) pBar.classList.remove('show');
+  openEditorModal('template');
+}
+
+function exitPreviewMode() {
+  const pBar = document.getElementById('cv-preview-bar');
+  if (pBar) pBar.classList.remove('show');
+  showToast('Exited preview mode.');
+}
+
+function openTokenModal() {
+  const modal = document.getElementById('token-modal');
+  if (modal) {
+    const input = document.getElementById('gh-token-input');
+    if (input) input.value = ownerToken || safeSessionGet('cv_owner_token') || '';
+    setStatus('token-status', '', '');
+    modal.classList.add('open');
+    if (input && input.focus) setTimeout(() => input.focus(), 100);
+  }
+}
+
+function closeTokenModal() {
+  const modal = document.getElementById('token-modal');
+  if (modal) modal.classList.remove('open');
+}
+
+async function saveTokenAndPush() {
+  const input = document.getElementById('gh-token-input');
+  const token = (input?.value || '').trim();
+  if (!token) {
+    setStatus('token-status', 'err', '❌ Please enter your GitHub Personal Access Token.');
+    return;
+  }
+
+  setStatus('token-status', 'info', 'Verifying token with GitHub API...');
+  try {
+    const res = await fetch('https://api.github.com/user', {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/vnd.github.v3+json'
+      }
+    });
+    if (!res.ok) {
+      throw new Error(`GitHub token invalid (HTTP ${res.status}). Ensure it has 'repo' permission.`);
+    }
+    const user = await res.json();
+    if (user.login.toLowerCase() !== OWNER_LOGIN) {
+      throw new Error(`Token belongs to @${user.login}, not @${OWNER_LOGIN}.`);
+    }
+
+    ownerToken = token;
+    safeSessionSet('cv_owner_token', token);
+    setStatus('token-status', 'ok', '✅ Token verified! Proceeding with commit...');
+    setTimeout(() => {
+      closeTokenModal();
+      directPushToGitHub();
+    }, 350);
+  } catch (err) {
+    setStatus('token-status', 'err', `❌ ${err.message || err}`);
+  }
+}
+
+async function commitFileDirect(repoPath, base64Content, commitMessage, token) {
+  const encodedPath = repoPath.split('/').map(encodeURIComponent).join('/');
+  const apiUrl = `https://api.github.com/repos/${REPO_FULL}/contents/${encodedPath}`;
+  const headers = {
+    'Authorization': `Bearer ${token}`,
+    'Accept': 'application/vnd.github.v3+json',
+    'Content-Type': 'application/json'
+  };
+
+  let sha = '';
+  try {
+    const getRes = await fetch(`${apiUrl}?ref=main&t=${Date.now()}`, { headers });
+    if (getRes.ok) {
+      const existing = await getRes.json();
+      sha = existing.sha;
+    }
+  } catch (_) {}
+
+  const putBody = {
+    message: commitMessage,
+    content: base64Content,
+    branch: 'main'
+  };
+  if (sha) putBody.sha = sha;
+
+  const putRes = await fetch(apiUrl, {
+    method: 'PUT',
+    headers,
+    body: JSON.stringify(putBody)
+  });
+
+  if (!putRes.ok) {
+    const errBody = await putRes.json().catch(() => ({}));
+    throw new Error(errBody.message || `HTTP ${putRes.status}`);
+  }
+  return putRes.json();
+}
+
+async function directPushToGitHub() {
+  if (!isOwnerAuthenticated()) {
+    openAuthModal();
+    return;
+  }
+
+  cvData = collectFormData();
+  renderCV(cvData);
+  setTemplateJsonText(safeJsonForScript(cvData));
+
+  const token = ownerToken || safeSessionGet('cv_owner_token');
+  if (!token) {
+    openTokenModal();
+    return;
+  }
+
+  const setPushStatus = (type, msg) => {
+    setStatus('editor-status', type, msg);
+    showToast(msg);
+    const pLabel = document.getElementById('preview-bar-status-text');
+    if (pLabel) {
+      pLabel.textContent = type === 'ok' ? '✅ Pushed to GitHub' : (type === 'info' ? '⏳ Pushing to GitHub...' : '❌ Push error');
+    }
+  };
+
+  setPushStatus('info', '⏳ Connecting to GitHub API & querying latest SHA...');
+
+  try {
+    const htmlContent = serializeFullHtmlDocument();
+    const utf8Bytes = (typeof TextEncoder !== 'undefined') ? new TextEncoder().encode(htmlContent) : [];
+    let binary = '';
+    if (utf8Bytes.length) {
+      for (let i = 0; i < utf8Bytes.length; i++) binary += String.fromCharCode(utf8Bytes[i]);
+    } else {
+      binary = unescape(encodeURIComponent(htmlContent));
+    }
+    const base64Content = btoa(binary);
+
+    const commitMsg = `📄 Update CV via Owner Portal (@ducanhphamorg)`;
+    const result = await commitFileDirect(CV_FILE_PATH, base64Content, commitMsg, token);
+    const commitSha = result.commit?.sha ? result.commit.sha.substring(0, 7) : 'latest';
+    setPushStatus('ok', `🎉 Pushed & committed to GitHub successfully! (Commit: ${commitSha})`);
+  } catch (err) {
+    console.error('Direct push error:', err);
+    if (err.message && (err.message.includes('401') || err.message.includes('403') || err.message.includes('Bad credentials'))) {
+      safeSessionRemove('cv_owner_token');
+      ownerToken = '';
+      openTokenModal();
+      setStatus('token-status', 'err', '⚠️ GitHub token expired or invalid. Please re-enter.');
+    } else {
+      setPushStatus('err', `❌ Push failed: ${err.message || err}`);
+    }
+  }
 }
 
 function injectDataIntoHtmlSource(baseHtml) {
@@ -1944,6 +2181,8 @@ function serializeFullHtmlDocument() {
   if (edStatus) { edStatus.className = 'status-msg'; edStatus.textContent = ''; }
   clone.querySelector('#download-menu')?.classList.remove('show');
   clone.querySelector('#cv-toast')?.classList.remove('show');
+  clone.querySelector('#cv-preview-bar')?.classList.remove('show');
+  clone.querySelector('#token-modal')?.classList.remove('open');
   const badge = clone.querySelector('#owner-badge');
   if (badge) badge.style.display = 'none';
   const editBtn = clone.querySelector('#btn-open-editor');
