@@ -235,10 +235,76 @@
   .status-msg.ok   { display:block; background:#ecfdf5; color:#047857; border:1px solid #a7f3d0; }
   .status-msg.err  { display:block; background:#fef2f2; color:#b91c1c; border:1px solid #fecaca; }
 
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
   @media print {
-    body { background:white; padding:0; display:block; }
-    .cv { box-shadow:none; width:210mm; border-radius:0; }
-    #resume-bar, .modal-backdrop, #cv-toast { display:none !important; }
+    *, *::before, *::after {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      color-adjust: exact !important;
+    }
+    html, body {
+      background: #ffffff !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      width: 210mm !important;
+      min-width: 210mm !important;
+      max-width: 210mm !important;
+      height: 297mm !important;
+      min-height: 297mm !important;
+      display: block !important;
+      overflow: hidden !important;
+    }
+    #resume-bar, .modal-backdrop, #cv-toast {
+      display: none !important;
+    }
+    .cv {
+      width: 210mm !important;
+      min-width: 210mm !important;
+      max-width: 210mm !important;
+      height: 297mm !important;
+      min-height: 297mm !important;
+      max-height: 297mm !important;
+      box-shadow: none !important;
+      border-radius: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      overflow: hidden !important;
+      page-break-after: avoid !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .sb {
+      width: var(--sw) !important;
+      background: var(--teal) !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+    .photo-ring {
+      border: 4px solid var(--gold-lt) !important;
+      background: rgba(255, 255, 255, .12) !important;
+    }
+    .photo-ring img {
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: crisp-edges;
+    }
+    .pill, .t, .rec-badge, .ach-box, .sh-bar {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      break-inside: avoid !important;
+      page-break-inside: avoid !important;
+    }
+    .main {
+      background: var(--off) !important;
+      height: 297mm !important;
+      overflow: hidden !important;
+    }
+    .period, .proj {
+      break-inside: avoid !important;
+      page-break-inside: avoid !important;
+    }
   }
 </style>
 </head>
@@ -260,17 +326,24 @@
         <div class="item-icon">📄</div>
         <div class="item-text">
           <div class="item-title">Download Original PDF (LaTeX A4)</div>
-          <div class="item-desc">Open / download original vector A4 PDF in a new tab</div>
+          <div class="item-desc">High-quality vector A4 PDF compiled from LaTeX source</div>
         </div>
       </a>
-      <button type="button" class="dropdown-item" onclick="triggerPrintCv();">
-        <div class="item-icon">🖨️</div>
+      <button type="button" class="dropdown-item" id="opt-export-web-pdf" onclick="exportWebPdf();">
+        <div class="item-icon">📑</div>
         <div class="item-text">
-          <div class="item-title">Print / Export Web PDF (Browser)</div>
-          <div class="item-desc">Open browser print dialog (Select "Save as PDF" to export)</div>
+          <div class="item-title">Export Web PDF (Standard A4)</div>
+          <div class="item-desc">Save current interactive Web CV as A4 PDF with exact colors &amp; format</div>
         </div>
       </button>
-      <button type="button" class="dropdown-item" onclick="copyShareCvLink();">
+      <button type="button" class="dropdown-item" id="opt-print-cv" onclick="triggerPrintCv();">
+        <div class="item-icon">🖨️</div>
+        <div class="item-text">
+          <div class="item-title">Print CV (Printer / Paper)</div>
+          <div class="item-desc">Send CV directly to physical printer with clean layout</div>
+        </div>
+      </button>
+      <button type="button" class="dropdown-item" id="opt-share-link" onclick="copyShareCvLink();">
         <div class="item-icon">🔗</div>
         <div class="item-text">
           <div class="item-title">Copy Shareable Online Link</div>
@@ -1319,6 +1392,41 @@ function updateDownloadLinks() {
 
   const pdfLink = document.getElementById('opt-download-pdf');
   if (pdfLink) pdfLink.href = pdfUrl;
+}
+
+async function exportWebPdf() {
+  closeDownloadDropdown();
+  const oldTitle = (typeof document !== 'undefined') ? document.title : '';
+  const restoreTitle = () => {
+    if (typeof document !== 'undefined') document.title = oldTitle;
+    if (typeof window !== 'undefined') window.onafterprint = null;
+  };
+
+  try {
+    if (typeof document !== 'undefined' && document.fonts && document.fonts.ready) {
+      await document.fonts.ready;
+    }
+    const rawName = (typeof cvData !== 'undefined' && cvData && cvData.name) ? cvData.name : 'Pham_Duc_Anh';
+    const cleanName = String(rawName).trim().replace(/\s+/g, '_');
+    if (typeof document !== 'undefined') {
+      document.title = `${cleanName}_CV`;
+    }
+    if (typeof window !== 'undefined') {
+      window.onafterprint = restoreTitle;
+    }
+    showToast('📄 Tip: Destination: "Save as PDF" & Margins: "None"');
+    setTimeout(() => {
+      if (typeof window !== 'undefined' && window.print) {
+        window.print();
+      }
+      setTimeout(restoreTitle, 1000);
+    }, 150);
+  } catch (_) {
+    if (typeof window !== 'undefined' && window.print) {
+      window.print();
+    }
+    restoreTitle();
+  }
 }
 
 function triggerPrintCv() {
