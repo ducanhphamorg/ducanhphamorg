@@ -235,6 +235,22 @@
   .status-msg.ok   { display:block; background:#ecfdf5; color:#047857; border:1px solid #a7f3d0; }
   .status-msg.err  { display:block; background:#fef2f2; color:#b91c1c; border:1px solid #fecaca; }
 
+  /* FORMAT TOOLBAR & ENHANCED FORM CONTROLS */
+  .fmt-toolbar {
+    display:flex; gap:5px; align-items:center; background:#f3f4f6;
+    padding:4px 8px; border-radius:6px; border:1px solid #e5e7eb; margin-bottom:6px;
+    flex-wrap:wrap;
+  }
+  .fmt-btn {
+    border:1px solid #d1d5db; background:white; color:#374151; font-size:11.5px;
+    font-weight:600; padding:3px 9px; border-radius:4px; cursor:pointer;
+    display:inline-flex; align-items:center; gap:4px; transition:all .12s;
+  }
+  .fmt-btn:hover { background:#e5e7eb; color:#111827; border-color:#9ca3af; }
+  .fmt-hint { font-size:11px; color:#6b7280; margin-left:auto; font-style:italic; }
+  .field-split-2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  @media (max-width: 600px) { .field-split-2 { grid-template-columns:1fr; } }
+
   @page {
     size: A4 portrait;
     margin: 0;
@@ -747,6 +763,13 @@
         </div>
         <div class="form-field">
           <label>Giới thiệu bản thân (About Me)</label>
+          <div class="fmt-toolbar">
+            <button type="button" class="fmt-btn" onclick="applyTextFormat('f-about', 'bold')" title="Tô đậm chữ"><b>B</b> Bold</button>
+            <button type="button" class="fmt-btn" onclick="applyTextFormat('f-about', 'bullet')" title="Gạch đầu dòng">• Bullet</button>
+            <button type="button" class="fmt-btn" onclick="applyTextFormat('f-about', 'number')" title="Đánh số">1. Number</button>
+            <button type="button" class="fmt-btn" onclick="applyTextFormat('f-about', 'clear')" title="Xóa định dạng">🧹 Clear</button>
+            <span class="fmt-hint">Bôi đen chữ rồi bấm nút để định dạng nhanh</span>
+          </div>
           <textarea id="f-about"></textarea>
         </div>
       </div>
@@ -778,46 +801,85 @@
       </div>
 
       <div class="form-section">
-        <h3>3. Kỹ năng, Công nghệ, Thành tích &amp; Học vấn</h3>
+        <h3>3. Kỹ năng &amp; Công nghệ</h3>
         <div class="form-field">
-          <label>Danh sách Kỹ năng (mỗi dòng 1 ý; dùng **Chữ đậm** để tô vàng)</label>
-          <textarea id="f-skills"></textarea>
+          <label>Danh sách Kỹ năng (Skills)</label>
+          <div class="fmt-toolbar">
+            <button type="button" class="fmt-btn" onclick="applyTextFormat('f-skills', 'bold')" title="Tô đậm từ khóa / Đổi màu vàng"><b>B</b> Bold / Highlight</button>
+            <button type="button" class="fmt-btn" onclick="applyTextFormat('f-skills', 'bullet')" title="Gạch đầu dòng">• Bullet</button>
+            <button type="button" class="fmt-btn" onclick="applyTextFormat('f-skills', 'number')" title="Đánh số">1. Number</button>
+            <button type="button" class="fmt-btn" onclick="applyTextFormat('f-skills', 'clear')" title="Xóa định dạng">🧹 Clear</button>
+            <span class="fmt-hint">Mỗi dòng 1 ý. Dùng Bold để làm nổi bật</span>
+          </div>
+          <textarea id="f-skills" rows="4"></textarea>
         </div>
         <div class="form-grid">
           <div class="form-field">
             <label>Công nghệ chính (Core Tech — cách nhau bằng dấu phẩy)</label>
-            <input type="text" id="f-core-tech"/>
+            <input type="text" id="f-core-tech" placeholder="HTML/CSS, JavaScript, Java, MySQL..."/>
           </div>
           <div class="form-field">
             <label>Công cụ (Tools — cách nhau bằng dấu phẩy)</label>
-            <input type="text" id="f-tool-tech"/>
+            <input type="text" id="f-tool-tech" placeholder="GitHub, Figma, Jira, Docker..."/>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3>4. Ngôn ngữ &amp; Thành tích</h3>
+        <div class="field-split-2">
+          <div class="form-field">
+            <label>Ngôn ngữ (Language)</label>
+            <input type="text" id="f-lang-name" placeholder="VD: English, Vietnamese"/>
           </div>
           <div class="form-field">
-            <label>Ngôn ngữ (VD: English | Basic Reading &amp; Writing)</label>
-            <input type="text" id="f-languages"/>
+            <label>Trình độ (Proficiency Level)</label>
+            <input type="text" id="f-lang-level" list="lang-level-list" placeholder="Chọn hoặc nhập trình độ..."/>
+            <datalist id="lang-level-list">
+              <option value="Basic Reading &amp; Writing"/>
+              <option value="Working Proficiency"/>
+              <option value="Professional Working Proficiency"/>
+              <option value="Full Professional Proficiency"/>
+              <option value="Native or Bilingual Proficiency"/>
+            </datalist>
+          </div>
+        </div>
+        <input type="hidden" id="f-languages"/>
+
+        <div class="field-split-2" style="margin-top:8px;">
+          <div class="form-field">
+            <label>Thành tích (Achievement Title)</label>
+            <input type="text" id="f-ach-title" placeholder="VD: Best Student — Security Subject (2023)"/>
           </div>
           <div class="form-field">
-            <label>Thành tích (Tiêu đề | Chương trình)</label>
-            <input type="text" id="f-achievement"/>
+            <label>Chương trình / Đơn vị cấp (Achievement Subtitle)</label>
+            <input type="text" id="f-ach-sub" placeholder="VD: Greenwich International Bachelor Program"/>
           </div>
+        </div>
+        <input type="hidden" id="f-achievement"/>
+      </div>
+
+      <div class="form-section">
+        <h3>5. Học vấn (Education)</h3>
+        <div class="form-grid">
           <div class="form-field">
             <label>Bằng cấp (Degree)</label>
-            <input type="text" id="f-edu-deg"/>
+            <input type="text" id="f-edu-deg" placeholder="VD: Bachelor of Information Technology"/>
           </div>
           <div class="form-field">
             <label>Trường đại học (School)</label>
-            <input type="text" id="f-edu-sch"/>
+            <input type="text" id="f-edu-sch" placeholder="VD: University of Greenwich..."/>
           </div>
           <div class="form-field">
             <label>Thời gian học (Period)</label>
-            <input type="text" id="f-edu-per"/>
+            <input type="text" id="f-edu-per" placeholder="VD: Summer 2021 — Summer 2025"/>
           </div>
         </div>
       </div>
 
       <div class="form-section">
         <h3>
-          <span>4. Dự án Học thuật / Kinh nghiệm (Projects)</span>
+          <span>6. Dự án Học thuật / Kinh nghiệm (Projects)</span>
           <button type="button" class="sm-btn sm-btn-teal" onclick="addProjectRow()">+ Thêm Dự án</button>
         </h3>
         <div id="f-projects-list"></div>
@@ -1532,8 +1594,85 @@ function logoutOwner() {
   showToast('🔒 Logged out of Owner Mode.');
 }
 
+// ── FORMAT TOOLBAR & HELPER ENGINE ────────────────────────────────────────
+function applyTextFormat(targetId, type) {
+  const el = document.getElementById(targetId);
+  if (!el) return;
+
+  const start = el.selectionStart ?? el.value.length;
+  const end = el.selectionEnd ?? el.value.length;
+  const val = el.value;
+  const selected = val.substring(start, end);
+
+  let replacement = '';
+  let newStart = start;
+  let newEnd = end;
+
+  if (type === 'bold') {
+    if (selected) {
+      if (selected.startsWith('**') && selected.endsWith('**') && selected.length >= 4) {
+        replacement = selected.slice(2, -2);
+        newEnd = start + replacement.length;
+      } else {
+        replacement = `**${selected}**`;
+        newEnd = start + replacement.length;
+      }
+    } else {
+      replacement = '**bold text**';
+      newStart = start + 2;
+      newEnd = start + 11;
+    }
+  } else if (type === 'bullet') {
+    if (selected) {
+      const lines = selected.split('\n');
+      replacement = lines.map(line => {
+        const clean = line.replace(/^[•\-\*]\s*/, '');
+        return `• ${clean}`;
+      }).join('\n');
+      newEnd = start + replacement.length;
+    } else {
+      replacement = (start > 0 && val[start - 1] !== '\n' ? '\n' : '') + '• ';
+      newStart = start + replacement.length;
+      newEnd = newStart;
+    }
+  } else if (type === 'number') {
+    if (selected) {
+      const lines = selected.split('\n');
+      replacement = lines.map((line, idx) => {
+        const clean = line.replace(/^\d+[\.\)]\s*/, '').replace(/^[•\-\*]\s*/, '');
+        return `${idx + 1}. ${clean}`;
+      }).join('\n');
+      newEnd = start + replacement.length;
+    } else {
+      replacement = (start > 0 && val[start - 1] !== '\n' ? '\n' : '') + '1. ';
+      newStart = start + replacement.length;
+      newEnd = newStart;
+    }
+  } else if (type === 'clear') {
+    if (selected) {
+      replacement = selected
+        .replace(/\*\*(.*?)\*\*/g, '$1')
+        .replace(/^[•\-\*]\s*/gm, '')
+        .replace(/^\d+[\.\)]\s*/gm, '');
+      newEnd = start + replacement.length;
+    } else {
+      return;
+    }
+  }
+
+  el.value = val.substring(0, start) + replacement + val.substring(end);
+  if (el.focus) el.focus();
+  if (typeof el.setSelectionRange === 'function') {
+    el.setSelectionRange(newStart, newEnd);
+  }
+}
+
 // ── EDITOR MODAL & FORM POPULATION ─────────────────────────────────────────
 function openEditorModal(tab = 'template') {
+  if (!isOwnerAuthenticated()) {
+    openAuthModal();
+    return;
+  }
   updateOwnerUI(true);
   populateEditorForm(cvData);
   switchEditorTab(tab);
@@ -1572,10 +1711,24 @@ function populateEditorForm(data) {
   document.getElementById('f-skills').value = (data.skills || []).join('\n');
   document.getElementById('f-core-tech').value = (data.coreTech || []).join(', ');
   document.getElementById('f-tool-tech').value = (data.toolTech || []).join(', ');
-  document.getElementById('f-languages').value = (data.languages || [])
-    .map(l => `${l.name} | ${l.level}`).join('; ');
-  document.getElementById('f-achievement').value =
-    `${data.achievement?.title || ''} | ${data.achievement?.subtitle || ''}`;
+
+  const lang0 = (data.languages && data.languages[0]) ? data.languages[0] : { name: 'English', level: 'Basic Reading & Writing' };
+  const langNameEl = document.getElementById('f-lang-name');
+  if (langNameEl) langNameEl.value = lang0.name || 'English';
+  const langLvlEl = document.getElementById('f-lang-level');
+  if (langLvlEl) langLvlEl.value = lang0.level || 'Basic Reading & Writing';
+
+  const ach = data.achievement || {};
+  const achTitleEl = document.getElementById('f-ach-title');
+  if (achTitleEl) achTitleEl.value = ach.title || '';
+  const achSubEl = document.getElementById('f-ach-sub');
+  if (achSubEl) achSubEl.value = ach.subtitle || '';
+
+  const legacyLang = document.getElementById('f-languages');
+  if (legacyLang) legacyLang.value = (data.languages || []).map(l => `${l.name} | ${l.level}`).join('; ');
+  const legacyAch = document.getElementById('f-achievement');
+  if (legacyAch) legacyAch.value = `${ach.title || ''} | ${ach.subtitle || ''}`;
+
   document.getElementById('f-edu-deg').value = data.education?.degree || '';
   document.getElementById('f-edu-sch').value = data.education?.school || '';
   document.getElementById('f-edu-per').value = data.education?.period || '';
@@ -1625,8 +1778,14 @@ function renderProjectEditorList(projects) {
         </div>
       </div>
       <div class="form-field">
-        <label>Mô tả dự án (hỗ trợ **in đậm**)</label>
-        <textarea class="pf-desc">${escapeHtml(p.desc || '')}</textarea>
+        <label>Mô tả dự án</label>
+        <div class="fmt-toolbar">
+          <button type="button" class="fmt-btn" onclick="applyTextFormat('pf-desc-${i}', 'bold')" title="Tô đậm chữ"><b>B</b> Bold</button>
+          <button type="button" class="fmt-btn" onclick="applyTextFormat('pf-desc-${i}', 'bullet')" title="Gạch đầu dòng">• Bullet</button>
+          <button type="button" class="fmt-btn" onclick="applyTextFormat('pf-desc-${i}', 'number')" title="Đánh số">1. Number</button>
+          <button type="button" class="fmt-btn" onclick="applyTextFormat('pf-desc-${i}', 'clear')" title="Xóa định dạng">🧹 Clear</button>
+        </div>
+        <textarea class="pf-desc" id="pf-desc-${i}">${escapeHtml(p.desc || '')}</textarea>
       </div>
     `;
     wrap.appendChild(card);
@@ -1635,14 +1794,40 @@ function renderProjectEditorList(projects) {
 
 function collectFormData() {
   const splitCsv = str => str.split(',').map(s => s.trim()).filter(Boolean);
-  const [achTitle, achSub] = document.getElementById('f-achievement').value.split('|').map(s => (s || '').trim());
-  const languages = document.getElementById('f-languages').value
-    .split(';')
-    .map(item => {
-      const [name, level] = item.split('|').map(s => (s || '').trim());
-      return name ? { name, level: level || '' } : null;
-    })
-    .filter(Boolean);
+
+  let achTitle = '';
+  let achSub = '';
+  const achTitleEl = document.getElementById('f-ach-title');
+  const achSubEl = document.getElementById('f-ach-sub');
+  if (achTitleEl) {
+    achTitle = achTitleEl.value.trim();
+    achSub = (achSubEl?.value || '').trim();
+  } else if (document.getElementById('f-achievement')) {
+    const parts = document.getElementById('f-achievement').value.split('|').map(s => (s || '').trim());
+    achTitle = parts[0] || '';
+    achSub = parts[1] || '';
+  }
+
+  let languages = [];
+  const langNameEl = document.getElementById('f-lang-name');
+  const langLevelEl = document.getElementById('f-lang-level');
+  if (langNameEl && langNameEl.value.trim()) {
+    languages.push({
+      name: langNameEl.value.trim(),
+      level: (langLevelEl?.value || '').trim() || 'Basic Reading & Writing'
+    });
+  } else if (document.getElementById('f-languages') && document.getElementById('f-languages').value.trim()) {
+    languages = document.getElementById('f-languages').value
+      .split(';')
+      .map(item => {
+        const [name, level] = item.split('|').map(s => (s || '').trim());
+        return name ? { name, level: level || '' } : null;
+      })
+      .filter(Boolean);
+  }
+  if (!languages.length) {
+    languages = (cvData && cvData.languages) ? cvData.languages : [{ name: 'English', level: 'Basic Reading & Writing' }];
+  }
 
   const projCards = [...document.querySelectorAll('#f-projects-list .proj-editor-card')];
   const projects = projCards.map(card => ({
@@ -1671,7 +1856,7 @@ function collectFormData() {
       address: document.getElementById('f-address').value.trim()
     },
     skills: document.getElementById('f-skills').value.split('\n').map(s => s.trim()).filter(Boolean),
-    languages: languages.length ? languages : [{ name: 'English', level: 'Basic Reading & Writing' }],
+    languages: languages,
     coreTech: splitCsv(document.getElementById('f-core-tech').value),
     toolTech: splitCsv(document.getElementById('f-tool-tech').value),
     achievement: { title: achTitle || '', subtitle: achSub || '' },
@@ -1712,6 +1897,10 @@ function safeJsonForScript(obj) {
 }
 
 function applyFormToPreview() {
+  if (!isOwnerAuthenticated()) {
+    openAuthModal();
+    return;
+  }
   cvData = collectFormData();
   renderCV(cvData);
   setTemplateJsonText(safeJsonForScript(cvData));
@@ -1766,6 +1955,10 @@ function serializeFullHtmlDocument() {
 }
 
 function downloadUpdatedHtml() {
+  if (!isOwnerAuthenticated()) {
+    openAuthModal();
+    return;
+  }
   const html = serializeFullHtmlDocument();
   const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
   const a = document.createElement('a');
@@ -1777,6 +1970,10 @@ function downloadUpdatedHtml() {
 }
 
 function saveViaGitHubWebSession() {
+  if (!isOwnerAuthenticated()) {
+    openAuthModal();
+    return;
+  }
   const html = serializeFullHtmlDocument();
   const editUrl = `https://github.com/${REPO_FULL}/edit/main/${CV_FILE_PATH}`;
   try {
